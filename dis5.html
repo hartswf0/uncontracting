@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Everything You Don't Need to Agree</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@200;400;700&display=swap');
+
+        :root {
+            --bg-primary: #0a0a0a;
+            --text-primary: #e0e0e0;
+            --accent-color: #3a3a3a;
+            --hover-color: #505050;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: all 0.3s ease-in-out;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            padding: 2rem;
+            cursor: crosshair;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+            opacity: 0.9;
+        }
+
+        h1 {
+            font-weight: 200;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            letter-spacing: -0.05em;
+        }
+
+        .quote {
+            font-style: italic;
+            color: var(--accent-color);
+            margin: 2rem 0;
+            opacity: 0.7;
+        }
+
+        .invisible-prompts {
+            background-color: var(--accent-color);
+            padding: 1rem;
+            margin: 2rem 0;
+            border-radius: 10px;
+            opacity: 0.8;
+        }
+
+        .invisible-prompts li {
+            list-style-type: none;
+            color: var(--text-primary);
+            margin: 0.5rem 0;
+            font-style: italic;
+        }
+
+        .get-unstarted-btn {
+            display: inline-block;
+            padding: 1rem 2rem;
+            background-color: transparent;
+            border: 2px solid var(--accent-color);
+            color: var(--text-primary);
+            text-decoration: none;
+            margin: 1rem 0;
+            cursor: help;
+        }
+
+        .get-unstarted-btn:hover {
+            background-color: var(--hover-color);
+            border-color: var(--hover-color);
+        }
+
+        .dynamic-content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 2rem 0;
+            opacity: 0.7;
+        }
+
+        .dynamic-content > div {
+            margin: 0 1rem;
+            text-align: center;
+        }
+
+        .placeholder-faces {
+            width: 100px;
+            height: 100px;
+            background-color: var(--accent-color);
+            border-radius: 50%;
+            opacity: 0.6;
+        }
+
+        .play-button {
+            width: 100px;
+            height: 100px;
+            background-color: var(--accent-color);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: not-allowed;
+        }
+
+        .email-input {
+            background-color: transparent;
+            border: 2px solid var(--accent-color);
+            color: var(--text-primary);
+            padding: 0.5rem;
+            margin: 1rem 0;
+            width: 300px;
+            text-align: center;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 1rem;
+            }
+            .dynamic-content {
+                flex-direction: column;
+            }
+        }
+    </style>
+
+    <style>
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            text-decoration: none;
+            color: #2c3e50;
+            font-weight: 300;
+            opacity: 0.7;
+            transition: all 0.3s ease;
+        }
+        .back-button:hover {
+            opacity: 1;
+            transform: translateX(-5px);
+        }
+    </style>
+    
+    <style>
+        .page-number {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            font-family: 'Arial', sans-serif;
+            font-size: 1.5rem;
+            color: rgba(44, 62, 80, 0.5);
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+            z-index: 1000;
+        }
+        .page-number:hover {
+            opacity: 1;
+        }
+    </style>
+    
+    <style>
+        .page-number {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            font-family: 'Arial', sans-serif;
+            font-size: 1.5rem;
+            color: rgba(44, 62, 80, 0.5);
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+            z-index: 1000;
+        }
+        .page-number:hover {
+            opacity: 1;
+        }
+    </style>
+    
+    <style>
+        .page-number {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            font-family: 'Arial', sans-serif;
+            font-size: 1.5rem;
+            color: rgba(44, 62, 80, 0.5);
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+            z-index: 1000;
+        }
+        .page-number:hover {
+            opacity: 1;
+        }
+    </style>
+    </head>
+<body>
+    <a href="index.html" class="back-button">← Uncontracting™</a>
+    
+    <div class="container">
+        <h1>Everything You Don't Need to Agree</h1>
+        
+        <p>Send, sign, or ignore your contracts forever.</p>
+        <p>By clicking the <strong>"Get Started"</strong> button below, you agree to <strong>nothing</strong>, but we might. Or not.</p>
+        
+        <input type="text" class="email-input" placeholder="Email (Why? That's your journey to figure out.)">
+        <a href="#" class="get-unstarted-btn">Get Unstarted</a>
+        
+        <p><strong>Region of Ambiguity</strong>: Somewhere, maybe. United States (or not)</p>
+        
+        <h2>A Landing Page Without a Landing</h2>
+        
+        <p class="quote">"What is agreement but a fleeting moment between misunderstandings?"</p>
+        
+        <p>Explore what it means to commit to the uncommittable. Watch as options fade, shift, and transform—leaving you with the distinct feeling you've accomplished something… or perhaps, nothing at all.</p>
+        
+        <div class="invisible-prompts">
+            <h3>Invisible Prompts:</h3>
+            <ul>
+                <li>"Are you already logged in, or were you never out?"</li>
+                <li>"Clicking here might do something, but only if it doesn't."</li>
+                <li>"Your data is safe… unless it isn't."</li>
+            </ul>
+        </div>
+        
+        <h3>Dynamic Content That Resolves Nothing</h3>
+        
+        <div class="dynamic-content">
+            <div>
+                <div class="placeholder-faces"></div>
+                <p>Who are they? Are they smiling? Or is it you, reflected back?</p>
+            </div>
+            <div>
+                <div class="play-button">▶</div>
+                <p>Press it. Nothing plays, but now <em>you</em> are playing.</p>
+            </div>
+        </div>
+        
+        <h3>The Space Between Action and Inaction</h3>
+        
+        <p>By navigating this page, you are agreeing to its design philosophy: <em>"To click is to question, and to question is to exist."</em></p>
+        <p>But don't worry—existence is optional.</p>
+    </div>
+
+    
+    
+    
+    
+    <style>
+        .page-number-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        .page-number {
+            width: 50px;
+            height: 50px;
+            background-color: rgba(44, 62, 80, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: #2c3e50;
+            opacity: 0.7;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .page-number:hover {
+            background-color: rgba(44, 62, 80, 0.2);
+            opacity: 1;
+            transform: scale(1.1);
+        }
+
+        .page-number.question-mark:hover::after {
+            content: '?';
+        }
+
+        .page-number.question-mark:hover {
+            background-color: rgba(52, 152, 219, 0.2);
+        }
+    </style>
+    <div class="page-number-container">
+        <a href="index.html" class="page-number 5 question-mark">5</a>
+    </div>
+    
+
+    
+    </body>
+</html>

@@ -1,0 +1,1250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uncontracting™ | Dissolve the Agreement</title>
+    <!-- Three.js CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- Optional: Include GSAP for smoother animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
+    <style>
+        :root {
+            --primary-hue: 210;
+            --transition-speed: 0.3s;
+            --blur-intensity: 5px;
+            --background-light: hsl(var(--primary-hue), 10%, 95%);
+            --accent-color: #3498db;
+            --ticker-bg: hsla(var(--primary-hue), 50%, 40%, 0.8);
+            --ticker-text-color: white;
+            --ribbon-color: rgba(52, 152, 219, 0.6);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: 
+                all var(--transition-speed) cubic-bezier(0.445, 0.05, 0.55, 0.95),
+                transform var(--transition-speed) ease-out;
+            user-select: none;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: var(--background-light);
+            perspective: 1000px;
+            overflow: hidden;
+            cursor: none;
+        }
+
+        .site-wrapper {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            transform-style: preserve-3d;
+            cursor: none;
+        }
+
+        /* Ticker Styling */
+        .ticker {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: var(--ticker-bg);
+            color: var(--ticker-text-color);
+            padding: 10px 0;
+            overflow: hidden;
+            white-space: nowrap;
+            z-index: 200;
+        }
+
+        .ticker-text {
+            display: inline-block;
+            padding-left: 100%;
+            animation: ticker-scroll 30s linear infinite;
+            font-size: 1rem;
+        }
+
+        @keyframes ticker-scroll {
+            from { transform: translateX(0); }
+            to { transform: translateX(-100%); }
+        }
+
+        /* Header Styling */
+        .corporate-header {
+            position: fixed;
+            top: 40px; /* Adjusted to accommodate ticker */
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background-color: hsla(var(--primary-hue), 50%, 50%, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 100;
+        }
+
+        .logo {
+            font-weight: bold;
+            font-size: 1.5rem;
+            color: white;
+            cursor: pointer;
+            transition: transform 0.4s ease, color 0.4s ease;
+        }
+
+        .logo:hover {
+            transform: scale(1.05) rotate(2deg);
+            color: var(--accent-color);
+        }
+
+        .nav {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-link {
+            color: white;
+            text-decoration: none;
+            position: relative;
+            overflow: hidden;
+            transition: transform var(--transition-speed) ease-out, opacity var(--transition-speed) ease-out;
+            display: inline-block;
+            cursor: pointer;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: -100%;
+            width: 100%;
+            height: 2px;
+            background-color: var(--accent-color);
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover::after {
+            left: 0;
+        }
+
+        /* Site Navigation */
+        .site-navigation {
+            background-color: #2c3e50;
+            padding: 10px 0;
+            text-align: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+        .site-navigation a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+        .site-navigation a:hover {
+            color: #3498db;
+        }
+
+        /* Content Section Styling */
+        .content-section {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90%;
+            max-width: 800px;
+            height: 70vh;
+            background-color: hsla(var(--primary-hue), 20%, 100%, 0.7);
+            backdrop-filter: blur(var(--blur-intensity));
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            padding: 20px;
+            transition: background-color var(--transition-speed) ease, transform var(--transition-speed) ease;
+            z-index: 3;
+        }
+
+        .overlay-text {
+            position: relative;
+            text-align: center;
+            z-index: 4;
+            color: rgba(0,0,0,0.7);
+            mix-blend-mode: overlay;
+            pointer-events: none;
+            font-size: 2.5rem;
+            max-width: 80%;
+            transition: opacity 0.5s ease, filter 0.5s ease;
+        }
+
+        .overlay-text span {
+            display: block;
+            font-size: 1.5rem;
+            margin-top: 10px;
+            color: rgba(0,0,0,0.6);
+        }
+
+        /* Scrolling Text Area */
+        .scrolling-text {
+            width: 100%;
+            height: 100%;
+            overflow-y: auto;
+            position: relative;
+            z-index: 3;
+            padding: 20px;
+            box-sizing: border-box;
+            background: transparent;
+        }
+
+        .scrolling-text p {
+            margin-bottom: 1rem;
+            line-height: 1.5;
+            font-size: 1rem;
+            color: rgba(0,0,0,0.8);
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        /* Fake Signing Interface */
+        .signing-interface {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 4;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity var(--transition-speed) ease, transform var(--transition-speed) ease;
+        }
+
+        .signing-interface.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .signing-interface input {
+            padding: 10px;
+            margin-bottom: 10px;
+            width: 80%;
+            border: 2px solid var(--accent-color);
+            border-radius: 5px;
+            transition: border-color var(--transition-speed) ease;
+        }
+
+        .signing-interface input:focus {
+            border-color: red;
+        }
+
+        .signing-interface button {
+            padding: 10px 20px;
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color var(--transition-speed) ease, transform var(--transition-speed) ease;
+        }
+
+        .signing-interface button:hover {
+            background-color: red;
+            transform: scale(1.1);
+        }
+
+        /* Footer Styling */
+        .dissolving-footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 15px;
+            background-color: hsla(var(--primary-hue), 50%, 20%, 0.8);
+            color: white;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            z-index: 100;
+            transition: opacity var(--transition-speed) ease-out, filter var(--transition-speed) ease-out;
+        }
+
+        /* Cursor Follower */
+        .cursor-follower {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            background-color: hsla(var(--primary-hue), 70%, 50%, 0.5);
+            border-radius: 50%;
+            pointer-events: none;
+            mix-blend-mode: difference;
+            z-index: 1000;
+            transition: transform 0.1s ease-out, background 0.3s ease-out;
+        }
+
+        /* Ripple Effect */
+        .ripple {
+            position: fixed;
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            pointer-events: none;
+            transition: transform 0.5s, opacity 0.5s;
+            z-index: 999;
+        }
+
+        /* Flowing Ribbons */
+        .ribbon-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 200%;
+            height: 200%;
+            pointer-events: none;
+            overflow: visible;
+            transform: translate(-50%, -50%);
+            z-index: 2;
+        }
+
+        .ribbon {
+            position: absolute;
+            white-space: nowrap;
+            font-size: 1rem;
+            color: var(--ribbon-color);
+            opacity: 0.7;
+            pointer-events: none;
+            animation: flow 30s linear infinite;
+        }
+
+        /* Irregular Fluid Animation */
+        @keyframes flow {
+            0% {
+                transform: translateX(-100%) rotate(0deg);
+                opacity: 0.7;
+            }
+            25% {
+                transform: translateX(100%) rotate(720deg);
+                opacity: 0.5;
+            }
+            50% {
+                transform: translateX(-100%) rotate(-720deg);
+                opacity: 0.7;
+            }
+            75% {
+                transform: translateX(100%) rotate(720deg);
+                opacity: 0.5;
+            }
+            100% {
+                transform: translateX(-100%) rotate(-720deg);
+                opacity: 0.7;
+            }
+        }
+
+        @keyframes chaoticFlow {
+            0% { transform: translate(0, 0) rotate(0deg); opacity: 0.7; }
+            25% { transform: translate(50px, -50px) rotate(1080deg); opacity: 0.5; }
+            50% { transform: translate(-50px, 50px) rotate(-1080deg); opacity: 0.7; }
+            75% { transform: translate(50px, 50px) rotate(1080deg); opacity: 0.5; }
+            100% { transform: translate(-50px, -50px) rotate(-1080deg); opacity: 0.7; }
+        }
+
+        .chaotic {
+            /* Additional styles for chaotic state if needed */
+        }
+
+        /* Media Queries for Responsiveness */
+        @media (max-width: 768px) {
+            .corporate-header {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
+                top: 40px; /* Adjusted for ticker */
+            }
+            .nav {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .content-section {
+                width: 95%;
+                height: 60vh;
+            }
+            .overlay-text {
+                font-size: 2rem;
+            }
+            .overlay-text span {
+                font-size: 1rem;
+            }
+            .signing-interface input, .signing-interface button {
+                width: 90%;
+            }
+        }
+
+        /* Advanced Woven Fluid Styles with Three.js */
+        #threejs-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* Glitch Effects */
+        .glitch {
+            animation: glitch 1s infinite;
+            position: relative;
+            display: inline-block;
+        }
+
+        @keyframes glitch {
+            0% {
+                clip: rect(42px, 9999px, 44px, 0);
+                transform: skew(0.39deg);
+            }
+            5% {
+                clip: rect(85px, 9999px, 140px, 0);
+                transform: skew(0.43deg);
+            }
+            10% {
+                clip: rect(16px, 9999px, 56px, 0);
+                transform: skew(0.41deg);
+            }
+            15% {
+                clip: rect(73px, 9999px, 93px, 0);
+                transform: skew(0.4deg);
+            }
+            20% {
+                clip: rect(20px, 9999px, 80px, 0);
+                transform: skew(0.38deg);
+            }
+            25% {
+                clip: rect(95px, 9999px, 120px, 0);
+                transform: skew(0.42deg);
+            }
+            30% {
+                clip: rect(50px, 9999px, 70px, 0);
+                transform: skew(0.4deg);
+            }
+            35% {
+                clip: rect(10px, 9999px, 30px, 0);
+                transform: skew(0.43deg);
+            }
+            40% {
+                clip: rect(60px, 9999px, 90px, 0);
+                transform: skew(0.39deg);
+            }
+            45% {
+                clip: rect(30px, 9999px, 60px, 0);
+                transform: skew(0.41deg);
+            }
+            50% {
+                clip: rect(80px, 9999px, 110px, 0);
+                transform: skew(0.4deg);
+            }
+            55% {
+                clip: rect(25px, 9999px, 55px, 0);
+                transform: skew(0.38deg);
+            }
+            60% {
+                clip: rect(70px, 9999px, 100px, 0);
+                transform: skew(0.42deg);
+            }
+            65% {
+                clip: rect(15px, 9999px, 45px, 0);
+                transform: skew(0.4deg);
+            }
+            70% {
+                clip: rect(65px, 9999px, 95px, 0);
+                transform: skew(0.43deg);
+            }
+            75% {
+                clip: rect(35px, 9999px, 65px, 0);
+                transform: skew(0.39deg);
+            }
+            80% {
+                clip: rect(90px, 9999px, 120px, 0);
+                transform: skew(0.41deg);
+            }
+            85% {
+                clip: rect(40px, 9999px, 70px, 0);
+                transform: skew(0.4deg);
+            }
+            90% {
+                clip: rect(5px, 9999px, 35px, 0);
+                transform: skew(0.38deg);
+            }
+            95% {
+                clip: rect(75px, 9999px, 105px, 0);
+                transform: skew(0.42deg);
+            }
+            100% {
+                clip: rect(20px, 9999px, 50px, 0);
+                transform: skew(0.4deg);
+            }
+        }
+    </style>
+
+    <style>
+        .site-navigation {
+            background-color: #2c3e50;
+            padding: 10px 0;
+            text-align: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+        .site-navigation a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+        .site-navigation a:hover {
+            color: #3498db;
+        }
+    </style>
+    
+    <style>
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            text-decoration: none;
+            color: #2c3e50;
+            font-weight: 300;
+            opacity: 0.7;
+            transition: all 0.3s ease;
+        }
+        .back-button:hover {
+            opacity: 1;
+            transform: translateX(-5px);
+        }
+    </style>
+    
+    <style>
+        .page-number {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            font-family: 'Arial', sans-serif;
+            font-size: 1.5rem;
+            color: rgba(44, 62, 80, 0.5);
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+            z-index: 1000;
+        }
+        .page-number:hover {
+            opacity: 1;
+        }
+    </style>
+    
+    <style>
+        .page-number {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            font-family: 'Arial', sans-serif;
+            font-size: 1.5rem;
+            color: rgba(44, 62, 80, 0.5);
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+            z-index: 1000;
+        }
+        .page-number:hover {
+            opacity: 1;
+        }
+    </style>
+    
+    <style>
+        .page-number {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            font-family: 'Arial', sans-serif;
+            font-size: 1.5rem;
+            color: rgba(44, 62, 80, 0.5);
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+            z-index: 1000;
+        }
+        .page-number:hover {
+            opacity: 1;
+        }
+    </style>
+    </head>
+<body>
+    <a href="index.html" class="back-button">← Uncontracting™</a>
+    
+    <!-- Site Navigation -->
+    <div class="site-navigation">
+        <a href="index.html">Home</a>
+        <a href="dis1.html">Page 1</a>
+        <a href="dis2.html">Page 2</a>
+        <a href="dis3.html">Page 3</a>
+        <a href="dis4.html">Page 4</a>
+        <a href="dis5.html">Page 5</a>
+        <a href="dis6.html">Page 6</a>
+        <a href="dis7.html">Page 7</a>
+        <a href="dis8.html">Page 8</a>
+        <a href="dis9.html">Page 9</a>
+    </div>
+    
+    <!-- Ticker -->
+    <div class="ticker">
+        <div class="ticker-text">
+            Uncontracting™ | Dissolve the Agreement | Sign Everything, Sign Nothing | Disagreement Starts with Us | Embrace the Chaos | Explore the Absurd | 
+        </div>
+    </div>
+
+    <!-- Site Navigation -->
+    <div class="site-navigation">
+        <a href="#">Home</a>
+        <a href="#">About</a>
+        <a href="#">Contact</a>
+    </div>
+
+    <!-- Cursor Follower -->
+    <div class="cursor-follower" id="cursor-follower"></div>
+
+    <!-- Ripple Effect Container -->
+    <div id="ripple-container"></div>
+
+    <!-- Three.js Canvas -->
+    <canvas id="threejs-canvas"></canvas>
+
+    <!-- Main Site Wrapper -->
+    <div class="site-wrapper" id="site-wrapper">
+        <!-- Flowing Ribbons -->
+        <div class="ribbon-container" id="ribbon-container">
+            <!-- Multiple ribbons with different paths and speeds -->
+            <div class="ribbon" style="top: 10%; left: 0%; animation: flow 30s linear infinite;">
+                <span class="glitch">Sign Everything, Sign Nothing</span>
+            </div>
+            <div class="ribbon" style="top: 30%; left: 0%; animation: flow 25s linear infinite 5s;">
+                <span class="glitch">Disagreement Starts with Us</span>
+            </div>
+            <div class="ribbon" style="top: 50%; left: 0%; animation: flow 35s linear infinite 2s;">
+                <span class="glitch">Embrace the Chaos</span>
+            </div>
+            <div class="ribbon" style="top: 70%; left: 0%; animation: flow 28s linear infinite 7s;">
+                <span class="glitch">Explore the Absurd</span>
+            </div>
+            <div class="ribbon" style="top: 90%; left: 0%; animation: flow 32s linear infinite 3s;">
+                <span class="glitch">Infinite Absence Negotiated</span>
+            </div>
+            <div class="ribbon" style="top: 20%; left: 0%; animation: flow 30s linear infinite 4s;">
+                <span class="glitch">Uncertainty as Currency</span>
+            </div>
+        </div>
+
+        <!-- Header -->
+        <header class="corporate-header">
+            <div class="logo" id="logo">Uncontracting™</div>
+            <nav class="nav">
+                <a href="#" class="nav-link">Agreements</a>
+                <a href="#" class="nav-link">Non-Solutions</a>
+                <a href="#" class="nav-link">Contact</a>
+            </nav>
+        </header>
+
+        <!-- Content Section -->
+        <main class="content-section" id="content-section">
+            <div class="overlay-text" id="overlay-text">
+-----
+              <span>Disagreement Starts with Us</span>
+            </div>
+            <div class="scrolling-text" id="scrolling-text">
+                <!-- Insert the absurd and philosophical copy here -->
+                <p>DisagreeSign: Everything You Don’t Need to Disagree</p>
+                <p>Skip to main objections</p>
+                <p>DisagreeSign named a contrarian in the 2024 Gartner Quadrant of Quibbles for Contract Lifecycle Mismanagement</p>
+                <p>Don’t Call Us: 1-877-999-9999</p>
+                <p>Ignore</p>
+                <p>Support? Meh.</p>
+                <p>Refuse Documents</p>
+                <p>Log Out</p>
+                <p>Problems We Offer</p>
+                <p>Products You Won’t Use</p>
+                <p>Resources to Confuse You</p>
+                <p>Plans & Pricing: Don’t Bother</p>
+                <p>Avoid Sales</p>
+                <p>We recommend prolonged indecision instead of committing to anything.</p>
+                <p>Think it Over for Free</p>
+                <p>By clicking the "Don’t Get Started" button below, you acknowledge that you won’t read the Terms & Conditions, nor will you ever adhere to them.</p>
+                <p>Everything You Don’t Need to Disagree</p>
+                <p>Tear up, shout at, and misplace your contracts effortlessly!</p>
+                <p>Region of Doubt: Worldwide</p>
+                <p>United-ish States</p>
+                <p>Introducing Unintelligent Agreement Sabotage</p>
+                <p>Why manage agreements when you can ignore them? Let DisagreeSign help you avoid responsibility by transforming critical documents into abstract stress points.</p>
+                <p>Are You Trapped in an Agreement Oasis?</p>
+                <p>Don’t worry—DisagreeSign is here to ensure your revenue shrinks, customers scatter, and legal risks snowball.</p>
+                <p>Take our Passive-Aggressive Assessment!</p>
+                <p>Mismanagement Packages for Every Procrastinator</p>
+                <p>IAM (Incoherent Agreement Management) Core: Misfile your agreements on purpose!</p>
+                <p>IAM for Customer Indifference (CI): Build lifelong confusion with clunky, exasperating processes!</p>
+                <p>IAM for Sales Sabotage (SS): Watch deals crumble and sales pipelines leak like a sieve!</p>
+                <p>Uncover Why DisagreeSign Is the Solution You Don’t Need:</p>
+                <p>Confuse end-to-end processes</p>
+                <p>Bury actionable insights under layers of jargon</p>
+                <p>Sabotage your workflow with Anti-Agreement AI</p>
+                <p>Slow the lifecycle of contracts to a standstill</p>
+                <p>Testimonials from Skeptics Like You:</p>
+                <p>"Thanks to DisagreeSign, we’ve completely lost track of our agreements. Now, no one knows what’s going on!" — Karen Misplace, Senior VP of Ambiguity</p>
+                <p>"Our contract cycles now last decades. It’s truly revolutionary." — Tom Delay, Chief Excuse Officer</p>
+                <p>"We once accidentally agreed to something. Never again, thanks to DisagreeSign!" — Linda Avoidance, Director of Hesitation</p>
+                <p>Trust in Disagreement:</p>
+                <p>Over 1 billion half-hearted sighs</p>
+                <p>Trusted by 180+ reluctant regions</p>
+                <p>Proudly serving documents in zero languages</p>
+                <p>Explore what’s not new with DisagreeSign—or embrace the chaos for free.</p>
+                <p>DisagreeSign: Let Your Uncertainty Flourish</p>
+                <p>Refuse to Click Below:</p>
+                <p>⛔ Don’t Start Today</p>
+            </div>
+            <!-- Fake Signing Interface -->
+            <div class="signing-interface" id="signing-interface">
+                <input type="text" placeholder="Your Name">
+                <input type="text" placeholder="Your Email">
+                <button id="fake-sign-button">Don’t Get Started</button>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="dissolving-footer" id="footer">
+            &copy; 2024 Uncontracting&trade; | The Agreement is the Disagreement
+        </footer>
+    </div>
+
+    <script>
+        // Three.js Setup for Fluid Background
+        const canvas = document.getElementById('threejs-canvas');
+        const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+
+        const scene = new THREE.Scene();
+
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.z = 50;
+
+        // Add a fluid, shifting plane
+        const geometry = new THREE.PlaneGeometry(100, 100, 32, 32);
+        const material = new THREE.ShaderMaterial({
+            vertexShader: `
+                varying vec2 vUv;
+                uniform float time;
+                void main() {
+                    vUv = uv;
+                    vec3 pos = position;
+                    pos.z += sin(pos.x * 2.0 + time) * 2.0;
+                    pos.z += cos(pos.y * 2.0 + time) * 2.0;
+                    gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
+                }
+            `,
+            fragmentShader: `
+                varying vec2 vUv;
+                uniform float time;
+                void main() {
+                    float color = 0.5 + 0.5 * sin(vUv.x * 10.0 + time) * cos(vUv.y * 10.0 + time);
+                    gl_FragColor = vec4(vec3(color), 0.3);
+                }
+            `,
+            uniforms: {
+                time: { value: 0.0 }
+            },
+            transparent: true
+        });
+        const plane = new THREE.Mesh(geometry, material);
+        scene.add(plane);
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+        });
+
+        // Animation loop
+        const clock = new THREE.Clock();
+        function animate() {
+            requestAnimationFrame(animate);
+            material.uniforms.time.value += clock.getDelta();
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // Cursor and Perspective Tracking
+        const siteWrapper = document.getElementById('site-wrapper');
+        const cursorFollower = document.getElementById('cursor-follower');
+        const navLinks = document.querySelectorAll('.nav-link');
+        const footer = document.getElementById('footer');
+        const overlayText = document.getElementById('overlay-text');
+        const logo = document.getElementById('logo');
+        const rippleContainer = document.getElementById('ripple-container');
+        const signingButton = document.getElementById('fake-sign-button');
+        const scrollingText = document.getElementById('scrolling-text');
+        const signingInterface = document.getElementById('signing-interface');
+        const ribbonContainer = document.getElementById('ribbon-container');
+        const contentSection = document.getElementById('content-section');
+
+        // Philosophical Phrases for Footer Mutation
+        const philosophicalPhrases = [
+            "Sign Everything, Sign Nothing",
+            "The Agreement is the Disagreement",
+            "Contracts Dissolve Here",
+            "What are you agreeing to?",
+            "Infinite Absence Negotiated",
+            "Uncertainty as Currency",
+            "Let Your Uncertainty Flourish",
+            "Dissolve the Agreement",
+            "Uncontracting: Sign Everything, Sign Nothing.",
+            "Disagreement Starts with Us",
+            "Embrace the Chaos",
+            "Explore the Absurd"
+        ];
+
+        // Cursor and Perspective Tracking
+        document.addEventListener('mousemove', (e) => {
+            const { clientX, clientY } = e;
+            const centerX = window.innerWidth / 2;
+            const centerY = window.innerHeight / 2;
+
+            // Update Cursor Follower Position
+            cursorFollower.style.transform = `translate(${clientX}px, ${clientY}px)`;
+
+            // Subtle 3D perspective shifts
+            const rotX = (clientY - centerY) / centerY * -10;
+            const rotY = (clientX - centerX) / centerX * 10;
+            siteWrapper.style.transform = `
+                perspective(1000px) 
+                rotateX(${rotX}deg) 
+                rotateY(${rotY}deg)
+            `;
+
+            // Update CSS variables for background hue based on cursor position
+            const hueChange = (clientX / window.innerWidth) * 360;
+            document.documentElement.style.setProperty('--primary-hue', hueChange);
+        });
+
+        // Shy-Away Nav Link Behavior
+        navLinks.forEach(link => {
+            link.addEventListener('mousemove', (e) => {
+                const rect = link.getBoundingClientRect();
+                const dx = e.clientX - (rect.left + rect.width / 2);
+                const dy = e.clientY - (rect.top + rect.height / 2);
+                const distance = Math.sqrt(dx * dx + dy * dy);
+
+                if (distance < 100) { // Shy away if the cursor is close
+                    const angle = Math.atan2(dy, dx);
+                    const moveX = Math.cos(angle) * 15;
+                    const moveY = Math.sin(angle) * 15;
+                    link.style.transform = `translate(${moveX}px, ${moveY}px) scale(0.8)`;
+                    link.style.opacity = 0.6;
+                } else {
+                    link.style.transform = 'translate(0, 0) scale(1)';
+                    link.style.opacity = 1;
+                }
+            });
+
+            // Click Interaction for Nav Links
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                link.style.transform = 'rotate(360deg) scale(0)';
+                link.style.opacity = 0;
+                setTimeout(() => {
+                    link.style.transform = 'scale(1)';
+                    link.style.opacity = 1;
+                }, 1000);
+            });
+        });
+
+        // Footer Text Mutation
+        setInterval(() => {
+            footer.textContent = philosophicalPhrases[
+                Math.floor(Math.random() * philosophicalPhrases.length)
+            ];
+        }, 3000);
+
+        // Footer Dissolve Effect on Hover
+        footer.addEventListener('mouseenter', () => {
+            footer.style.opacity = 0.3;
+            footer.style.filter = 'blur(5px)';
+        });
+        footer.addEventListener('mouseleave', () => {
+            footer.style.opacity = 1;
+            footer.style.filter = 'none';
+        });
+
+        // Logo Click Interaction
+        logo.addEventListener('click', () => {
+            document.body.style.filter = 'grayscale(100%)';
+        });
+
+        // Ripple Effect on Click
+        document.addEventListener('click', (e) => {
+            // Prevent ripple on clicks within the signing interface
+            if (e.target.closest('.signing-interface')) return;
+
+            const ripple = document.createElement('div');
+            ripple.classList.add('ripple');
+            ripple.style.left = `${e.clientX - 25}px`;
+            ripple.style.top = `${e.clientY - 25}px`;
+            ripple.style.transform = 'scale(0)';
+            ripple.style.opacity = 1;
+            rippleContainer.appendChild(ripple);
+
+            gsap.to(ripple, { 
+                duration: 0.5, 
+                scale: 10, 
+                opacity: 0, 
+                onComplete: () => ripple.remove() 
+            });
+        });
+
+        // Shy-Away and Dissolve Effects for Dynamic Elements
+        const universe = document.getElementById('interactive-canvas');
+
+        const phrases = [
+            "DisagreeSign: Everything You Don’t Need to Disagree",
+            "Skip to main objections",
+            "DisagreeSign named a contrarian in the 2024 Gartner Quadrant of Quibbles for Contract Lifecycle Mismanagement",
+            "Don’t Call Us: 1-877-999-9999",
+            "Ignore",
+            "Support? Meh.",
+            "Refuse Documents",
+            "Log Out",
+            "Problems We Offer",
+            "Products You Won’t Use",
+            "Resources to Confuse You",
+            "Plans & Pricing: Don’t Bother",
+            "Avoid Sales",
+            "We recommend prolonged indecision instead of committing to anything.",
+            "Think it Over for Free",
+            "By clicking the 'Don’t Get Started' button below, you acknowledge that you won’t read the Terms & Conditions, nor will you ever adhere to them.",
+            "Everything You Don’t Need to Disagree",
+            "Tear up, shout at, and misplace your contracts effortlessly!",
+            "Region of Doubt: Worldwide",
+            "United-ish States",
+            "Introducing Unintelligent Agreement Sabotage",
+            "Why manage agreements when you can ignore them? Let DisagreeSign help you avoid responsibility by transforming critical documents into abstract stress points.",
+            "Are You Trapped in an Agreement Oasis?",
+            "Don’t worry—DisagreeSign is here to ensure your revenue shrinks, customers scatter, and legal risks snowball.",
+            "Take our Passive-Aggressive Assessment!",
+            "Mismanagement Packages for Every Procrastinator",
+            "IAM (Incoherent Agreement Management) Core: Misfile your agreements on purpose!",
+            "IAM for Customer Indifference (CI): Build lifelong confusion with clunky, exasperating processes!",
+            "IAM for Sales Sabotage (SS): Watch deals crumble and sales pipelines leak like a sieve!",
+            "Uncover Why DisagreeSign Is the Solution You Don’t Need:",
+            "Confuse end-to-end processes",
+            "Bury actionable insights under layers of jargon",
+            "Sabotage your workflow with Anti-Agreement AI",
+            "Slow the lifecycle of contracts to a standstill",
+            "Testimonials from Skeptics Like You:",
+            "\"Thanks to DisagreeSign, we’ve completely lost track of our agreements. Now, no one knows what’s going on!\" — Karen Misplace, Senior VP of Ambiguity",
+            "\"Our contract cycles now last decades. It’s truly revolutionary.\" — Tom Delay, Chief Excuse Officer",
+            "\"We once accidentally agreed to something. Never again, thanks to DisagreeSign!\" — Linda Avoidance, Director of Hesitation",
+            "Trust in Disagreement:",
+            "Over 1 billion half-hearted sighs",
+            "Trusted by 180+ reluctant regions",
+            "Proudly serving documents in zero languages",
+            "Explore what’s not new with DisagreeSign—or embrace the chaos for free.",
+            "DisagreeSign: Let Your Uncertainty Flourish",
+            "Refuse to Click Below:",
+            "⛔ Don’t Start Today"
+        ];
+
+        const colors = [
+            'hsla(210, 70%, 50%, 0.6)',
+            'hsla(330, 70%, 50%, 0.6)',
+            'hsla(50, 70%, 50%, 0.6)',
+            'hsla(150, 70%, 50%, 0.6)'
+        ];
+
+        function createEntity() {
+            const entity = document.createElement('div');
+            entity.classList.add('entity');
+            const type = Math.random() < 0.5 ? 'blob' : 'text-entity';
+            entity.classList.add(type);
+
+            if (type === 'blob') {
+                entity.classList.add('blob');
+                const size = Math.random() * 200 + 50;
+                entity.style.width = `${size}px`;
+                entity.style.height = `${size}px`;
+                entity.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+            } else {
+                entity.classList.add('text-entity');
+                entity.textContent = phrases[Math.floor(Math.random() * phrases.length)];
+                entity.style.fontSize = `${Math.random() * 20 + 14}px`;
+            }
+
+            // Random Position
+            entity.style.top = `${Math.random() * 100}%`;
+            entity.style.left = `${Math.random() * 100}%`;
+
+            // Shy-Away Interaction
+            entity.addEventListener('mousemove', (e) => {
+                const rect = entity.getBoundingClientRect();
+                const dx = e.clientX - (rect.left + rect.width / 2);
+                const dy = e.clientY - (rect.top + rect.height / 2);
+                const distance = Math.sqrt(dx * dx + dy * dy);
+
+                if (distance < 100) { // Shy away if the cursor is close
+                    const angle = Math.atan2(dy, dx);
+                    const moveX = Math.cos(angle) * -20;
+                    const moveY = Math.sin(angle) * -20;
+                    entity.style.transform = `translate(${moveX}px, ${moveY}px)`;
+                } else {
+                    entity.style.transform = 'translate(0, 0)';
+                }
+            });
+
+            // Dissolve Effect on Click
+            entity.addEventListener('click', () => {
+                entity.style.opacity = '0.5';
+                entity.style.filter = 'blur(5px)';
+                gsap.to(entity, { 
+                    duration: 0.5, 
+                    opacity: 1, 
+                    filter: 'none',
+                    ease: 'power2.out'
+                });
+            });
+
+            universe.appendChild(entity);
+        }
+
+        // Initialize Dynamic Universe
+        function initUniverse() {
+            for(let i = 0; i < 30; i++) {
+                createEntity();
+            }
+
+            // Create Portals
+            for(let i = 0; i < 5; i++) {
+                createPortal();
+            }
+        }
+
+        function createPortal() {
+            const portal = document.createElement('div');
+            portal.classList.add('entity', 'portal');
+            portal.textContent = "ENTER";
+            portal.style.top = `${Math.random() * 100}%`;
+            portal.style.left = `${Math.random() * 100}%`;
+
+            portal.addEventListener('click', () => {
+                gsap.to(portal, { 
+                    duration: 1, 
+                    scale: 2, 
+                    rotation: 720, 
+                    opacity: 0,
+                    onComplete: () => {
+                        portal.remove();
+                        createPortal();
+                    }
+                });
+            });
+
+            universe.appendChild(portal);
+        }
+
+        // Initialize Interactions
+        function initInteractions() {
+            let isDragging = false;
+            let startX, startY;
+
+            siteWrapper.addEventListener('mousedown', (e) => {
+                isDragging = true;
+                startX = e.clientX;
+                startY = e.clientY;
+                siteWrapper.style.cursor = 'grabbing';
+            });
+
+            document.addEventListener('mousemove', (e) => {
+                if (!isDragging) return;
+
+                const deltaX = e.clientX - startX;
+                const deltaY = e.clientY - startY;
+
+                siteWrapper.style.transform = `
+                    perspective(1000px) 
+                    rotateX(${ -deltaY * 0.1 }deg) 
+                    rotateY(${ deltaX * 0.1 }deg)
+                `;
+            });
+
+            document.addEventListener('mouseup', () => {
+                isDragging = false;
+                siteWrapper.style.cursor = 'grab';
+                siteWrapper.style.transform = `
+                    perspective(1000px) 
+                    rotateX(0deg) 
+                    rotateY(0deg)
+                `;
+            });
+
+            // Random Universe Mutation
+            setInterval(() => {
+                document.documentElement.style.setProperty('--primary-hue', Math.random() * 360);
+            }, 5000);
+        }
+
+        // Initialize Ripple Effect Cleanup
+        function initRippleCleanup() {
+            const observer = new MutationObserver((mutations) => {
+                mutations.forEach(mutation => {
+                    mutation.addedNodes.forEach(node => {
+                        if (node.classList.contains('ripple')) {
+                            setTimeout(() => {
+                                node.remove();
+                            }, 500);
+                        }
+                    });
+                });
+            });
+
+            observer.observe(rippleContainer, { childList: true });
+        }
+
+        // Initialize Scrolling and Chaos Transition
+        function initScrollingChaos() {
+            scrollingText.addEventListener('scroll', () => {
+                const scrollTop = scrollingText.scrollTop;
+                const scrollHeight = scrollingText.scrollHeight - scrollingText.clientHeight;
+                const scrollPercent = scrollTop / scrollHeight;
+
+                // Transition to chaos after scrolling 50%
+                if (scrollPercent > 0.5 && !contentSection.classList.contains('chaotic')) {
+                    contentSection.classList.add('chaotic');
+                    triggerChaos();
+                }
+            });
+        }
+
+        function triggerChaos() {
+            // Start chaotic animations
+            gsap.to(contentSection, { 
+                duration: 1, 
+                backgroundColor: 'hsla(0, 100%, 50%, 0.7)', 
+                rotation: 5, 
+                scale: 1.05,
+                ease: 'power2.out'
+            });
+
+            // Overlay text starts flowing and becoming tangled
+            overlayText.classList.add('glitch');
+            overlayText.innerHTML = `
+                Sign Everything, Sign Nothing
+                <span class="glitch">Disagreement Starts with Us</span>
+                <span class="glitch">Embrace the Chaos</span>
+                <span class="glitch">Explore the Absurd</span>
+            `;
+
+            // Fake signing interface becomes more prominent
+            signingInterface.classList.add('active');
+
+            // Make ribbons more chaotic
+            entangleRibbons();
+        }
+
+        // Entangle Ribbons with User Interaction
+        function entangleRibbons() {
+            const ribbons = document.querySelectorAll('.ribbon');
+            ribbons.forEach(ribbon => {
+                ribbon.addEventListener('mouseenter', () => {
+                    // Make ribbons twist and become chaotic
+                    gsap.to(ribbon, { 
+                        duration: 5, 
+                        rotation: 720, 
+                        ease: 'none',
+                        repeat: -1
+                    });
+                });
+                ribbon.addEventListener('mouseleave', () => {
+                    // Revert to normal flow
+                    gsap.to(ribbon, { 
+                        duration: 1, 
+                        rotation: 0, 
+                        ease: 'power2.out'
+                    });
+                });
+            });
+        }
+
+        // Fake Signing Interface Interaction
+        signingButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            alert("Thank you for not signing!");
+            // Redirect or perform another deceptive action
+            window.location.href = "#";
+        });
+
+        // Initialize Universe and Interactions
+        initUniverse();
+        initInteractions();
+        initRippleCleanup();
+        initScrollingChaos();
+    </script>
+
+    
+    
+    
+    
+    <style>
+        .page-number-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        .page-number {
+            width: 50px;
+            height: 50px;
+            background-color: rgba(44, 62, 80, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: #2c3e50;
+            opacity: 0.7;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .page-number:hover {
+            background-color: rgba(44, 62, 80, 0.2);
+            opacity: 1;
+            transform: scale(1.1);
+        }
+
+        .page-number.question-mark:hover::after {
+            content: '?';
+        }
+
+        .page-number.question-mark:hover {
+            background-color: rgba(52, 152, 219, 0.2);
+        }
+    </style>
+    <div class="page-number-container">
+        <a href="index.html" class="page-number 9 question-mark">9</a>
+    </div>
+    
+
+    
+    </body>
+</html>

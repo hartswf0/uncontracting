@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uncontracting™ | Dissolve the Agreement</title>
+    <style>
+        :root {
+            --primary-hue: 210;
+            --transition-speed: 0.3s;
+            --blur-intensity: 5px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: 
+                all var(--transition-speed) cubic-bezier(0.445, 0.05, 0.55, 0.95),
+                transform var(--transition-speed) ease-out;
+            user-select: none;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: hsl(var(--primary-hue), 10%, 95%);
+            perspective: 1000px;
+            overflow: hidden;
+            cursor: none;
+        }
+
+        .site-wrapper {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            transform-style: preserve-3d;
+            cursor: none;
+        }
+
+        .corporate-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding: 20px;
+            background-color: hsla(var(--primary-hue), 50%, 50%, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 100;
+        }
+
+        .nav-link {
+            color: white;
+            text-decoration: none;
+            position: relative;
+            overflow: hidden;
+            transition: all var(--transition-speed) ease-out;
+            display: inline-block;
+        }
+
+        .content-section {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90%;
+            max-width: 800px;
+            height: 70vh;
+            background-color: hsla(var(--primary-hue), 20%, 100%, 0.7);
+            backdrop-filter: blur(var(--blur-intensity));
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        #interactive-canvas {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .dissolving-footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 15px;
+            background-color: hsla(var(--primary-hue), 50%, 20%, 0.8);
+            color: white;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            z-index: 100;
+        }
+
+        .cursor-follower {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            background-color: hsla(var(--primary-hue), 70%, 50%, 0.5);
+            border-radius: 50%;
+            pointer-events: none;
+            mix-blend-mode: difference;
+            z-index: 1000;
+            transition: transform 0.1s ease-out;
+        }
+    </style>
+
+    <style>
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            text-decoration: none;
+            color: #2c3e50;
+            font-weight: 300;
+            opacity: 0.7;
+            transition: all 0.3s ease;
+        }
+        .back-button:hover {
+            opacity: 1;
+            transform: translateX(-5px);
+        }
+    </style>
+    
+    <style>
+        .page-number {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            font-family: 'Arial', sans-serif;
+            font-size: 1.5rem;
+            color: rgba(44, 62, 80, 0.5);
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+            z-index: 1000;
+        }
+        .page-number:hover {
+            opacity: 1;
+        }
+    </style>
+    
+    <style>
+        .page-number {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            font-family: 'Arial', sans-serif;
+            font-size: 1.5rem;
+            color: rgba(44, 62, 80, 0.5);
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+            z-index: 1000;
+        }
+        .page-number:hover {
+            opacity: 1;
+        }
+    </style>
+    
+    <style>
+        .page-number {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            font-family: 'Arial', sans-serif;
+            font-size: 1.5rem;
+            color: rgba(44, 62, 80, 0.5);
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+            z-index: 1000;
+        }
+        .page-number:hover {
+            opacity: 1;
+        }
+    </style>
+    </head>
+<body>
+    <a href="index.html" class="back-button">← Uncontracting™</a>
+    
+    <div class="cursor-follower" id="cursor-follower"></div>
+    <div class="site-wrapper" id="site-wrapper">
+        <header class="corporate-header">
+            <div class="logo">Uncontracting™</div>
+            <nav>
+                <a href="#" class="nav-link">Agreements</a>
+                <a href="#" class="nav-link">Non-Solutions</a>
+                <a href="#" class="nav-link">Contact</a>
+            </nav>
+        </header>
+
+        <main class="content-section">
+            <iframe id="interactive-canvas" src="uncontracting-interactive.html" frameborder="0"></iframe>
+        </main>
+
+        <footer class="dissolving-footer">
+            © 2024 Uncontracting™ | The Agreement is the Disagreement
+        </footer>
+    </div>
+
+    <script>
+        const siteWrapper = document.getElementById('site-wrapper');
+        const cursorFollower = document.getElementById('cursor-follower');
+        const navLinks = document.querySelectorAll('.nav-link');
+        const footer = document.querySelector('.dissolving-footer');
+
+        // Philosophical text mutations
+        const philosophicalPhrases = [
+            "Sign Everything, Sign Nothing",
+            "The Agreement is the Disagreement",
+            "Contracts Dissolve Here",
+            "What are you agreeing to?",
+            "Infinite Absence Negotiated",
+            "Uncertainty as Currency"
+        ];
+
+        // Cursor and perspective tracking
+        function updateCursorAndPerspective(e) {
+            const { clientX, clientY } = e;
+            const centerX = window.innerWidth / 2;
+            const centerY = window.innerHeight / 2;
+
+            // Cursor follower
+            cursorFollower.style.transform = `translate(${clientX}px, ${clientY}px)`;
+
+            // 3D Perspective manipulation
+            const rotX = (clientY - centerY) / centerY * -10;
+            const rotY = (clientX - centerX) / centerX * 10;
+
+            siteWrapper.style.transform = `
+                perspective(1000px) 
+                rotateX(${rotX}deg) 
+                rotateY(${rotY}deg)
+            `;
+        }
+
+        // Nav link shy-away interactions
+        function initNavInteractions() {
+            navLinks.forEach(link => {
+                link.addEventListener('mouseenter', (e) => {
+                    link.style.transform = 'scale(0.8) translateY(-10px)';
+                    link.style.opacity = 0.5;
+                });
+
+                link.addEventListener('mouseleave', () => {
+                    link.style.transform = 'scale(1) translateY(0)';
+                    link.style.opacity = 1;
+                });
+
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    link.style.transform = 'rotate(360deg) scale(0)';
+                    setTimeout(() => {
+                        link.style.transform = 'scale(1)';
+                    }, 1000);
+                });
+            });
+        }
+
+        // Footer text mutation
+        function initFooterMutation() {
+            setInterval(() => {
+                footer.textContent = philosophicalPhrases[
+                    Math.floor(Math.random() * philosophicalPhrases.length)
+                ];
+            }, 3000);
+        }
+
+        // Color scheme mutation
+        function initColorMutation() {
+            setInterval(() => {
+                document.documentElement.style.setProperty(
+                    '--primary-hue', 
+                    Math.floor(Math.random() * 360)
+                );
+            }, 5000);
+        }
+
+        // Event Listeners
+        document.addEventListener('mousemove', updateCursorAndPerspective);
+        
+        // Initialize interactions
+        initNavInteractions();
+        initFooterMutation();
+        initColorMutation();
+    </script>
+
+    
+    
+    
+    
+    <style>
+        .page-number-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        .page-number {
+            width: 50px;
+            height: 50px;
+            background-color: rgba(44, 62, 80, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: #2c3e50;
+            opacity: 0.7;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .page-number:hover {
+            background-color: rgba(44, 62, 80, 0.2);
+            opacity: 1;
+            transform: scale(1.1);
+        }
+
+        .page-number.question-mark:hover::after {
+            content: '?';
+        }
+
+        .page-number.question-mark:hover {
+            background-color: rgba(52, 152, 219, 0.2);
+        }
+    </style>
+    <div class="page-number-container">
+        <a href="index.html" class="page-number 7 question-mark">7</a>
+    </div>
+    
+
+    
+    </body>
+</html>

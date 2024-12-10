@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uncontracting™ - Dissolving Agreements</title>
+    <link href="https://fonts.googleapis.com/css2?family=Circular+Std:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --background-color: #f4f4f4;
+            --text-color: #333;
+            --subtle-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            --transition-speed: 0.3s;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Circular Std', Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--background-color);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-weight: 300;
+            color: var(--primary-color);
+            letter-spacing: 1px;
+            position: relative;
+        }
+
+        .header h1::after {
+            content: '';
+            display: block;
+            width: 50px;
+            height: 2px;
+            background-color: var(--secondary-color);
+            margin: 15px auto;
+            opacity: 0.7;
+        }
+
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+
+        .gallery-item {
+            position: relative;
+            perspective: 1000px;
+            transform-style: preserve-3d;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: var(--subtle-shadow);
+            transition: all 0.3s ease;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all var(--transition-speed) ease;
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+
+        .gallery-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                135deg, 
+                rgba(52, 152, 219, 0.05) 0%, 
+                rgba(44, 62, 80, 0.05) 100%
+            );
+            opacity: 0;
+            transition: opacity var(--transition-speed) ease;
+            z-index: 1;
+        }
+
+        .gallery-item:hover::before {
+            opacity: 1;
+        }
+
+        .gallery-item-content {
+            position: relative;
+            z-index: 2;
+            padding: 25px;
+            text-align: center;
+            transition: transform var(--transition-speed) ease;
+        }
+
+        .gallery-item:hover .gallery-item-content {
+            transform: scale(1.02) translateZ(20px);
+        }
+
+        .sequence-indicator {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            width: 30px;
+            height: 30px;
+            background-color: rgba(44, 62, 80, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            color: var(--primary-color);
+            opacity: 0.7;
+            transition: all var(--transition-speed) ease;
+        }
+
+        .gallery-item:hover .sequence-indicator {
+            background-color: rgba(44, 62, 80, 0.2);
+            opacity: 1;
+        }
+
+        .philosophical-hint {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            font-size: 0.7rem;
+            color: var(--primary-color);
+            opacity: 0.5;
+            font-style: italic;
+            transition: opacity var(--transition-speed) ease;
+        }
+
+        .gallery-item:hover .philosophical-hint {
+            opacity: 0.8;
+        }
+
+        .gallery-item h2 {
+            font-weight: 300;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+        .gallery-item p {
+            color: #666;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .gallery-item a {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            text-decoration: none;
+            z-index: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Uncontracting™</h1>
+            <p>Exploring the Boundaries of Agreement</p>
+        </div>
+
+        <div class="gallery">
+            <div class="gallery-item">
+                <div class="sequence-indicator">01</div>
+                <div class="philosophical-hint">Potential awaits</div>
+                <div class="gallery-item-content">
+                    <h2>Interactive Brand Dynamics</h2>
+                    <p>Dissolving the boundaries between perception and interaction</p>
+                </div>
+            </div>
+
+            <div class="gallery-item">
+                <div class="sequence-indicator">02</div>
+                <div class="philosophical-hint">Meaning is negotiable</div>
+                <div class="gallery-item-content">
+                    <h2>Textual Dissolution Mechanics</h2>
+                    <p>Where words become fluid, meaning becomes negotiable</p>
+                </div>
+            </div>
+
+            <div class="gallery-item">
+                <div class="sequence-indicator">03</div>
+                <div class="philosophical-hint">Uncertainty as opportunity</div>
+                <div class="gallery-item-content">
+                    <h2>Quantum Interaction Design</h2>
+                    <p>Interfaces that exist between certainty and possibility</p>
+                </div>
+            </div>
+
+            <div class="gallery-item">
+                <div class="sequence-indicator">04</div>
+                <div class="philosophical-hint">Boundaries are fluid</div>
+                <div class="gallery-item-content">
+                    <h2>Contract Nullification Protocol</h2>
+                    <p>Redefining commitment through intentional ambiguity</p>
+                </div>
+            </div>
+
+            <div class="gallery-item">
+                <div class="sequence-indicator">05</div>
+                <div class="philosophical-hint">Perception reshapes reality</div>
+                <div class="gallery-item-content">
+                    <h2>Non-Commitment Interface</h2>
+                    <p>Exploring the space between agreement and dissolution</p>
+                </div>
+            </div>
+
+            <div class="gallery-item">
+                <div class="sequence-indicator">06</div>
+                <div class="philosophical-hint">Agreement is a conversation</div>
+                <div class="gallery-item-content">
+                    <h2>Brand Philosophy Framework</h2>
+                    <p>Constructing meaning through strategic uncertainty</p>
+                </div>
+            </div>
+
+            <div class="gallery-item">
+                <div class="sequence-indicator">07</div>
+                <div class="philosophical-hint">Explore the undefined</div>
+                <div class="gallery-item-content">
+                    <h2>Experiential Design Exploration</h2>
+                    <p>Navigating the liminal spaces of user interaction</p>
+                </div>
+            </div>
+
+            <div class="gallery-item">
+                <div class="sequence-indicator">08</div>
+                <div class="philosophical-hint">Possibility precedes form</div>
+                <div class="gallery-item-content">
+                    <h2>Infinite Possibility Paradigm</h2>
+                    <p>Where potential transcends defined boundaries</p>
+                </div>
+            </div>
+
+            <div class="gallery-item">
+                <div class="sequence-indicator">09</div>
+                <div class="philosophical-hint">Dissolution as creation</div>
+                <div class="gallery-item-content">
+                    <h2>Dynamic Agreement Deconstruction</h2>
+                    <p>Unraveling the fabric of contractual understanding</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const galleryItems = document.querySelectorAll('.gallery-item');
+            
+            galleryItems.forEach((item, index) => {
+                // Make entire item clickable
+                item.addEventListener('click', () => {
+                    const pageLinks = [
+                        'dis1.html', 
+                        'dis2.html', 
+                        'dis3.html', 
+                        'dis4.html', 
+                        'dis5.html', 
+                        'dis6.html', 
+                        'dis7.html', 
+                        'dis8.html', 
+                        'dis9.html'
+                    ];
+                    window.location.href = pageLinks[index];
+                });
+
+                // Add sequence indicator
+                const sequenceIndicator = item.querySelector('.sequence-indicator');
+                sequenceIndicator.textContent = String(index + 1).padStart(2, '0');
+
+                // Add philosophical hint
+                const philosophicalHint = item.querySelector('.philosophical-hint');
+                
+                const hints = [
+                    "Potential awaits",
+                    "Meaning is negotiable",
+                    "Uncertainty as opportunity",
+                    "Boundaries are fluid",
+                    "Perception reshapes reality",
+                    "Agreement is a conversation",
+                    "Explore the undefined",
+                    "Possibility precedes form",
+                    "Dissolution as creation"
+                ];
+                
+                philosophicalHint.textContent = hints[index];
+            });
+        });
+    </script>
+</body>
+</html>
