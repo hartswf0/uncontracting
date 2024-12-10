@@ -64,18 +64,20 @@ git clone https://github.com/yourusername/uncontracting.git
 - Observe how interactions transform the digital space
 - Reflect on the emergent meanings
 
-## 📜 Philosophical Quotes > — Vilém Flusser
+## 📜 Philosophical Quotes 
 
-
+> — Vilém Flusser
+>
 > "The universe is a complex of possibilities, not a complex of things."
-
+>
 > "Our thoughts, feelings, desires and actions are being robotized; 'life' is coming to mean feeding apparatuses and being fed by them. In short: Everything is becoming absurd. So where is there room for human freedom?"
-⁠​
-> "For from now on, human freedom no longer consists in being able to shape the world to one's own desires (apparatuses do this better) but to instruct (program) the apparatus as to the desired form and to stop (control) it when this form has been produced."⁠
-⁠​
-> "We no longer see any sense in trying to distinguish between something illusionary and something non-illusionary, between fiction and reality."⁠
-⁠​
-> "Every revolution, be it political, economic, social, or aesthetic, is in the last analysis a technical revolution... So is the present one."⁠
+>
+> "For from now on, human freedom no longer consists in being able to shape the world to one's own desires (apparatuses do this better) but to instruct (program) the apparatus as to the desired form and to stop (control) it when this form has been produced."
+>
+> "We no longer see any sense in trying to distinguish between something illusionary and something non-illusionary, between fiction and reality."
+>
+> "Every revolution, be it political, economic, social, or aesthetic, is in the last analysis a technical revolution... So is the present one."
+
 ⁠
 ## 🌊 Project Structure
 
