@@ -1,0 +1,1796 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Zettelkasten Creative People</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f9f9f9;
+            padding: 20px;
+            margin: 0;
+        }
+
+        h1, h2, h3 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        /* Card Container */
+        .card-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            max-width: 1200px;
+            margin: 0 auto 60px auto;
+        }
+
+        /* Individual ForceSet Card */
+        .force-card {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            width: 600px; /* Fixed width */
+            display: flex;
+            flex-direction: column;
+            padding: 15px; /* Reduced padding */
+            box-sizing: border-box;
+            transition: transform 0.2s;
+            overflow: hidden; /* Ensure no overflow */
+        }
+
+        .force-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+
+        /* ForceSet Header with Unique Colors and Symbols */
+        .force-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px; /* Reduced margin */
+            border-bottom: 1px solid #ecf0f1; /* Thinner border */
+            padding-bottom: 5px; /* Reduced padding */
+        }
+
+        .force-name {
+            font-size: 20px; /* Reduced font size */
+            font-weight: bold;
+            color: #2c3e50;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .force-icon {
+            font-size: 20px; /* Reduced font size */
+        }
+
+        /* Tag Styling */
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-top: 5px;
+        }
+
+        .tag {
+            background-color: #ecf0f1;
+            border-radius: 4px;
+            padding: 4px 8px;
+            font-size: 12px;
+            color: #2c3e50;
+        }
+
+        /* Card Content Grid */
+        .force-content {
+            display: grid;
+            grid-template-columns: 120px 1fr; /* Narrowed label column */
+            row-gap: 8px; /* Reduced row gap */
+            column-gap: 10px; /* Reduced column gap */
+            overflow: hidden; /* Prevent scrollbars */
+            flex: 1;
+            font-size: 14px; /* Reduced font size */
+            line-height: 1.4; /* Adjusted line height */
+        }
+
+        .force-content div {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .label {
+            font-weight: bold;
+            color: #555;
+            word-wrap: break-word;
+            padding: 4px 8px;
+            border-radius: 4px;
+            background-color: #f5f5f5;
+            margin-right: 5px;
+            align-self: flex-start;
+            font-size: 1.1em;
+        }
+
+        .label-opposing {
+            color: #c0392b;
+            border-left: 3px solid #c0392b;
+        }
+
+        .label-supporting {
+            color: #27ae60;
+            border-left: 3px solid #27ae60;
+        }
+
+        .value {
+            color: #333;
+            word-wrap: break-word;
+        }
+
+        .value ul {
+            margin: 4px 0 0 10px; /* Reduced margins */
+            padding: 0;
+            list-style-type: disc;
+        }
+
+        /* Sections Styling */
+        section {
+            max-width: 1200px;
+            margin: 0 auto 40px auto;
+            padding: 20px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        section h2 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #ecf0f1;
+            padding-bottom: 10px;
+            font-size: 24px; /* Adjusted font size */
+        }
+
+        /* KeyTakeaways and Reflection Lists */
+        .list-section ol, .list-section ul {
+            padding-left: 20px;
+            font-size: 16px; /* Adjusted font size */
+            line-height: 1.6; /* Adjusted line height */
+        }
+
+        .list-section li {
+            margin-bottom: 15px;
+        }
+
+        .list-section li::marker {
+            color: #2c3e50;
+        }
+
+        /* TAGS Section */
+        #tags .tags-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px; /* Reduced gap */
+            justify-content: center;
+        }
+
+        #tags .tag {
+            background-color: #ecf0f1;
+            border-radius: 4px;
+            padding: 8px 12px; /* Reduced padding */
+            font-size: 13px; /* Reduced font size */
+            color: #2c3e50;
+            max-width: 280px; /* Reduced max width */
+            box-sizing: border-box;
+            word-wrap: break-word; /* Allow tags to wrap */
+        }
+
+        #tags .tag strong {
+            display: block;
+            margin-bottom: 3px; /* Reduced margin */
+            color: #2980b9;
+            font-size: 14px; /* Slightly increased for emphasis */
+        }
+
+        /* Responsive Design */
+        @media (max-width: 650px) {
+            .force-card {
+                width: 100%;
+            }
+
+            .force-content {
+                grid-template-columns: 100px 1fr; /* Further reduced label column */
+                font-size: 13px; /* Slightly reduced font size */
+            }
+
+            .label {
+                align-self: flex-start;
+            }
+
+            section h2 {
+                font-size: 20px; /* Reduced font size */
+            }
+
+            .tag {
+                font-size: 12px; /* Further reduced font size */
+                padding: 6px 10px; /* Further reduced padding */
+                max-width: 250px; /* Further reduced max width */
+            }
+        }
+
+        @media (max-width: 480px) {
+            .force-name {
+                font-size: 18px; /* Further reduced font size */
+            }
+
+            .force-icon {
+                font-size: 18px; /* Further reduced font size */
+            }
+
+            .force-content {
+                grid-template-columns: 90px 1fr; /* Further reduced label column */
+                font-size: 12px; /* Further reduced font size */
+            }
+
+            .label {
+                font-size: 13px; /* Reduced font size */
+            }
+
+            .value {
+                font-size: 13px; /* Reduced font size */
+            }
+
+            #tags h2 {
+                font-size: 20px; /* Further reduced font size */
+            }
+
+            #tags .tag {
+                font-size: 11px; /* Further reduced font size */
+                padding: 5px 8px; /* Further reduced padding */
+                max-width: 220px; /* Further reduced max width */
+            }
+        }
+
+        .force-content {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .force-pair {
+            display: flex;
+            gap: 20px;
+        }
+
+        .force-item {
+            flex: 1;
+            background: #fff;
+            border: 1px solid #eee;
+            border-radius: 6px;
+            padding: 15px;
+            position: relative;
+            padding-top: 45px;
+        }
+
+        .force-item.opposing {
+            border-top: 3px solid #c0392b;
+        }
+
+        .force-item.supporting {
+            border-top: 3px solid #27ae60;
+        }
+
+        .force-item .label {
+            position: absolute;
+            top: 0;
+            left: 0;
+            padding: 12px 20px;
+            font-size: 1.1em;
+            font-weight: bold;
+            border-radius: 6px 0;
+            width: auto;
+        }
+
+        .force-item.opposing .label {
+            color: #fff;
+            background-color: #c0392b;
+        }
+
+        .force-item.supporting .label {
+            color: #fff;
+            background-color: #27ae60;
+        }
+
+        .force-item .value {
+            margin-top: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .force-pair {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Zettelkasten Creative People</h1>
+
+    <!-- ForceSets Section -->
+    <section id="force-sets">
+        <h2>Force Sets</h2>
+        <div class="card-container">
+            <!-- ForceSet Cards -->
+            <!-- ForceSet 1: External vs. Internal Creativity -->
+            <div class="force-card">
+                <div class="force-header">
+                    <div class="force-name">
+                        ⚖️ External vs. Internal Creativity
+                    </div>
+                    <div class="tags">
+                        <span class="tag">creativity</span>
+                        <span class="tag">external constraints</span>
+                        <span class="tag">internal motivation</span>
+                    </div>
+                </div>
+                <div class="force-content">
+                    <!-- Opposing Force -->
+                    <div class="label label-opposing">Opposing Force:</div>
+                    <div class="value">
+                        <strong>External Control</strong>
+                        <div class="tags">
+                            <span class="tag">external constraints</span>
+                            <span class="tag">mass production</span>
+                            <span class="tag">commercialization</span>
+                        </div>
+                        <p><strong>Description:</strong></p>
+                        <ul>
+                            <li>Driven by forces outside the individual (external influence).</li>
+                            <li>Conforms to mass production (standardization).</li>
+                            <li>Follows commercial requirements (market demands).</li>
+                            <li>Relies on pure habit instead of intention (habitual behavior).</li>
+                            <li>Limits creativity through repetition without variation (repetition, lack of variation).</li>
+                            <li>Depends on available resources (resource dependency).</li>
+                            <li>Restricts possibility through too many constraints (over-constraining).</li>
+                            <li>Adopts generic approach (generic methods).</li>
+                            <li>Creates fake-ness rather than authenticity (lack of authenticity).</li>
+                        </ul>
+                        <p><strong>Features:</strong> Standardization, Resource Dependency, Over-Constraining</p>
+                    </div>
+
+                    <!-- Supporting Force -->
+                    <div class="label label-supporting">Supporting Force:</div>
+                    <div class="value">
+                        <strong>Self-Construction</strong>
+                        <div class="tags">
+                            <span class="tag">internal motivation</span>
+                            <span class="tag">self-expression</span>
+                            <span class="tag">authenticity</span>
+                        </div>
+                        <p><strong>Description:</strong></p>
+                        <ul>
+                            <li>Embraces variety (diversity).</li>
+                            <li>Engages in self-construction despite social constraints (resilience).</li>
+                            <li>Finds healing through artistic creation (therapeutic creativity).</li>
+                            <li>Uses meditation to build story (mindfulness).</li>
+                            <li>Avoids approval-seeking (e.g., non-commercial creativity) (independence).</li>
+                            <li>Coaxes out inherent brain function for creative expression (cognitive enhancement).</li>
+                            <li>Works with constraints rather than fighting them (adaptive creativity).</li>
+                            <li>Creates art to exist and experience being alive (existential expression).</li>
+                            <li>Learns to enjoy limitations rather than resisting them (embracing limitations).</li>
+                            <li>Constructs context rather than waiting for it (proactive creation).</li>
+                            <li>Finds encouragement from community (community support).</li>
+                            <li>Performs as a way to enhance creativity (performance as creativity).</li>
+                            <li>Builds on accidents rather than rejecting them (embracing accidents).</li>
+                            <li>Creates art that is useful for the group (collective utility).</li>
+                            <li>Prioritizes handmade & personal work for somebody (personalization).</li>
+                        </ul>
+                        <p><strong>Features:</strong> Diversity, Resilience, Therapeutic Creativity</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ForceSet 2: Intentionality in Creativity -->
+            <div class="force-card">
+                <div class="force-header">
+                    <div class="force-name">
+                        🎯 Intentionality in Creativity
+                    </div>
+                    <div class="tags">
+                        <span class="tag">intentional creativity</span>
+                        <span class="tag">accidental creativity</span>
+                        <span class="tag">creative process</span>
+                    </div>
+                </div>
+                <div class="force-content">
+                    <!-- Opposing Force -->
+                    <div class="label label-opposing">Opposing Force:</div>
+                    <div class="value">
+                        <strong>Creativity as a Service</strong>
+                        <div class="tags">
+                            <span class="tag">commercialization</span>
+                            <span class="tag">transactional creativity</span>
+                        </div>
+                        <p><strong>Description:</strong></p>
+                        <ul>
+                            <li>Treats creativity as a transactional service (commercialization).</li>
+                            <li>Focuses on function rather than expression (functional focus).</li>
+                            <li>Measures creativity by market usefulness (market-driven metrics).</li>
+                            <li>Questions how little creativity can exist before it disappears (creativity erosion).</li>
+                            <li>Creates art only within commercial guidelines (constraint by guidelines).</li>
+                            <li>Reinforces only performing if good at it (performance pressure).</li>
+                        </ul>
+                        <p><strong>Features:</strong> Transactional Nature, Functional Emphasis, Market Metrics</p>
+                    </div>
+
+                    <!-- Supporting Force -->
+                    <div class="label label-supporting">Supporting Force:</div>
+                    <div class="value">
+                        <strong>Creativity as a Living Process</strong>
+                        <div class="tags">
+                            <span class="tag">spontaneity</span>
+                            <span class="tag">emergent creativity</span>
+                            <span class="tag">authentic engagement</span>
+                        </div>
+                        <p><strong>Description:</strong></p>
+                        <ul>
+                            <li>Questions if it's creative without intent (intentionality debate).</li>
+                            <li>Views accidental creativity as valid (embracing accidents).</li>
+                            <li>Challenges if assembly of non-creative objects is still creative (creative boundaries).</li>
+                            <li>Values spontaneity as much as intention (spontaneous creativity).</li>
+                            <li>Constructs meaning through interaction (meaning-making).</li>
+                            <li>Transforms errors into opportunities (error transformation).</li>
+                            <li>Allows creativity to emerge rather than forcing it (emergent creativity).</li>
+                            <li>Prioritizes authentic engagement over efficiency (authenticity).</li>
+                        </ul>
+                        <p><strong>Features:</strong> Spontaneity, Emergent Processes, Authentic Engagement</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ForceSet 3: Body & Error in Practice -->
+            <div class="force-card">
+                <div class="force-header">
+                    <div class="force-name">
+                        🛠️ Body & Error in Practice
+                    </div>
+                    <div class="tags">
+                        <span class="tag">imperfection</span>
+                        <span class="tag">learning</span>
+                        <span class="tag">process over perfection</span>
+                    </div>
+                </div>
+                <div class="force-content">
+                    <!-- Opposing Force -->
+                    <div class="label label-opposing">Opposing Force:</div>
+                    <div class="value">
+                        <strong>Planned Perfection</strong>
+                        <div class="tags">
+                            <span class="tag">perfectionism</span>
+                            <span class="tag">error minimization</span>
+                        </div>
+                        <p><strong>Description:</strong></p>
+                        <ul>
+                            <li>Expects flawless execution (high standards).</li>
+                            <li>Minimizes error in creative process (error avoidance).</li>
+                            <li>Discourages experimentation (risk aversion).</li>
+                            <li>Equates mistakes with failure (failure stigma).</li>
+                            <li>Reinforces only performing if good at it (performance pressure).</li>
+                        </ul>
+                        <p><strong>Features:</strong> High Standards, Error Avoidance, Performance Pressure</p>
+                    </div>
+
+                    <!-- Supporting Force -->
+                    <div class="label label-supporting">Supporting Force:</div>
+                    <div class="value">
+                        <strong>Learning Through Error</strong>
+                        <div class="tags">
+                            <span class="tag">adaptive learning</span>
+                            <span class="tag">growth mindset</span>
+                        </div>
+                        <p><strong>Description:</strong></p>
+                        <ul>
+                            <li>Requires body to adapt in practice (physical adaptation).</li>
+                            <li>Embraces error as part of growth (growth through mistakes).</li>
+                            <li>Proves greatness is not planned (spontaneous achievement).</li>
+                            <li>Values process over perfection (process orientation).</li>
+                            <li>Sees mistakes as shaping mastery (mastery through errors).</li>
+                        </ul>
+                        <p><strong>Features:</strong> Adaptive Learning, Growth Mindset, Process Orientation</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ForceSet 4: Inaction vs. Enactment -->
+            <div class="force-card">
+                <div class="force-header">
+                    <div class="force-name">
+                        🕰️ Inaction vs. Enactment
+                    </div>
+                    <div class="tags">
+                        <span class="tag">proactivity</span>
+                        <span class="tag">action-oriented creativity</span>
+                    </div>
+                </div>
+                <div class="force-content">
+                    <!-- Opposing Force -->
+                    <div class="label label-opposing">Opposing Force:</div>
+                    <div class="value">
+                        <strong>Inaction</strong>
+                        <div class="tags">
+                            <span class="tag">passivity</span>
+                            <span class="tag">risk avoidance</span>
+                        </div>
+                        <p><strong>Description:</strong></p>
+                        <ul>
+                            <li>Avoids risk of failure (fear of failure).</li>
+                            <li>Delays creative movement (procrastination).</li>
+                            <li>Limits growth through stagnation (stagnation).</li>
+                            <li>Reinforces passivity (passive behavior).</li>
+                            <li>Restricts engagement until good enough (perfectionism).</li>
+                        </ul>
+                        <p><strong>Features:</strong> Fear of Failure, Procrastination, Stagnation</p>
+                    </div>
+
+                    <!-- Supporting Force -->
+                    <div class="label label-supporting">Supporting Force:</div>
+                    <div class="value">
+                        <strong>Enactment</strong>
+                        <div class="tags">
+                            <span class="tag">action</span>
+                            <span class="tag">initiative</span>
+                            <span class="tag">continuous evolution</span>
+                        </div>
+                        <p><strong>Description:</strong></p>
+                        <ul>
+                            <li>Transforms ideas into action (implementation).</li>
+                            <li>Breaks boundaries of self-doubt (self-confidence).</li>
+                            <li>Connects movement with confidence (confident execution).</li>
+                            <li>Finds joy in imperfect execution (joy in process).</li>
+                            <li>Sees creativity as continuous evolution (ongoing creativity).</li>
+                            <li>Honors folk traditions by participating (Ginnan folk music) (cultural engagement).</li>
+                        </ul>
+                        <p><strong>Features:</strong> Implementation, Self-Confidence, Cultural Engagement</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ForceSet 5: B-Boy Junior vs. B-Girl Raygun -->
+            <div class="force-card">
+                <div class="force-header">
+                    <div class="force-name">
+                        🕺 B-Boy Junior vs. B-Girl Raygun
+                    </div>
+                    <div class="tags">
+                        <span class="tag">authenticity</span>
+                        <span class="tag">performance integrity</span>
+                    </div>
+                </div>
+                <div class="force-content">
+                    <!-- Opposing Force -->
+                    <div class="label label-opposing">Opposing Force:</div>
+                    <div class="value">
+                        <strong>Questioned Integrity (B-Girl Raygun)</strong>
+                        <div class="tags">
+                            <span class="tag">integrity issues</span>
+                            <span class="tag">superficial creativity</span>
+                        </div>
+                        <p><strong>Description:</strong></p>
+                        <ul>
+                            <li>Hides behind creativity (concealing weaknesses).</li>
+                            <li>Relies on words instead of dance moves (verbal reliance).</li>
+                            <li>Avoids physical proof of skill (skill avoidance).</li>
+                            <li>Leans into rhetoric over execution (rhetorical focus).</li>
+                            <li>Has integrity in question (integrity doubts).</li>
+                        </ul>
+                        <p><strong>Features:</strong> Concealing Weaknesses, Verbal Reliance, Integrity Doubts</p>
+                    </div>
+
+                    <!-- Supporting Force -->
+                    <div class="label label-supporting">Supporting Force:</div>
+                    <div class="value">
+                        <strong>Overcoming Adversity (B-Boy Junior)</strong>
+                        <div class="tags">
+                            <span class="tag">resilience</span>
+                            <span class="tag">authentic performance</span>
+                        </div>
+                        <p><strong>Description:</strong></p>
+                        <ul>
+                            <li>Transcends physical boundaries (physical mastery).</li>
+                            <li>Shares joy through movement (joyful expression).</li>
+                            <li>Makes difficult things look easy (skill demonstration).</li>
+                            <li>Practices humility in skill (humble mastery).</li>
+                            <li>Performs instead of explaining (demonstrative performance).</li>
+                            <li>Embodies creativity through physical expression (physical creativity).</li>
+                        </ul>
+                        <p><strong>Features:</strong> Physical Mastery, Joyful Expression, Humility in Skill</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ForceSet 6: Ability & Constraint -->
+            <div class="force-card">
+                <div class="force-header">
+                    <div class="force-name">
+                        🚧 Ability & Constraint
+                    </div>
+                    <div class="tags">
+                        <span class="tag">limitations</span>
+                        <span class="tag">innovation</span>
+                    </div>
+                </div>
+                <div class="force-content">
+                    <!-- Opposing Force -->
+                    <div class="label label-opposing">Opposing Force:</div>
+                    <div class="value">
+                        <strong>Inability</strong>
+                        <div class="tags">
+                            <span class="tag">potential</span>
+                            <span class="tag">unrealized skills</span>
+                        </div>
+                        <p><strong>Description:</strong></p>
+                        <ul>
+                            <li>Represents potential without action (unrealized potential).</li>
+                            <li>Exists as unrealized skill (skill underutilization).</li>
+                            <li>Suggests something you could do but don't (missed opportunities).</li>
+                            <li>Implies choice over limitation (choice vs. limitation).</li>
+                            <li>Stagnates growth (stagnation).</li>
+                        </ul>
+                        <p><strong>Features:</strong> Unrealized Potential, Skill Underutilization, Missed Opportunities</p>
+                    </div>
+
+                    <!-- Supporting Force -->
+                    <div class="label label-supporting">Supporting Force:</div>
+                    <div class="value">
+                        <strong>Constraint as Creative Drive</strong>
+                        <div class="tags">
+                            <span class="tag">innovation through limitation</span>
+                            <span class="tag">creative problem-solving</span>
+                        </div>
+                        <p><strong>Description:</strong></p>
+                        <ul>
+                            <li>Establishes boundaries for innovation (innovation boundaries).</li>
+                            <li>Transforms limitations into style (style development).</li>
+                            <li>Forces creative problem-solving (problem-solving).</li>
+                            <li>Shapes identity within restriction (identity shaping).</li>
+                            <li>Demands respect for effort (effort recognition).</li>
+                            <li>Defines have to do as part of artistic integrity (integrity through necessity).</li>
+                        </ul>
+                        <p><strong>Features:</strong> Innovation Boundaries, Style Development, Problem-Solving</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ForceSet 7: Ehren Tool (Cups & War) -->
+            <div class="force-card">
+                <div class="force-header">
+                    <div class="force-name">
+                        ☕️ Ehren Tool (Cups & War)
+                    </div>
+                    <div class="tags">
+                        <span class="tag">symbolism</span>
+                        <span class="tag">war trauma</span>
+                        <span class="tag">mass production</span>
+                    </div>
+                </div>
+                <div class="force-content">
+                    <!-- Opposing Force -->
+                    <div class="label label-opposing">Opposing Force:</div>
+                    <div class="value">
+                        <strong>Limited Craft Value</strong>
+                        <div class="tags">
+                            <span class="tag">craft devaluation</span>
+                            <span class="tag">mass production</span>
+                        </div>
+                        <p><strong>Description:</strong></p>
+                        <ul>
+                            <li>Questions what is a cup? (existential questioning).</li>
+                            <li>Creates many cups but gives them away (mass production).</li>
+                            <li>Produces bad cups that fail to hold water (quality issues).</li>
+                            <li>Devalues craftsmanship in mass production (craft devaluation).</li>
+                            <li>Prioritizes message over technical skill (message prioritization).</li>
+                        </ul>
+                        <p><strong>Features:</strong> Existential Questioning, Mass Production, Quality Issues</p>
+                    </div>
+
+                    <!-- Supporting Force -->
+                    <div class="label label-supporting">Supporting Force:</div>
+                    <div class="value">
+                        <strong>Symbolic Utility</strong>
+                        <div class="tags">
+                            <span class="tag">symbolism</span>
+                            <span class="tag">memory</span>
+                            <span class="tag">personal demons</span>
+                        </div>
+                        <p><strong>Description:</strong></p>
+                        <ul>
+                            <li>Uses cups to represent war & memory (symbolic representation).</li>
+                            <li>Connects military background to artistic discipline (military influence).</li>
+                            <li>Sees cups as vessels for meaning (meaning-making).</li>
+                            <li>Finds way to deal with war imagery (therapeutic coping).</li>
+                            <li>Channels personal demons into creative work (emotional expression).</li>
+                            <li>Creates "A great empty cup of attention" (symbolic creation).</li>
+                        </ul>
+                        <p><strong>Features:</strong> Symbolic Representation, Meaning-Making, Emotional Expression</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ForceSet 8: The Art of the Deal -->
+            <div class="force-card">
+                <div class="force-header">
+                    <div class="force-name">
+                        🤝 The Art of the Deal
+                    </div>
+                    <div class="tags">
+                        <span class="tag">strategy</span>
+                        <span class="tag">emotional control</span>
+                        <span class="tag">war trauma</span>
+                    </div>
+                </div>
+                <div class="force-content">
+                    <!-- Opposing Force -->
+                    <div class="label label-opposing">Opposing Force:</div>
+                    <div class="value">
+                        <strong>Chaos & Inner Demons</strong>
+                        <div class="tags">
+                            <span class="tag">emotional struggle</span>
+                            <span class="tag">war trauma</span>
+                        </div>
+                        <p><strong>Description:</strong></p>
+                        <ul>
+                            <li>Struggles with war trauma (trauma).</li>
+                            <li>Seeks structure to contain emotional weight (structural support).</li>
+                            <li>Faces personal conflicts through art (conflict resolution).</li>
+                            <li>Wrestles with discipline vs. emotional release (discipline vs. emotion).</li>
+                            <li>Questions how to deal with demons (coping mechanisms).</li>
+                        </ul>
+                        <p><strong>Features:</strong> Emotional Struggle, Structural Support, Conflict Resolution</p>
+                    </div>
+
+                    <!-- Supporting Force -->
+                    <div class="label label-supporting">Supporting Force:</div>
+                    <div class="value">
+                        <strong>Strategy & Control</strong>
+                        <div class="tags">
+                            <span class="tag">strategic creativity</span>
+                            <span class="tag">control</span>
+                        </div>
+                        <p><strong>Description:</strong></p>
+                        <ul>
+                            <li>Plays the hand dealt (strategic acceptance).</li>
+                            <li>Navigates internal struggles like war strategy (strategic navigation).</li>
+                            <li>Uses cups as metaphors for containment (metaphorical use).</li>
+                            <li>Mimics process of discipline (disciplinary mimicry).</li>
+                            <li>Uses art to externalize internal battles (externalization).</li>
+                            <li>Transforms pain into symbolic utility (pain transformation).</li>
+                        </ul>
+                        <p><strong>Features:</strong> Strategic Acceptance, Metaphorical Use, Pain Transformation</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ForceSet 9: Robo (Mimic & Process) -->
+            <div class="force-card">
+                <div class="force-header">
+                    <div class="force-name">
+                        🤖 Robo (Mimic & Process)
+                    </div>
+                    <div class="tags">
+                        <span class="tag">mimicry</span>
+                        <span class="tag">precision</span>
+                        <span class="tag">tradition</span>
+                    </div>
+                </div>
+                <div class="force-content">
+                    <!-- Opposing Force -->
+                    <div class="label label-opposing">Opposing Force:</div>
+                    <div class="value">
+                        <strong>Repetitive Craft</strong>
+                        <div class="tags">
+                            <span class="tag">lack of innovation</span>
+                            <span class="tag">mimicry</span>
+                        </div>
+                        <p><strong>Description:</strong></p>
+                        <ul>
+                            <li>Copies forms without innovation (lack of originality).</li>
+                            <li>Repeats existing shapes (mimicry) (pattern repetition).</li>
+                            <li>Follows technical procedure (procedural adherence).</li>
+                            <li>Removes personal touch (depersonalization).</li>
+                            <li>Limits improvisation (improvisation limits).</li>
+                        </ul>
+                        <p><strong>Features:</strong> Lack of Originality, Pattern Repetition, Depersonalization</p>
+                    </div>
+
+                    <!-- Supporting Force -->
+                    <div class="label label-supporting">Supporting Force:</div>
+                    <div class="value">
+                        <strong>Precision & Function</strong>
+                        <div class="tags">
+                            <span class="tag">technical mastery</span>
+                            <span class="tag">discipline</span>
+                        </div>
+                        <p><strong>Description:</strong></p>
+                        <ul>
+                            <li>Finds value in craftsmanship (craftsmanship).</li>
+                            <li>Masters technical execution (technical mastery).</li>
+                            <li>Sees repetition as refinement (refinement through repetition).</li>
+                            <li>Honors tradition through replication (tradition preservation).</li>
+                            <li>Applies disciplined practice to creative process (disciplined creativity).</li>
+                        </ul>
+                        <p><strong>Features:</strong> Craftsmanship, Technical Mastery, Tradition Preservation</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ForceSet 10: Riya (Stamps Department) -->
+            <div class="force-card">
+                <div class="force-header">
+                    <div class="force-name">
+                        🖨️ Riya (Stamps Department)
+                    </div>
+                    <div class="tags">
+                        <span class="tag">bureaucracy</span>
+                        <span class="tag">artistic adaptation</span>
+                    </div>
+                </div>
+                <div class="force-content">
+                    <!-- Opposing Force -->
+                    <div class="label label-opposing">Opposing Force:</div>
+                    <div class="value">
+                        <strong>Mechanical Reproduction</strong>
+                        <div class="tags">
+                            <span class="tag">mass reproduction</span>
+                            <span class="tag">lack of uniqueness</span>
+                        </div>
+                        <p><strong>Description:</strong></p>
+                        <ul>
+                            <li>Views stamps as preexisting designs (design standardization).</li>
+                            <li>Places art into small, restrictive format (format constraints).</li>
+                            <li>Replicates without uniqueness (lack of uniqueness).</li>
+                            <li>Loses detail in tiny space (detail loss).</li>
+                            <li>Treats stamps as bureaucratic objects (bureaucratic view).</li>
+                        </ul>
+                        <p><strong>Features:</strong> Design Standardization, Format Constraints, Detail Loss</p>
+                    </div>
+
+                    <!-- Supporting Force -->
+                    <div class="label label-supporting">Supporting Force:</div>
+                    <div class="value">
+                        <strong>William Gicker (Art Director)</strong>
+                        <div class="tags">
+                            <span class="tag">artistic leadership</span>
+                            <span class="tag">creative adaptation</span>
+                        </div>
+                        <p><strong>Description:</strong></p>
+                        <ul>
+                            <li>Ensures detail visibility (attention to detail).</li>
+                            <li>Embraces bold, bright colors (vibrant color use).</li>
+                            <li>Adds artistic liberty to small medium (creative freedom).</li>
+                            <li>Works with stamp format creatively (creative adaptation).</li>
+                            <li>Infuses movement into static design (dynamic design).</li>
+                            <li>Values artistic personality (personal expression).</li>
+                            <li>Sees vision and implements execution (visionary execution).</li>
+                            <li>Questions if AI made this (AI vs. human creativity).</li>
+                        </ul>
+                        <p><strong>Features:</strong> Attention to Detail, Vibrant Color Use, Creative Adaptation</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ForceSet 11: Einstein (Not Creative?) -->
+            <div class="force-card">
+                <div class="force-header">
+                    <div class="force-name">
+                        🧠 Einstein (Not Creative?)
+                    </div>
+                    <div class="tags">
+                        <span class="tag">scientific creativity</span>
+                        <span class="tag">intellectual innovation</span>
+                    </div>
+                </div>
+                <div class="force-content">
+                    <!-- Opposing Force -->
+                    <div class="label label-opposing">Opposing Force:</div>
+                    <div class="value">
+                        <strong>Routine Science</strong>
+                        <div class="tags">
+                            <span class="tag">methodical approach</span>
+                            <span class="tag">creativity limitations</span>
+                        </div>
+                        <p><strong>Description:</strong></p>
+                        <ul>
+                            <li>Views Einstein as methodical scientist (methodical perception).</li>
+                            <li>Limits creativity to non-human setting (creativity constraints).</li>
+                            <li>Ignores personality in scientific work (depersonalization).</li>
+                            <li>Focuses only on established frameworks (framework adherence).</li>
+                            <li>Categorizes creativity as artistic only (creativity segregation).</li>
+                        </ul>
+                        <p><strong>Features:</strong> Methodical Perception, Creativity Constraints, Depersonalization</p>
+                    </div>
+
+                    <!-- Supporting Force -->
+                    <div class="label label-supporting">Supporting Force:</div>
+                    <div class="value">
+                        <strong>Einstein as Creative Scientist</strong>
+                        <div class="tags">
+                            <span class="tag">innovative thinking</span>
+                            <span class="tag">imaginative problem-solving</span>
+                        </div>
+                        <p><strong>Description:</strong></p>
+                        <ul>
+                            <li>Doesn't look at routine science (innovation focus).</li>
+                            <li>Thinks beyond standard frameworks (framework transcendence).</li>
+                            <li>Approaches problems with imagination (imaginative approach).</li>
+                            <li>Connects disparate ideas (idea synthesis).</li>
+                            <li>Innovates within scientific setting (scientific innovation).</li>
+                        </ul>
+                        <p><strong>Features:</strong> Framework Transcendence, Imaginative Approach, Idea Synthesis</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ForceSet 12: Production Line Worker (Binta) -->
+            <div class="force-card">
+                <div class="force-header">
+                    <div class="force-name">
+                        🏭 Production Line Worker (Binta)
+                    </div>
+                    <div class="tags">
+                        <span class="tag">repetitive labor</span>
+                        <span class="tag">craftsmanship</span>
+                        <span class="tag">artistic control</span>
+                    </div>
+                </div>
+                <div class="force-content">
+                    <!-- Opposing Force -->
+                    <div class="label label-opposing">Opposing Force:</div>
+                    <div class="value">
+                        <strong>Mechanical Labor</strong>
+                        <div class="tags">
+                            <span class="tag">routine tasks</span>
+                            <span class="tag">lack of creativity</span>
+                        </div>
+                        <p><strong>Description:</strong></p>
+                        <ul>
+                            <li>Follows strict routine (routine adherence).</li>
+                            <li>Executes tasks without creativity (lack of creativity).</li>
+                            <li>Develops technique but avoids innovation (technique development).</li>
+                            <li>Works to rule by following only what is required (minimal compliance).</li>
+                            <li>Replicates without personal interpretation (lack of personalization).</li>
+                        </ul>
+                        <p><strong>Features:</strong> Routine Adherence, Technique Development, Minimal Compliance</p>
+                    </div>
+
+                    <!-- Supporting Force -->
+                    <div class="label label-supporting">Supporting Force:</div>
+                    <div class="value">
+                        <strong>Skilled Craft & Technique</strong>
+                        <div class="tags">
+                            <span class="tag">mastery</span>
+                            <span class="tag">efficiency</span>
+                            <span class="tag">artistic control</span>
+                        </div>
+                        <p><strong>Description:</strong></p>
+                        <ul>
+                            <li>Masters process over time (skill mastery).</li>
+                            <li>Refines efficiency (efficiency improvement).</li>
+                            <li>Discovers micro-adjustments for improvement (micro-optimization).</li>
+                            <li>Applies precision and skill (precision application).</li>
+                            <li>Turns labor into artistic control (artistic transformation).</li>
+                        </ul>
+                        <p><strong>Features:</strong> Skill Mastery, Efficiency Improvement, Artistic Transformation</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ForceSet 13: Sumerians -->
+            <div class="force-card">
+                <div class="force-header">
+                    <div class="force-name">
+                        🌾 Sumerians
+                    </div>
+                    <div class="tags">
+                        <span class="tag">accidental innovation</span>
+                        <span class="tag">historical creativity</span>
+                    </div>
+                </div>
+                <div class="force-content">
+                    <!-- Opposing Force -->
+                    <div class="label label-opposing">Opposing Force:</div>
+                    <div class="value">
+                        <strong>Unintentional Creativity</strong>
+                        <div class="tags">
+                            <span class="tag">randomness</span>
+                            <span class="tag">lack of intent</span>
+                        </div>
+                        <p><strong>Description:</strong></p>
+                        <ul>
+                            <li>Creates without intent (accidental creation).</li>
+                            <li>Questions if something is creative if it wasn’t meant to be (creativity definition).</li>
+                            <li>Accidentally discovers new ideas (serendipitous discovery).</li>
+                            <li>Blurs line between creativity and randomness (creativity boundaries).</li>
+                        </ul>
+                        <p><strong>Features:</strong> Accidental Creation, Serendipitous Discovery, Creativity Boundaries</p>
+                    </div>
+
+                    <!-- Supporting Force -->
+                    <div class="label label-supporting">Supporting Force:</div>
+                    <div class="value">
+                        <strong>Accidental Innovation</strong>
+                        <div class="tags">
+                            <span class="tag">innovation through accidents</span>
+                            <span class="tag">transformative potential</span>
+                        </div>
+                        <p><strong>Description:</strong></p>
+                        <ul>
+                            <li>Leaves wheat too long → creates beer (biological innovation).</li>
+                            <li>Changes landscape of practice (practice evolution).</li>
+                            <li>Emerges from mundane actions (emergent innovation).</li>
+                            <li>Evolves into intentional craftsmanship (craftsmanship evolution).</li>
+                            <li>Proves accidents can be transformative (transformative accidents).</li>
+                        </ul>
+                        <p><strong>Features:</strong> Biological Innovation, Practice Evolution, Transformative Accidents</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ForceSet 14: Hair Braider (Binta) -->
+            <div class="force-card">
+                <div class="force-header">
+                    <div class="force-name">
+                        💇‍♀️ Hair Braider (Binta)
+                    </div>
+                    <div class="tags">
+                        <span class="tag">cultural expression</span>
+                        <span class="tag">functional art</span>
+                    </div>
+                </div>
+                <div class="force-content">
+                    <!-- Opposing Force -->
+                    <div class="label label-opposing">Opposing Force:</div>
+                    <div class="value">
+                        <strong>Creativity as Service</strong>
+                        <div class="tags">
+                            <span class="tag">art as labor</span>
+                            <span class="tag">functional constraints</span>
+                        </div>
+                        <p><strong>Description:</strong></p>
+                        <ul>
+                            <li>Treats artistic practice as labor (labor perception).</li>
+                            <li>Performs braiding for others (service-oriented).</li>
+                            <li>Prioritizes functionality over expression (functional focus).</li>
+                            <li>Reinforces beauty standards (beauty norms).</li>
+                            <li>Values neatness & maintenance (maintenance focus).</li>
+                        </ul>
+                        <p><strong>Features:</strong> Labor Perception, Service Orientation, Beauty Norms</p>
+                    </div>
+
+                    <!-- Supporting Force -->
+                    <div class="label label-supporting">Supporting Force:</div>
+                    <div class="value">
+                        <strong>Hair as Cultural Expression</strong>
+                        <div class="tags">
+                            <span class="tag">cultural identity</span>
+                            <span class="tag">social communication</span>
+                        </div>
+                        <p><strong>Description:</strong></p>
+                        <ul>
+                            <li>Signifies tribal affiliation (tribal identity).</li>
+                            <li>Communicates social status (status communication).</li>
+                            <li>Functions as secret messaging system (secret communication).</li>
+                            <li>Respects heritage & identity (heritage respect).</li>
+                            <li>Serves both form & function (form and function).</li>
+                        </ul>
+                        <p><strong>Features:</strong> Tribal Identity, Status Communication, Heritage Respect</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ForceSet 15: Danielle Hicks (Parnian) -->
+            <div class="force-card">
+                <div class="force-header">
+                    <div class="force-name">
+                        🧶 Danielle Hicks (Parnian)
+                    </div>
+                    <div class="tags">
+                        <span class="tag">handmade craftsmanship</span>
+                        <span class="tag">creative intent</span>
+                    </div>
+                </div>
+                <div class="force-content">
+                    <!-- Opposing Force -->
+                    <div class="label label-opposing">Opposing Force:</div>
+                    <div class="value">
+                        <strong>Repetitive Craft</strong>
+                        <div class="tags">
+                            <span class="tag">lack of creativity</span>
+                            <span class="tag">formulaic</span>
+                        </div>
+                        <p><strong>Description:</strong></p>
+                        <ul>
+                            <li>Questions what's the difference between crochet & other crafts? (creativity questioning).</li>
+                            <li>Argues too many crafts are like coloring books (craft criticism).</li>
+                            <li>Challenges how little creativity can get (creativity limits).</li>
+                            <li>Suggests technical skill may overshadow creative intent (skill vs. creativity).</li>
+                        </ul>
+                        <p><strong>Features:</strong> Creativity Questioning, Craft Criticism, Skill vs. Creativity</p>
+                    </div>
+
+                    <!-- Supporting Force -->
+                    <div class="label label-supporting">Supporting Force:</div>
+                    <div class="value">
+                        <strong>Handmade vs. Manufactured</strong>
+                        <div class="tags">
+                            <span class="tag">personalization</span>
+                            <span class="tag">artistic integrity</span>
+                        </div>
+                        <p><strong>Description:</strong></p>
+                        <ul>
+                            <li>Crochets items mistaken for store-bought (deceptive craftsmanship).</li>
+                            <li>Infuses craft with love & intention (emotional infusion).</li>
+                            <li>Values personal touch (personalization).</li>
+                            <li>Creates for somebody (not just for market) (intentional creation).</li>
+                            <li>Distinguishes handmade from mass production (handmade differentiation).</li>
+                        </ul>
+                        <p><strong>Features:</strong> Deceptive Craftsmanship, Emotional Infusion, Intentional Creation</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ForceSet 16: Creativity & Constraints -->
+            <div class="force-card">
+                <div class="force-header">
+                    <div class="force-name">
+                        🔒 Creativity & Constraints
+                    </div>
+                    <div class="tags">
+                        <span class="tag">constraints</span>
+                        <span class="tag">creative problem-solving</span>
+                    </div>
+                </div>
+                <div class="force-content">
+                    <!-- Opposing Force -->
+                    <div class="label label-opposing">Opposing Force:</div>
+                    <div class="value">
+                        <strong>External Rules</strong>
+                        <div class="tags">
+                            <span class="tag">strict guidelines</span>
+                            <span class="tag">rigid thinking</span>
+                        </div>
+                        <p><strong>Description:</strong></p>
+                        <ul>
+                            <li>Imposes strict guidelines (rule imposition).</li>
+                            <li>Prevents unexpected discovery (discovery prevention).</li>
+                            <li>Reinforces rigid thinking (rigidity).</li>
+                            <li>Limits spontaneous exploration (exploration limits).</li>
+                        </ul>
+                        <p><strong>Features:</strong> Rule Imposition, Discovery Prevention, Rigidity</p>
+                    </div>
+
+                    <!-- Supporting Force -->
+                    <div class="label label-supporting">Supporting Force:</div>
+                    <div class="value">
+                        <strong>Constraints as Tools</strong>
+                        <div class="tags">
+                            <span class="tag">innovation through constraints</span>
+                            <span class="tag">problem-solving</span>
+                        </div>
+                        <p><strong>Description:</strong></p>
+                        <ul>
+                            <li>Focuses creative energy (energy focus).</li>
+                            <li>Stimulates problem-solving (problem-solving stimulation).</li>
+                            <li>Challenges artist to find solutions (solution finding).</li>
+                            <li>Coaxes out latent creativity (latent creativity).</li>
+                        </ul>
+                        <p><strong>Features:</strong> Energy Focus, Problem-Solving Stimulation, Latent Creativity</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ForceSet 17: Rohan Robo -->
+            <div class="force-card">
+                <div class="force-header">
+                    <div class="force-name">
+                        🔁 Rohan Robo
+                    </div>
+                    <div class="tags">
+                        <span class="tag">habitual creativity</span>
+                        <span class="tag">craftsmanship</span>
+                    </div>
+                </div>
+                <div class="force-content">
+                    <!-- Opposing Force -->
+                    <div class="label label-opposing">Opposing Force:</div>
+                    <div class="value">
+                        <strong>Habit & Repetition</strong>
+                        <div class="tags">
+                            <span class="tag">lack of variation</span>
+                            <span class="tag">routine</span>
+                        </div>
+                        <p><strong>Description:</strong></p>
+                        <ul>
+                            <li>Removes variation (lack of variation).</li>
+                            <li>Prioritizes grind over innovation (routine over innovation).</li>
+                            <li>Questions if everyone is creative, is no one creative? (creativity paradox).</li>
+                            <li>Mimics existing patterns (pattern mimicry).</li>
+                        </ul>
+                        <p><strong>Features:</strong> Lack of Variation, Routine Over Innovation, Pattern Mimicry</p>
+                    </div>
+
+                    <!-- Supporting Force -->
+                    <div class="label label-supporting">Supporting Force:</div>
+                    <div class="value">
+                        <strong>Craft & Assembly</strong>
+                        <div class="tags">
+                            <span class="tag">process-oriented</span>
+                            <span class="tag">craftsmanship</span>
+                        </div>
+                        <p><strong>Description:</strong></p>
+                        <ul>
+                            <li>Discovers creativity in process (process creativity).</li>
+                            <li>Builds ideas through repetition (idea building).</li>
+                            <li>Promotes limitation as a creative tool (limitation as tool).</li>
+                            <li>Cultivates craftsmanship through practice (craftsmanship cultivation).</li>
+                        </ul>
+                        <p><strong>Features:</strong> Process Creativity, Idea Building, Craftsmanship Cultivation</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ForceSet 18: William Gicker -->
+            <div class="force-card">
+                <div class="force-header">
+                    <div class="force-name">
+                        🎨 William Gicker
+                    </div>
+                    <div class="tags">
+                        <span class="tag">art direction</span>
+                        <span class="tag">market influence</span>
+                    </div>
+                </div>
+                <div class="force-content">
+                    <!-- Opposing Force -->
+                    <div class="label label-opposing">Opposing Force:</div>
+                    <div class="value">
+                        <strong>Market-Driven Art</strong>
+                        <div class="tags">
+                            <span class="tag">commercial influence</span>
+                            <span class="tag">trend-based creativity</span>
+                        </div>
+                        <p><strong>Description:</strong></p>
+                        <ul>
+                            <li>Collects ideas based on trends (trend collection).</li>
+                            <li>Directs rather than creates (creative direction).</li>
+                            <li>Questions if assembly of non-creative things is still creative (creativity questioning).</li>
+                            <li>Follows market utility over originality (market utility).</li>
+                            <li>Balances rules vs. innovation (balance rules innovation).</li>
+                        </ul>
+                        <p><strong>Features:</strong> Trend Collection, Creative Direction, Market Utility</p>
+                    </div>
+
+                    <!-- Supporting Force -->
+                    <div class="label label-supporting">Supporting Force:</div>
+                    <div class="value">
+                        <strong>Art as Curation</strong>
+                        <div class="tags">
+                            <span class="tag">curatorial creativity</span>
+                            <span class="tag">market leveraging</span>
+                        </div>
+                        <p><strong>Description:</strong></p>
+                        <ul>
+                            <li>Guides creativity through direction (creative guidance).</li>
+                            <li>Leverages market forces for distribution (market leveraging).</li>
+                            <li>Finds utility in creative rules (rule utility).</li>
+                            <li>Understands patterns of aesthetic impact (aesthetic understanding).</li>
+                        </ul>
+                        <p><strong>Features:</strong> Creative Guidance, Market Leveraging, Aesthetic Understanding</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ForceSet 19: Bob Ross -->
+            <div class="force-card">
+                <div class="force-header">
+                    <div class="force-name">
+                        🎨 Bob Ross
+                    </div>
+                    <div class="tags">
+                        <span class="tag">accessible creativity</span>
+                        <span class="tag">expressive painting</span>
+                    </div>
+                </div>
+                <div class="force-content">
+                    <!-- Opposing Force -->
+                    <div class="label label-opposing">Opposing Force:</div>
+                    <div class="value">
+                        <strong>Formulaic Creativity</strong>
+                        <div class="tags">
+                            <span class="tag">lack of originality</span>
+                            <span class="tag">structured format</span>
+                        </div>
+                        <p><strong>Description:</strong></p>
+                        <ul>
+                            <li>Repeats same landscapes (repetitive themes).</li>
+                            <li>Depends on TV-friendly format (media constraints).</li>
+                            <li>Fakes spontaneity (spontaneity illusion).</li>
+                            <li>Limits unstructured expression (expression limits).</li>
+                        </ul>
+                        <p><strong>Features:</strong> Repetitive Themes, Media Constraints, Spontaneity Illusion</p>
+                    </div>
+
+                    <!-- Supporting Force -->
+                    <div class="label label-supporting">Supporting Force:</div>
+                    <div class="value">
+                        <strong>Expressive Painting</strong>
+                        <div class="tags">
+                            <span class="tag">happy accidents</span>
+                            <span class="tag">accessible creativity</span>
+                        </div>
+                        <p><strong>Description:</strong></p>
+                        <ul>
+                            <li>Embraces happy accidents (embracing mistakes).</li>
+                            <li>Paints from memory & instinct (memory-based painting).</li>
+                            <li>Uses broad strokes to allow discovery (broad strokes).</li>
+                            <li>Lets go of perfection (perfection release).</li>
+                            <li>Performs to encourage audience creativity (audience encouragement).</li>
+                            <li>Makes creativity accessible to all (accessible art).</li>
+                        </ul>
+                        <p><strong>Features:</strong> Embracing Mistakes, Memory-Based Painting, Accessible Art</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- KeyTakeaways Section -->
+    <section id="key-takeaways">
+        <h2>Key Takeaways</h2>
+        <div class="list-section">
+            <ol>
+                <li>
+                    <strong>External vs. Internal Creativity:</strong>
+                    <ul>
+                        <li><strong>Opposing:</strong> External constraints (mass production, repetition, market needs) suppress creativity.</li>
+                        <li><strong>Supporting:</strong> Self-construction, limitations as strengths, and personal expression create genuine art.</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Intentionality in Creativity:</strong>
+                    <ul>
+                        <li><strong>Opposing:</strong> Treating creativity as a service limits its depth.</li>
+                        <li><strong>Supporting:</strong> Accidental and emergent creativity can be just as valid as intentional design.</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Body & Error in Practice:</strong>
+                    <ul>
+                        <li><strong>Opposing:</strong> Creativity should be pre-planned and perfect.</li>
+                        <li><strong>Supporting:</strong> Greatness emerges through error and adaptability.</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Inaction vs. Enactment:</strong>
+                    <ul>
+                        <li><strong>Opposing:</strong> Waiting until mastery before acting stifles growth.</li>
+                        <li><strong>Supporting:</strong> Creativity thrives when people engage and experiment.</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>B-Boy Junior vs. B-Girl Raygun:</strong>
+                    <ul>
+                        <li><strong>Opposing:</strong> Avoiding action and relying on words questions integrity.</li>
+                        <li><strong>Supporting:</strong> Overcoming adversity and physically performing reinforces authenticity.</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Ability & Constraint:</strong>
+                    <ul>
+                        <li><strong>Opposing:</strong> Potential without execution remains unrealized.</li>
+                        <li><strong>Supporting:</strong> Constraints provide the structure for creativity to thrive.</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Ehren Tool (Cups & War):</strong>
+                    <ul>
+                        <li><strong>Opposing:</strong> Produces many cups with low craft value, questioning their artistic merit.</li>
+                        <li><strong>Supporting:</strong> Uses cups symbolically to process war trauma and personal history.</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>The Art of the Deal:</strong>
+                    <ul>
+                        <li><strong>Opposing:</strong> Faces chaos, inner demons, and emotional struggle.</li>
+                        <li><strong>Supporting:</strong> Uses structure, process, and artistic metaphor to gain control.</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Robo (Mimic & Process):</strong>
+                    <ul>
+                        <li><strong>Opposing:</strong> Repeats forms without innovation, questioning originality.</li>
+                        <li><strong>Supporting:</strong> Masters technique through precision and disciplined craftsmanship.</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Riya (Stamps Department) vs. William Gicker (Art Director):</strong>
+                    <ul>
+                        <li><strong>Opposing:</strong> Stamps are bureaucratic, mass-reproduced objects that lose uniqueness.</li>
+                        <li><strong>Supporting:</strong> Gicker sees stamps as small artistic canvases that require bold, intentional design choices.</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Einstein as a Creative Scientist Debate:</strong>
+                    <ul>
+                        <li><strong>Opposing:</strong> Routine science lacks creativity in the traditional sense.</li>
+                        <li><strong>Supporting:</strong> Einstein approached science with imagination, making creative intellectual leaps.</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Production Line Worker (Binta):</strong>
+                    <ul>
+                        <li><strong>Opposing:</strong> Repetitive labor without creative input.</li>
+                        <li><strong>Supporting:</strong> Mastery and technique can lead to a form of artistic craftsmanship.</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Sumerians:</strong>
+                    <ul>
+                        <li><strong>Opposing:</strong> Creativity without intent leads to randomness.</li>
+                        <li><strong>Supporting:</strong> Accidents evolve into discoveries, demonstrating transformative potential.</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Hair Braiding (Binta):</strong>
+                    <ul>
+                        <li><strong>Opposing:</strong> Treating braiding as mere service limits artistic identity.</li>
+                        <li><strong>Supporting:</strong> Braiding carries deep cultural and social meaning.</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Danielle Hicks (Parnian):</strong>
+                    <ul>
+                        <li><strong>Opposing:</strong> Some crafts become too formulaic (like coloring books).</li>
+                        <li><strong>Supporting:</strong> Handmade items have meaning, intention, and personal value.</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Creativity & Constraints:</strong>
+                    <ul>
+                        <li><strong>Opposing:</strong> External rules impose strict guidelines that limit exploration.</li>
+                        <li><strong>Supporting:</strong> Constraints act as tools that focus creative energy and stimulate problem-solving.</li>
+                    </ul>
+                </li>
+                <li>
+                    <strong>Definition:</strong>
+                    <ul>
+                        <li>Recognize that creativity is the process of generating original ideas or artistic expressions through self-construction, non-approval seeking, and working within constraints.</li>
+                    </ul>
+                </li>
+            </ol>
+        </div>
+    </section>
+
+    <!-- TagIndex Section -->
+    <section id="tags">
+        <h2>Tags</h2>
+        <div class="tags-list">
+            <div class="tag">
+                <strong>creativity:</strong>
+                The ability to generate original and valuable ideas.
+            </div>
+            <div class="tag">
+                <strong>external constraints:</strong>
+                Factors outside the individual that limit creative expression.
+            </div>
+            <div class="tag">
+                <strong>internal motivation:</strong>
+                Personal drive and self-initiative that fuel creativity.
+            </div>
+            <div class="tag">
+                <strong>mass production:</strong>
+                The large-scale manufacturing of standardized products.
+            </div>
+            <div class="tag">
+                <strong>commercialization:</strong>
+                The process of managing or running a business in a way that aims for profit.
+            </div>
+            <div class="tag">
+                <strong>symbolism:</strong>
+                The use of symbols to represent ideas or qualities.
+            </div>
+            <div class="tag">
+                <strong>war trauma:</strong>
+                Emotional and psychological impact resulting from experiences in war.
+            </div>
+            <div class="tag">
+                <strong>imperfection:</strong>
+                The state of being flawed or incomplete.
+            </div>
+            <div class="tag">
+                <strong>learning:</strong>
+                The acquisition of knowledge or skills through study or experience.
+            </div>
+            <div class="tag">
+                <strong>proactivity:</strong>
+                Taking initiative and acting in advance to address future needs or changes.
+            </div>
+            <div class="tag">
+                <strong>action-oriented creativity:</strong>
+                Creativity that involves active participation and execution.
+            </div>
+            <div class="tag">
+                <strong>authenticity:</strong>
+                The quality of being genuine or real.
+            </div>
+            <div class="tag">
+                <strong>performance integrity:</strong>
+                Maintaining honesty and consistency in performance.
+            </div>
+            <div class="tag">
+                <strong>limitations:</strong>
+                Restrictions or boundaries that constrain actions or creativity.
+            </div>
+            <div class="tag">
+                <strong>innovation:</strong>
+                The introduction of new ideas, methods, or products.
+            </div>
+            <div class="tag">
+                <strong>resilience:</strong>
+                The capacity to recover quickly from difficulties.
+            </div>
+            <div class="tag">
+                <strong>therapeutic creativity:</strong>
+                Creative activities that provide healing or emotional relief.
+            </div>
+            <div class="tag">
+                <strong>mindfulness:</strong>
+                Maintaining a moment-by-moment awareness of thoughts and feelings.
+            </div>
+            <div class="tag">
+                <strong>independence:</strong>
+                Self-reliance and autonomy in actions and decisions.
+            </div>
+            <div class="tag">
+                <strong>cognitive enhancement:</strong>
+                Improving mental processes such as memory, attention, and creativity.
+            </div>
+            <div class="tag">
+                <strong>adaptive creativity:</strong>
+                Adjusting creative approaches in response to constraints.
+            </div>
+            <div class="tag">
+                <strong>existential expression:</strong>
+                Expressing fundamental human experiences and emotions.
+            </div>
+            <div class="tag">
+                <strong>embracing limitations:</strong>
+                Accepting and utilizing constraints to foster creativity.
+            </div>
+            <div class="tag">
+                <strong>proactive creation:</strong>
+                Initiating creative processes without waiting for external prompts.
+            </div>
+            <div class="tag">
+                <strong>community support:</strong>
+                Assistance and encouragement from a group of people.
+            </div>
+            <div class="tag">
+                <strong>performance as creativity:</strong>
+                Using performance as a medium for creative expression.
+            </div>
+            <div class="tag">
+                <strong>embracing accidents:</strong>
+                Accepting and utilizing unintended occurrences in the creative process.
+            </div>
+            <div class="tag">
+                <strong>collective utility:</strong>
+                Creating works that serve a group's needs or purposes.
+            </div>
+            <div class="tag">
+                <strong>personalization:</strong>
+                Adding personal touches to make creations unique.
+            </div>
+            <div class="tag">
+                <strong>accidental creation:</strong>
+                Creating something unintentionally or by chance.
+            </div>
+            <div class="tag">
+                <strong>serendipitous discovery:</strong>
+                Finding valuable or pleasant things that were not looked for.
+            </div>
+            <div class="tag">
+                <strong>creativity boundaries:</strong>
+                The limits that define what is considered creative.
+            </div>
+            <div class="tag">
+                <strong>biological innovation:</strong>
+                Innovations that arise from biological processes or necessities.
+            </div>
+            <div class="tag">
+                <strong>practice evolution:</strong>
+                The gradual development and improvement of practices over time.
+            </div>
+            <div class="tag">
+                <strong>emergent innovation:</strong>
+                Innovations that arise spontaneously from existing processes.
+            </div>
+            <div class="tag">
+                <strong>craftsmanship evolution:</strong>
+                The development and refinement of craft skills over time.
+            </div>
+            <div class="tag">
+                <strong>cultural identity:</strong>
+                The identity or feeling of belonging to a group based on culture.
+            </div>
+            <div class="tag">
+                <strong>social communication:</strong>
+                The exchange of information and meanings between individuals or groups.
+            </div>
+            <div class="tag">
+                <strong>tribal identity:</strong>
+                The sense of belonging to a specific tribe or cultural group.
+            </div>
+            <div class="tag">
+                <strong>status communication:</strong>
+                Conveying one's social status through actions or symbols.
+            </div>
+            <div class="tag">
+                <strong>secret communication:</strong>
+                Exchanging information in a concealed or coded manner.
+            </div>
+            <div class="tag">
+                <strong>heritage respect:</strong>
+                Honoring and valuing one's cultural heritage.
+            </div>
+            <div class="tag">
+                <strong>form and function:</strong>
+                Balancing aesthetic form with practical function.
+            </div>
+            <div class="tag">
+                <strong>handmade differentiation:</strong>
+                Distinguishing handmade items from mass-produced ones.
+            </div>
+            <div class="tag">
+                <strong>craftsmanship:</strong>
+                The skill in a particular craft.
+            </div>
+            <div class="tag">
+                <strong>technical mastery:</strong>
+                High proficiency in technical aspects of a craft or field.
+            </div>
+            <div class="tag">
+                <strong>tradition preservation:</strong>
+                Maintaining and honoring traditional practices and methods.
+            </div>
+            <div class="tag">
+                <strong>emotional expression:</strong>
+                Expressing emotions through creative means.
+            </div>
+            <div class="tag">
+                <strong>trade-off:</strong>
+                A balance achieved between two desirable but incompatible features.
+            </div>
+        </div>
+    </section>
+
+    <!-- HowThisStructureHelps Section -->
+    <section id="how-this-structure-helps">
+        <h2>How This Structure Helps</h2>
+        <div class="list-section">
+            <ul>
+                <li>Maintains the opposing/supporting force format while addressing deeper creative questions.</li>
+                <li>Highlights key tensions in creativity, such as commerce vs. self-expression.</li>
+                <li>Frames creativity as both an intentional act and a spontaneous process.</li>
+                <li>Illustrates the contrast between active participation and passive avoidance.</li>
+                <li>Challenges the idea that creativity is purely intellectual—physical expression and execution matter.</li>
+                <li>Demonstrates how forces and constraints interplay to shape creative outcomes.</li>
+                <li>Encourages deeper reflection on the fundamental aspects of creativity and its drivers.</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- KeyQuestions Section -->
+    <section id="key-questions">
+        <h2>Key Questions</h2>
+        <div class="list-section">
+            <ul>
+                <li>Is mass production limiting creativity?</li>
+                <li>Can habitual repetition still be creative?</li>
+                <li>Does market-driven art dilute originality?</li>
+                <li>Is Bob Ross' structured art truly creative?</li>
+                <li>Do constraints enhance or hinder creativity?</li>
+                <li>Is creativity an inherent human trait?</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- Reflection Section -->
+    <section id="reflection">
+        <h2>Reflection</h2>
+        <div class="list-section">
+            <p><strong>Summary:</strong> This comprehensive structure delves into the intricate dynamics that shape creativity across diverse contexts. By meticulously categorizing opposing and supporting forces, tagging key themes and individuals, and breaking down relationships into primitive features and heuristics, the framework uncovers the subtle interplay between constraints and creative expression. This nuanced approach reveals not only the overt influences on creativity but also the latent tensions, hidden connections, and provocative contradictions that drive innovative outcomes. For HCI students and creative designers, this framework serves as a lens to perceive the unseen patterns and underlying conflicts that influence creative processes, encouraging a more profound and reflective engagement with their creative endeavors.</p>
+
+            <h3>Application for HCI Students:</h3>
+            <ul>
+                <li>Identify and navigate the hidden tensions between external constraints and internal motivations in user-centered design, as evidenced by the conflicting forces in 'External vs. Internal Creativity' and 'Intentionality in Creativity'.</li>
+                <li>Explore how unseen patterns and latent tensions, such as those between 'Planned Perfection' and 'Learning Through Error', can inform the iterative design process and enhance user experience.</li>
+                <li>Leverage the hidden connections between cultural expression and functional constraints in case studies like 'Hair Braider (Binta)' to develop more culturally sensitive and innovative interface designs.</li>
+                <li>Understand the provocations and confusions within 'Creativity & Constraints' to foster environments that balance rule adherence with creative freedom, leading to more adaptable and resilient HCI solutions.</li>
+            </ul>
+
+            <h3>Application for Creative Designers:</h3>
+            <ul>
+                <li>Uncover and address the hidden tensions between market demands and authentic expression in 'William Gicker' and 'Riya (Stamps Department)' to create designs that are both commercially viable and artistically meaningful.</li>
+                <li>Utilize the primitive features and heuristics from each Force Set to identify and resolve unseen conflicts in the creative process, such as balancing 'Precision & Function' with 'Embracing Mistakes' in 'Bob Ross'.</li>
+                <li>Recognize and harness the latent possibilities within 'Ability & Constraint' to transform limitations into innovative design elements, fostering a culture of resilience and adaptability.</li>
+                <li>Explore the hidden connections and provocative contradictions in 'B-Boy Junior vs. B-Girl Raygun' to develop performances and creative works that authentically convey depth and integrity.</li>
+            </ul>
+
+            <h3>Grounding in Data:</h3>
+            <ul>
+                <li>The 'External vs. Internal Creativity' Force Set exposes the hidden struggle between 'External Control' and 'Self-Construction', revealing how mass production and commercialization inadvertently foster unique forms of creativity through resistance and personal expression.</li>
+                <li>In 'Intentionality in Creativity', the tension between 'Creativity as a Service' and 'Creativity as a Living Process' highlights the provocative question of whether creativity can thrive in transactional environments or if it inherently requires emergent, authentic engagement.</li>
+                <li>The 'Body & Error in Practice' Force Set uncovers the latent belief that imperfection and error are essential for mastery and innovation, challenging the superficial pursuit of perfection and revealing the transformative power of learning through mistakes.</li>
+                <li>Through 'Inaction vs. Enactment', the data illustrates the hidden consequences of passivity and the unspoken benefits of proactive creativity, emphasizing how taking initiative can unveil unseen opportunities for growth and innovation.</li>
+                <li>Case studies like 'B-Boy Junior vs. B-Girl Raygun' and 'Ehren Tool (Cups & War)' demonstrate the underlying tensions between maintaining integrity and succumbing to superficial creativity, showcasing how authentic performance and symbolic utility can navigate and resolve these conflicts.</li>
+                <li>The 'Ability & Constraint' Force Set reveals the hidden potential within limitations, showing how constraints can act as catalysts for innovation and identity shaping, turning perceived weaknesses into strengths.</li>
+                <li>Historical examples such as the 'Sumerians' emphasize the hidden narrative of accidental innovation evolving into intentional craftsmanship, underscoring the transformative journey from randomness to structured creativity.</li>
+                <li>Creative practitioners like 'William Gicker' and 'Bob Ross' exemplify the hidden dynamics of balancing market influence with personal expression, illustrating how strategic adaptation and embracing imperfections can lead to widely accessible and meaningful creative works.</li>
+            </ul>
+
+            <h3>Latent Insights:</h3>
+            <ul>
+                <li>The interplay between external constraints and internal motivations often leads to unexpected forms of creativity, where resistance against standardization fosters unique personal expressions.</li>
+                <li>Accidental and emergent creativity challenges the traditional notion that creativity must always be intentional, suggesting that spontaneous processes can yield equally valuable and innovative outcomes.</li>
+                <li>Embracing imperfections and errors not only facilitates learning and mastery but also uncovers hidden pathways to creative breakthroughs that rigid perfectionism might suppress.</li>
+                <li>Proactive engagement in creative processes reveals latent opportunities for innovation that passive approaches might overlook, highlighting the importance of initiative in fostering continuous creative evolution.</li>
+                <li>Authentic performance and symbolic utility serve as powerful tools for navigating and resolving inherent tensions between maintaining integrity and meeting external expectations, allowing for deeper and more meaningful creative expressions.</li>
+                <li>Constraints, often perceived as limitations, can be recontextualized as creative drives that shape identity and drive problem-solving, transforming challenges into opportunities for innovation.</li>
+                <li>The historical progression from accidental innovation to intentional craftsmanship illustrates the hidden narrative of how unplanned creativity can evolve into structured and meaningful artistic practices.</li>
+                <li>Balancing market demands with personal expression requires navigating hidden tensions and leveraging strategic adaptations to maintain creative integrity while achieving commercial viability.</li>
+            </ul>
+
+            <h3>Provocative Questions:</h3>
+            <ul>
+                <li>Can true originality emerge from environments heavily dominated by external constraints and standardization?</li>
+                <li>How does the acceptance of accidental creativity alter our understanding of the creative process?</li>
+                <li>In what ways do hidden tensions between perfectionism and imperfectionism drive or hinder innovation?</li>
+                <li>What are the unseen opportunities that proactive creative actions can uncover in stagnant environments?</li>
+                <li>How can creative practitioners effectively balance market influences with authentic personal expression without compromising integrity?</li>
+                <li>To what extent can constraints be transformed into creative advantages, and what factors determine their effectiveness in driving innovation?</li>
+                <li>How does the historical evolution of accidental innovations inform contemporary creative practices and methodologies?</li>
+                <li>What role do hidden connections and latent tensions play in shaping the authenticity and depth of creative works?</li>
+            </ul>
+
+            <h3>Unseen Patterns:</h3>
+            <ul>
+                <li>Resistance to external control often leads to the development of unique personal styles and methods, creating a diverse landscape of creative expressions even within standardized frameworks.</li>
+                <li>Accidental discoveries and emergent processes frequently intersect with intentional creative actions, suggesting a symbiotic relationship where spontaneity and planning coexist to enhance creativity.</li>
+                <li>The valorization of imperfections and errors reveals a recurring pattern where perceived flaws become integral to the creative identity and narrative of the work.</li>
+                <li>Proactive creativity consistently uncovers hidden layers of potential and innovation that passive approaches fail to reveal, indicating a pattern of continuous discovery through active engagement.</li>
+                <li>Symbolism and metaphor emerge as common tools for processing complex emotions and experiences, highlighting their importance in conveying deeper meanings within creative works.</li>
+                <li>Constraints serve as recurring catalysts for innovation across various contexts, demonstrating their universal applicability in driving creative problem-solving and stylistic development.</li>
+                <li>The transformation of accidental innovations into intentional craftsmanship showcases a pattern of evolution where randomness is harnessed and refined into structured creative practices.</li>
+                <li>Balancing market demands with authentic expression is a persistent theme, revealing the ongoing struggle to maintain creative integrity in the face of commercial pressures.</li>
+            </ul>
+
+            <h3>Confusions and Contradictions:</h3>
+            <ul>
+                <li>Is creativity diminished when it operates within strict commercial or procedural boundaries, or can it thrive by finding unique expressions within those limits?</li>
+                <li>Can accidental creativity be considered as valuable and authentic as intentional creative efforts, and how do we measure their respective impacts?</li>
+                <li>How do we reconcile the need for technical mastery and discipline with the equally important need for spontaneity and emotional expression in creative processes?</li>
+                <li>In environments where constraints are both limiting and driving creativity, how do creators navigate the fine line between restriction and inspiration?</li>
+                <li>Does the pursuit of authenticity in creative works inherently conflict with the need to cater to market demands and audience expectations?</li>
+                <li>How can creative practitioners balance the hidden tensions between maintaining personal integrity and achieving widespread accessibility in their works?</li>
+                <li>What mechanisms can be implemented to ensure that the embrace of imperfections and errors leads to growth rather than stagnation or failure?</li>
+            </ul>
+        </div>
+    </section>
+
+</body>
+</html>

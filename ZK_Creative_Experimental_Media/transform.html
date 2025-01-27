@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creative Transformer</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        :root {
+            --background-color: #1a1a1a;
+            --text-color: #ffffff;
+            --accent-color: #9b59b6;
+            --platform-bg: rgba(40, 40, 40, 0.95);
+            --success-color: #2ecc71;
+            --warning-color: #f1c40f;
+            --error-color: #e74c3c;
+        }
+
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: system-ui, -apple-system, sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: var(--platform-bg);
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .title {
+            margin: 0;
+            font-size: 1.8em;
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        button {
+            background: var(--accent-color);
+            color: var(--text-color);
+            border: none;
+            padding: 8px 20px;
+            border-radius: 8px;
+            font-size: 0.9em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            transform: translateY(-1px);
+            filter: brightness(1.1);
+        }
+
+        .workspace {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .sidebar {
+            background: var(--platform-bg);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .main-content {
+            background: var(--platform-bg);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .transformation-rules {
+            margin-top: 20px;
+        }
+
+        .rule {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .rule:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .rule.active {
+            border-left: 3px solid var(--accent-color);
+        }
+
+        .platform {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .platform-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .platform-title {
+            font-size: 1.2em;
+            font-weight: 600;
+        }
+
+        .platform-id {
+            font-family: 'SF Mono', monospace;
+            color: var(--accent-color);
+        }
+
+        .transformation-controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .mutation-strength {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .mutation-strength input {
+            flex: 1;
+        }
+
+        .history {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .history-item {
+            font-size: 0.9em;
+            padding: 8px;
+            border-radius: 4px;
+            margin-bottom: 5px;
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .visualization {
+            width: 100%;
+            height: 400px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .platform-content {
+            margin: 10px 0;
+        }
+
+        .evaluation-metrics {
+            margin-top: 15px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 4px;
+        }
+
+        .metric {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .metric-value {
+            width: 100px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .metric-fill {
+            height: 100%;
+            background: var(--accent-color);
+            transition: width 0.3s ease;
+        }
+
+        .evaluation-summary {
+            margin-top: 10px;
+            font-size: 0.9em;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .quality-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .quality-high { background: var(--success-color); }
+        .quality-medium { background: var(--warning-color); }
+        .quality-low { background: var(--error-color); }
+
+        .platform-field {
+            margin: 8px 0;
+            line-height: 1.4;
+        }
+
+        .platform-field strong {
+            color: var(--accent-color);
+            font-weight: 600;
+        }
+
+        .platform-field.quote {
+            font-style: italic;
+            border-left: 2px solid var(--accent-color);
+            padding-left: 10px;
+            margin: 12px 0;
+        }
+
+        .mutations {
+            margin-top: 15px;
+            padding-top: 10px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.9em;
+        }
+
+        .mutations strong {
+            color: var(--accent-color);
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1 class="title">Creative Transformer</h1>
+        <div class="controls">
+            <button id="resetBtn">Reset</button>
+            <button id="saveBtn">Save State</button>
+            <button id="exportBtn">Export</button>
+        </div>
+    </div>
+
+    <div class="workspace">
+        <div class="sidebar">
+            <h2>Transformation Rules</h2>
+            <div class="transformation-rules">
+                <div class="rule active" data-type="mutate">
+                    <h3>Genetic Mutation</h3>
+                    <p>Modify platform attributes using genetic algorithms</p>
+                </div>
+                <div class="rule" data-type="crossover">
+                    <h3>Cross-Platform Synthesis</h3>
+                    <p>Combine features from multiple platforms</p>
+                </div>
+                <div class="rule" data-type="evolve">
+                    <h3>Evolutionary Growth</h3>
+                    <p>Allow platforms to evolve new properties</p>
+                </div>
+            </div>
+
+            <div class="mutation-strength">
+                <label>Transformation Strength</label>
+                <input type="range" id="strengthSlider" min="0" max="100" value="50">
+                <span id="strengthValue">50%</span>
+            </div>
+
+            <div class="history">
+                <h3>Transformation History</h3>
+                <div id="historyList"></div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div id="platformContainer"></div>
+            <div class="visualization" id="transformationViz"></div>
+        </div>
+    </div>
+
+    <script>
+        // State management
+        let state = {
+            platforms: [],
+            history: [],
+            activeRule: 'mutate',
+            strength: 50,
+            evaluationCriteria: {
+                coherence: 0.7,    // How well the ideas fit together
+                novelty: 0.5,      // How different from existing concepts
+                value: 0.6,        // Potential usefulness or interest
+                elegance: 0.65     // Theoretical/aesthetic quality
+            }
+        };
+
+        // Evaluation thresholds
+        const QUALITY_THRESHOLDS = {
+            HIGH: 0.7,
+            MEDIUM: 0.5,
+            LOW: 0.3
+        };
+
+        // Load platform data
+        async function loadData() {
+            try {
+                const response = await fetch('creative-data.json');
+                const data = await response.json();
+                state.platforms = data.documents.flatMap(doc => 
+                    doc.geneticPlatforms.map(platform => ({
+                        ...platform,
+                        source: doc.id,
+                        mutations: [],
+                        generation: 0,
+                        evaluationScores: evaluatePlatform(platform)
+                    }))
+                );
+                renderPlatforms();
+            } catch (error) {
+                console.error('Error loading data:', error);
+            }
+        }
+
+        // Evaluation functions
+        function evaluatePlatform(platform) {
+            // Cache previous scores if they exist
+            const prevScores = platform.evaluationScores || null;
+            
+            const scores = {
+                coherence: evaluateCoherence(platform),
+                novelty: evaluateNovelty(platform),
+                value: evaluateValue(platform),
+                elegance: evaluateElegance(platform)
+            };
+            
+            // If we have previous scores, blend them with new scores based on generation
+            if (prevScores && platform.generation > 0) {
+                const blendFactor = 0.7; // How much we keep from previous evaluation
+                scores.coherence = (prevScores.coherence * blendFactor + scores.coherence * (1 - blendFactor));
+                scores.novelty = Math.min(1, prevScores.novelty + 0.1); // Novelty increases with each generation
+                scores.value = (prevScores.value * blendFactor + scores.value * (1 - blendFactor));
+                scores.elegance = (prevScores.elegance * blendFactor + scores.elegance * (1 - blendFactor));
+            }
+            
+            scores.overall = Object.values(scores).reduce((a, b) => a + b, 0) / 4;
+            return scores;
+        }
+
+        function evaluateCoherence(platform) {
+            // Check semantic consistency across fields
+            const allText = [
+                platform.keyConcept,
+                platform.example,
+                platform.argument,
+                platform.keyFeatures
+            ].filter(Boolean).join(' ').toLowerCase();
+
+            // Count repeated key terms to measure coherence
+            const words = allText.split(' ');
+            const wordFreq = {};
+            words.forEach(word => {
+                if (word.length > 3) { // Only count significant words
+                    wordFreq[word] = (wordFreq[word] || 0) + 1;
+                }
+            });
+
+            // Calculate coherence based on term repetition
+            const repeatedTerms = Object.values(wordFreq).filter(freq => freq > 1).length;
+            const coherenceScore = Math.min(repeatedTerms / 5, 1); // Normalize to 0-1
+            
+            return coherenceScore;
+        }
+
+        function evaluateNovelty(platform) {
+            // Compare against all other platforms
+            const otherPlatforms = state.platforms.filter(p => p.platformID !== platform.platformID);
+            if (otherPlatforms.length === 0) return 0.5;
+
+            const similarities = otherPlatforms.map(other => {
+                const similarity = calculateSimilarity(
+                    [platform.keyConcept, platform.example, platform.argument].join(' '),
+                    [other.keyConcept, other.example, other.argument].join(' ')
+                );
+                return similarity;
+            });
+
+            // Novelty is inverse of maximum similarity
+            const maxSimilarity = Math.max(...similarities);
+            return 1 - maxSimilarity;
+        }
+
+        function evaluateValue(platform) {
+            // Value keywords and their weights
+            const valueTerms = {
+                'improve': 0.5, 'advance': 0.5, 'enhance': 0.5,
+                'solve': 0.6, 'solution': 0.6, 'benefit': 0.6,
+                'innovative': 0.7, 'breakthrough': 0.7, 'novel': 0.7,
+                'transform': 0.8, 'revolutionary': 0.8, 'paradigm': 0.8,
+                'fundamental': 0.9, 'essential': 0.9, 'critical': 0.9
+            };
+
+            const allText = [
+                platform.keyConcept,
+                platform.example,
+                platform.argument,
+                platform.keyFeatures
+            ].filter(Boolean).join(' ').toLowerCase();
+
+            // Calculate weighted score based on value terms
+            let valueScore = 0;
+            let termsFound = 0;
+            
+            Object.entries(valueTerms).forEach(([term, weight]) => {
+                if (allText.includes(term)) {
+                    valueScore += weight;
+                    termsFound++;
+                }
+            });
+
+            return termsFound > 0 ? valueScore / termsFound : 0.5;
+        }
+
+        function evaluateElegance(platform) {
+            const eleganceFactors = [
+                // Structure
+                platform.keyConcept && platform.keyConcept.length > 20,
+                platform.keyConcept && platform.keyConcept.length < 200,
+                
+                // Completeness
+                Boolean(platform.example),
+                Boolean(platform.argument),
+                Boolean(platform.keyFeatures),
+                
+                // Quality indicators
+                platform.keyConcept && /^[A-Z]/.test(platform.keyConcept),
+                platform.keyConcept && !platform.keyConcept.includes('  '),
+                platform.keyConcept && platform.keyConcept.includes(' and '),
+                
+                // Complexity
+                platform.argument && platform.argument.split(' ').length > 10,
+                platform.keyFeatures && platform.keyFeatures.includes(',')
+            ];
+
+            return eleganceFactors.filter(Boolean).length / eleganceFactors.length;
+        }
+
+        function calculateSimilarity(text1, text2) {
+            if (!text1 || !text2) return 0;
+            
+            const words1 = new Set(text1.toLowerCase().split(/\W+/).filter(w => w.length > 3));
+            const words2 = new Set(text2.toLowerCase().split(/\W+/).filter(w => w.length > 3));
+            
+            const intersection = new Set([...words1].filter(x => words2.has(x)));
+            const union = new Set([...words1, ...words2]);
+            
+            return intersection.size / union.size;
+        }
+
+        // Render platforms with evaluation
+        function renderPlatforms() {
+            const container = document.getElementById('platformContainer');
+            container.innerHTML = state.platforms
+                .map(platform => {
+                    const scores = platform.evaluationScores;
+                    const qualityClass = scores.overall > QUALITY_THRESHOLDS.HIGH ? 'high' :
+                        scores.overall > QUALITY_THRESHOLDS.MEDIUM ? 'medium' : 'low';
+                    
+                    return `
+                        <div class="platform" data-id="${platform.platformID}">
+                            <div class="platform-header">
+                                <div class="platform-title">
+                                    <span class="quality-indicator quality-${qualityClass}"></span>
+                                    ${platform.title}
+                                </div>
+                                <div class="platform-id">Gen ${platform.generation} #${platform.platformID}</div>
+                            </div>
+                            <div class="platform-content">
+                                <div class="platform-field">
+                                    <strong>Key Concept:</strong> ${platform.keyConcept}
+                                </div>
+                                ${platform.example ? `
+                                    <div class="platform-field">
+                                        <strong>Example:</strong> ${platform.example}
+                                    </div>
+                                ` : ''}
+                                ${platform.argument ? `
+                                    <div class="platform-field">
+                                        <strong>Argument:</strong> ${platform.argument}
+                                    </div>
+                                ` : ''}
+                                ${platform.quote ? `
+                                    <div class="platform-field quote">
+                                        <strong>Quote:</strong> "${platform.quote}"
+                                    </div>
+                                ` : ''}
+                                ${platform.historicPrecedent ? `
+                                    <div class="platform-field">
+                                        <strong>Historic Precedent:</strong> ${platform.historicPrecedent}
+                                    </div>
+                                ` : ''}
+                                ${platform.critique ? `
+                                    <div class="platform-field">
+                                        <strong>Critique:</strong> ${platform.critique}
+                                    </div>
+                                ` : ''}
+                                ${platform.keyFeatures ? `
+                                    <div class="platform-field">
+                                        <strong>Key Features:</strong> ${platform.keyFeatures}
+                                    </div>
+                                ` : ''}
+                                ${platform.mutations.length ? `
+                                    <div class="mutations">
+                                        <strong>Transformations:</strong> ${platform.mutations.join(' → ')}
+                                    </div>
+                                ` : ''}
+                                <div class="evaluation-metrics">
+                                    <div class="metric">
+                                        <span>Coherence</span>
+                                        <div class="metric-value">
+                                            <div class="metric-fill" style="width: ${scores.coherence * 100}%"></div>
+                                        </div>
+                                        <span>${Math.round(scores.coherence * 100)}%</span>
+                                    </div>
+                                    <div class="metric">
+                                        <span>Novelty</span>
+                                        <div class="metric-value">
+                                            <div class="metric-fill" style="width: ${scores.novelty * 100}%"></div>
+                                        </div>
+                                        <span>${Math.round(scores.novelty * 100)}%</span>
+                                    </div>
+                                    <div class="metric">
+                                        <span>Value</span>
+                                        <div class="metric-value">
+                                            <div class="metric-fill" style="width: ${scores.value * 100}%"></div>
+                                        </div>
+                                        <span>${Math.round(scores.value * 100)}%</span>
+                                    </div>
+                                    <div class="metric">
+                                        <span>Elegance</span>
+                                        <div class="metric-value">
+                                            <div class="metric-fill" style="width: ${scores.elegance * 100}%"></div>
+                                        </div>
+                                        <span>${Math.round(scores.elegance * 100)}%</span>
+                                    </div>
+                                </div>
+                                <div class="evaluation-summary">
+                                    Overall Quality: ${Math.round(scores.overall * 100)}%
+                                </div>
+                            </div>
+                            <div class="transformation-controls">
+                                <button onclick="transformPlatform('${platform.platformID}')">Transform</button>
+                                <button onclick="revertPlatform('${platform.platformID}')">Revert</button>
+                            </div>
+                        </div>
+                    `;
+                })
+                .join('');
+        }
+
+        // Transform a platform
+        function transformPlatform(platformId) {
+            const platform = state.platforms.find(p => p.platformID === platformId);
+            if (!platform) return;
+
+            const strength = state.strength / 100;
+            let transformed;
+
+            switch (state.activeRule) {
+                case 'mutate':
+                    transformed = mutateProperties(platform, strength);
+                    break;
+                case 'crossover':
+                    const partner = selectRandomPlatform(platformId);
+                    transformed = crossoverPlatforms(platform, partner, strength);
+                    break;
+                case 'evolve':
+                    transformed = evolvePlatform(platform, strength);
+                    break;
+            }
+
+            // Evaluate the transformation
+            transformed.evaluationScores = evaluatePlatform(transformed);
+
+            // Only apply transformation if it meets quality threshold
+            if (transformed.evaluationScores.overall >= QUALITY_THRESHOLDS.MEDIUM) {
+                const index = state.platforms.findIndex(p => p.platformID === platformId);
+                state.platforms[index] = {
+                    ...transformed,
+                    generation: platform.generation + 1,
+                    mutations: [...platform.mutations, state.activeRule]
+                };
+
+                // Add to history
+                state.history.push({
+                    timestamp: new Date(),
+                    action: state.activeRule,
+                    platformId,
+                    strength: state.strength,
+                    quality: Math.round(transformed.evaluationScores.overall * 100)
+                });
+
+                renderPlatforms();
+                updateHistory();
+                visualizeTransformation();
+            } else {
+                alert('Transformation rejected: Quality score too low');
+            }
+        }
+
+        // Mutation strategies
+        function mutateProperties(platform, strength) {
+            const mutations = {
+                title: mutateText(platform.title, strength),
+                keyConcept: mutateText(platform.keyConcept, strength),
+                example: platform.example ? mutateText(platform.example, strength) : null,
+                argument: platform.argument ? mutateText(platform.argument, strength) : null,
+                keyFeatures: platform.keyFeatures ? mutateText(platform.keyFeatures, strength) : null,
+                historicPrecedent: platform.historicPrecedent ? mutateText(platform.historicPrecedent, strength) : null,
+                critique: platform.critique ? mutateText(platform.critique, strength) : null
+            };
+
+            return {
+                ...platform,
+                ...mutations,
+                platformID: platform.platformID + '_M' + (platform.generation + 1)
+            };
+        }
+
+        function crossoverPlatforms(platform1, platform2, strength) {
+            if (!platform2) return platform1;
+
+            const crossover = {
+                title: crossoverText(platform1.title, platform2.title, strength),
+                keyConcept: crossoverText(platform1.keyConcept, platform2.keyConcept, strength),
+                example: platform1.example && platform2.example ? 
+                    crossoverText(platform1.example, platform2.example, strength) : platform1.example,
+                argument: platform1.argument && platform2.argument ? 
+                    crossoverText(platform1.argument, platform2.argument, strength) : platform1.argument,
+                keyFeatures: platform1.keyFeatures && platform2.keyFeatures ? 
+                    crossoverText(platform1.keyFeatures, platform2.keyFeatures, strength) : platform1.keyFeatures,
+                historicPrecedent: platform1.historicPrecedent && platform2.historicPrecedent ? 
+                    crossoverText(platform1.historicPrecedent, platform2.historicPrecedent, strength) : platform1.historicPrecedent,
+                critique: platform1.critique && platform2.critique ? 
+                    crossoverText(platform1.critique, platform2.critique, strength) : platform1.critique
+            };
+
+            return {
+                ...platform1,
+                ...crossover,
+                platformID: platform1.platformID + 'x' + platform2.platformID
+            };
+        }
+
+        function evolvePlatform(platform, strength) {
+            // Add new properties based on existing ones
+            const evolved = {
+                title: evolveText(platform.title, strength, 'title'),
+                keyConcept: evolveText(platform.keyConcept, strength, 'concept'),
+                example: platform.example ? evolveText(platform.example, strength, 'example') : null,
+                argument: platform.argument ? evolveText(platform.argument, strength, 'argument') : null,
+                keyFeatures: platform.keyFeatures ? evolveText(platform.keyFeatures, strength, 'features') : null,
+                historicPrecedent: platform.historicPrecedent ? 
+                    evolveText(platform.historicPrecedent, strength, 'history') : null,
+                critique: platform.critique ? evolveText(platform.critique, strength, 'critique') : null
+            };
+
+            return {
+                ...platform,
+                ...evolved,
+                platformID: platform.platformID + '_E' + (platform.generation + 1)
+            };
+        }
+
+        // Helper functions
+        function mutateText(text, strength) {
+            if (!text) return text;
+            
+            const words = text.split(' ');
+            const mutatedWords = words.map(word => {
+                if (Math.random() < strength) {
+                    const synonyms = generateSynonyms(word);
+                    return synonyms.length > 0 ? 
+                        synonyms[Math.floor(Math.random() * synonyms.length)] : word;
+                }
+                return word;
+            });
+
+            // With high strength, potentially add new concepts
+            if (Math.random() < strength) {
+                const additions = [
+                    'through emergent properties',
+                    'via dynamic adaptation',
+                    'using recursive processing',
+                    'with meta-level integration',
+                    'through systemic transformation'
+                ];
+                const addition = additions[Math.floor(Math.random() * additions.length)];
+                mutatedWords.push(addition);
+            }
+
+            return mutatedWords.join(' ');
+        }
+
+        function crossoverText(text1, text2, strength) {
+            if (!text1 || !text2) return text1 || text2;
+
+            const words1 = text1.split(' ');
+            const words2 = text2.split(' ');
+            const result = [];
+
+            // The higher the strength, the more we take from text2
+            const crossoverPoint = Math.floor(words1.length * (1 - strength));
+            
+            for (let i = 0; i < words1.length; i++) {
+                if (i > crossoverPoint && words2[i]) {
+                    result.push(words2[i]);
+                } else {
+                    result.push(words1[i]);
+                }
+            }
+
+            // With high strength, add some words from text2's end
+            if (strength > 0.7 && words2.length > words1.length) {
+                const extraWords = words2.slice(words1.length);
+                result.push(...extraWords);
+            }
+
+            return result.join(' ');
+        }
+
+        function evolveText(text, strength, type) {
+            if (!text) return text;
+
+            // Base text remains
+            let evolved = text;
+
+            // Number of additions based on strength
+            const numAdditions = Math.floor(strength * 3);
+
+            for (let i = 0; i < numAdditions; i++) {
+                const additions = evolutions[type] || [];
+                if (additions.length) {
+                    const addition = additions[Math.floor(Math.random() * additions.length)];
+                    evolved += ' ' + addition;
+                }
+            }
+
+            return evolved;
+        }
+
+        function generateSynonyms(word) {
+            const synonymMap = {
+                'creativity': ['innovation', 'originality', 'inventiveness', 'imagination'],
+                'creative': ['innovative', 'original', 'inventive', 'imaginative'],
+                'system': ['framework', 'structure', 'mechanism', 'architecture'],
+                'process': ['method', 'approach', 'technique', 'procedure'],
+                'transform': ['modify', 'alter', 'change', 'evolve'],
+                'generate': ['produce', 'create', 'develop', 'synthesize'],
+                'evaluate': ['assess', 'analyze', 'examine', 'judge'],
+                'explore': ['investigate', 'probe', 'study', 'research'],
+                'combine': ['merge', 'integrate', 'unite', 'synthesize'],
+                'novel': ['new', 'unique', 'original', 'innovative'],
+                'value': ['worth', 'merit', 'significance', 'importance'],
+                'concept': ['idea', 'notion', 'principle', 'theory'],
+                'feature': ['aspect', 'characteristic', 'attribute', 'quality'],
+                'dynamic': ['active', 'fluid', 'changing', 'evolving'],
+                'structure': ['framework', 'organization', 'system', 'arrangement']
+            };
+            
+            return synonymMap[word.toLowerCase()] || [];
+        }
+
+        function selectRandomPlatform(excludeId) {
+            const available = state.platforms.filter(p => p.platformID !== excludeId);
+            return available[Math.floor(Math.random() * available.length)];
+        }
+
+        function updateHistory() {
+            const historyList = document.getElementById('historyList');
+            historyList.innerHTML = state.history
+                .slice(-5)
+                .reverse()
+                .map(entry => `
+                    <div class="history-item">
+                        ${entry.action} on Platform #${entry.platformId} 
+                        (${entry.strength}% strength)
+                    </div>
+                `)
+                .join('');
+        }
+
+        function visualizeTransformation() {
+            const viz = document.getElementById('transformationViz');
+            // Implement visualization using D3.js
+            // This could show the evolution tree, transformation patterns, etc.
+        }
+
+        // Event Listeners
+        document.querySelectorAll('.rule').forEach(rule => {
+            rule.addEventListener('click', () => {
+                document.querySelector('.rule.active').classList.remove('active');
+                rule.classList.add('active');
+                state.activeRule = rule.dataset.type;
+            });
+        });
+
+        document.getElementById('strengthSlider').addEventListener('input', (e) => {
+            state.strength = parseInt(e.target.value);
+            document.getElementById('strengthValue').textContent = `${state.strength}%`;
+        });
+
+        document.getElementById('resetBtn').addEventListener('click', loadData);
+
+        document.getElementById('saveBtn').addEventListener('click', () => {
+            localStorage.setItem('transformerState', JSON.stringify(state));
+        });
+
+        document.getElementById('exportBtn').addEventListener('click', () => {
+            const dataStr = JSON.stringify(state.platforms, null, 2);
+            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+            const exportName = 'transformed-platforms.json';
+            
+            const linkElement = document.createElement('a');
+            linkElement.setAttribute('href', dataUri);
+            linkElement.setAttribute('download', exportName);
+            linkElement.click();
+        });
+
+        // Initialize
+        loadData();
+    </script>
+</body>
+</html>

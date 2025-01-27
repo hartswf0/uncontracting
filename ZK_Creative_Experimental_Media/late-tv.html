@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creative DNA - Platform Connections</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        :root {
+            --background-color: #1a1a1a;
+            --text-color: #ffffff;
+            --accent-color: #4a9eff;
+            --boden-color: #ff6b6b;
+            --papert-color: #4ecdc4;
+            --platform-bg: rgba(40, 40, 40, 0.95);
+            --column-width: 35vw;
+            --visualization-width: 30vw;
+            --spacing: 30px;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: system-ui, -apple-system, sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        .platform-container {
+            display: flex;
+            justify-content: space-between;
+            height: 100vh;
+            width: 100vw;
+            gap: var(--spacing);
+        }
+
+        .platform-column {
+            width: var(--column-width);
+            height: 100vh;
+            overflow-y: auto;
+            padding: 20px;
+            box-sizing: border-box;
+            position: relative;
+        }
+
+        .visualization-container {
+            width: var(--visualization-width);
+            height: 100vh;
+            position: relative;
+            background: var(--background-color);
+            border-left: 1px solid rgba(255, 255, 255, 0.1);
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .connection-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Platform card styles */
+        .platform-card {
+            background: var(--platform-bg);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .platform-card.selected {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 2px var(--accent-color);
+            transform: translateY(-2px);
+        }
+
+        .platform-card.connected {
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .platform-card.highlight-source {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 15px rgba(74, 158, 255, 0.3);
+        }
+
+        .platform-card.highlight-target {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 15px rgba(74, 158, 255, 0.3);
+        }
+
+        .platform-card.boden {
+            border-left: 4px solid var(--boden-color);
+        }
+
+        .platform-card.papert {
+            border-left: 4px solid var(--papert-color);
+        }
+
+        .platform-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .platform-header {
+            margin-bottom: 15px;
+        }
+
+        .platform-id {
+            font-family: 'SF Mono', monospace;
+            font-size: 0.8em;
+            opacity: 0.7;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .platform-id .emoji {
+            font-size: 1.2em;
+        }
+
+        .platform-id .author {
+            opacity: 0.8;
+            font-weight: 500;
+        }
+
+        .platform-id .number {
+            font-weight: 500;
+        }
+
+        .platform-title {
+            font-size: 1.4em;
+            font-weight: 600;
+            margin: 0;
+            line-height: 1.3;
+        }
+
+        .platform-features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin: 10px 0;
+            opacity: 0.7;
+        }
+
+        .feature-chip {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.75em;
+        }
+
+        .platform-quote {
+            font-style: italic;
+            color: var(--accent-color);
+            margin: 15px 0;
+            font-size: 1.1em;
+            line-height: 1.4;
+        }
+
+        .platform-argument {
+            margin: 15px 0;
+            font-size: 1em;
+        }
+
+        .platform-critique {
+            color: var(--boden-color);
+            font-size: 0.9em;
+            margin: 10px 0;
+        }
+
+        .platform-concept {
+            font-size: 0.95em;
+            opacity: 0.9;
+            margin: 15px 0;
+        }
+
+        .context-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            font-size: 0.9em;
+            opacity: 0.8;
+            margin-top: 15px;
+        }
+
+        .connection-line {
+            transition: all 0.3s ease;
+            opacity: 0.6;
+        }
+
+        .connection-line:hover {
+            opacity: 1;
+            stroke-width: 3;
+        }
+
+        .connection-label {
+            transition: all 0.3s ease;
+            font-size: 0.8em;
+            pointer-events: none;
+        }
+
+        .toolbar {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            padding: 10px 20px;
+            border-radius: 8px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .connection-types {
+            display: flex;
+            gap: 8px;
+        }
+
+        .connection-type {
+            padding: 6px 12px;
+            border-radius: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: transparent;
+            color: var(--text-color);
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.2s ease;
+            opacity: 0.6;
+        }
+
+        .connection-type:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .connection-type.active {
+            opacity: 1;
+            border-color: currentColor;
+        }
+
+        .toolbar-controls {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            border-left: 1px solid rgba(255, 255, 255, 0.1);
+            padding-left: 8px;
+        }
+
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            opacity: 0.8;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 40px;
+            height: 20px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(255, 255, 255, 0.2);
+            transition: .4s;
+            border-radius: 20px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 2px;
+            bottom: 2px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .toggle-slider {
+            background-color: var(--accent-color);
+        }
+
+        input:checked + .toggle-slider:before {
+            transform: translateX(20px);
+        }
+
+        button {
+            background: var(--accent-color);
+            color: var(--text-color);
+            border: none;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        button.clear {
+            background: var(--boden-color);
+        }
+
+        .section-group {
+            margin: 20px 0;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+        }
+
+        .section-group h3 {
+            margin: 0 0 15px 0;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            opacity: 0.7;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 10px;
+        }
+
+        /* Scrollbar styling */
+        .platform-column::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .platform-column::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .platform-column::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+        }
+
+        .platform-column::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="platform-container">
+        <div class="platform-column" id="boden-platforms"></div>
+        <div class="visualization-container">
+            <svg class="connection-layer"></svg>
+        </div>
+        <div class="platform-column" id="papert-platforms"></div>
+    </div>
+
+    <div class="toolbar">
+        <div class="connection-types">
+            <button class="connection-type" data-type="influences" disabled>Influences</button>
+            <button class="connection-type" data-type="contradicts" disabled>Contradicts</button>
+            <button class="connection-type" data-type="supports" disabled>Supports</button>
+            <button class="connection-type" data-type="extends" disabled>Extends</button>
+        </div>
+        <div class="toolbar-controls">
+            <div class="toggle-container">
+                <span>Always Show</span>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="always-visible">
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+            <button class="clear">Clear All</button>
+        </div>
+    </div>
+
+    <script>
+        // Load and process data
+        async function loadData() {
+            try {
+                const response = await fetch('creative-data.json');
+                const data = await response.json();
+                return {
+                    boden: data.documents[0].geneticPlatforms,
+                    papert: data.documents[1].geneticPlatforms
+                };
+            } catch (error) {
+                console.error('Error loading data:', error);
+                return { boden: [], papert: [] };
+            }
+        }
+
+        // Initialize the visualization
+        async function init() {
+            const data = await loadData();
+            
+            // Initialize state
+            let state = {
+                connections: [],
+                selectedPlatform: null,
+                connectionType: null,
+                alwaysVisible: false
+            };
+
+            // Connection types configuration
+            const types = {
+                influences: { color: '#4a9eff' },  // Blue
+                contradicts: { color: '#ff6b6b' }, // Red
+                supports: { color: '#4ecdc4' },    // Mint green
+                extends: { color: '#9b59b6' }      // Purple
+            };
+
+            // Initialize D3
+            const svg = d3.select('.connection-layer')
+                .attr('width', '100%')
+                .attr('height', '100%')
+                .style('position', 'absolute')
+                .style('top', '0')
+                .style('left', '0')
+                .style('pointer-events', 'none');
+
+            // Create arrow markers
+            const defs = svg.append('defs');
+            
+            Object.entries(types).forEach(([type, props]) => {
+                defs.append('marker')
+                    .attr('id', `arrow-${type}`)
+                    .attr('viewBox', '0 -5 10 10')
+                    .attr('refX', 8)
+                    .attr('refY', 0)
+                    .attr('markerWidth', 6)
+                    .attr('markerHeight', 6)
+                    .attr('orient', 'auto')
+                    .append('path')
+                    .attr('fill', props.color)
+                    .attr('d', 'M0,-5L10,0L0,5');
+            });
+
+            function updateSVGSize() {
+                const container = document.querySelector('.visualization-container');
+                const rect = container.getBoundingClientRect();
+                svg.attr('width', rect.width)
+                   .attr('height', rect.height);
+            }
+
+            function renderConnections() {
+                requestAnimationFrame(() => {
+                    // Update SVG size first
+                    updateSVGSize();
+                    
+                    // Clear existing connections
+                    svg.selectAll('.connection-group').remove();
+
+                    // Reset connection highlights
+                    document.querySelectorAll('.platform-card').forEach(card => {
+                        card.classList.remove('connected', 'highlight-source', 'highlight-target');
+                    });
+
+                    // Get the scroll positions
+                    const leftScroll = document.getElementById('boden-platforms').scrollTop;
+                    const rightScroll = document.getElementById('papert-platforms').scrollTop;
+
+                    state.connections.forEach(conn => {
+                        const sourceEl = document.getElementById(conn.source);
+                        const targetEl = document.getElementById(conn.target);
+
+                        if (!sourceEl || !targetEl) return;
+
+                        const sourceRect = sourceEl.getBoundingClientRect();
+                        const targetRect = targetEl.getBoundingClientRect();
+                        const containerRect = document.querySelector('.visualization-container').getBoundingClientRect();
+
+                        // Calculate positions accounting for scroll
+                        const sourceY = sourceRect.top + (sourceRect.height / 2) + (sourceEl.closest('#boden-platforms') ? leftScroll : rightScroll);
+                        const targetY = targetRect.top + (targetRect.height / 2) + (targetEl.closest('#boden-platforms') ? leftScroll : rightScroll);
+                        
+                        // Skip visibility check if always visible is enabled
+                        if (!state.alwaysVisible) {
+                            const containerHeight = containerRect.height;
+                            const scrolledSourceY = sourceY - (sourceEl.closest('#boden-platforms') ? leftScroll : rightScroll);
+                            const scrolledTargetY = targetY - (targetEl.closest('#boden-platforms') ? leftScroll : rightScroll);
+                            
+                            const buffer = 100;
+                            if (scrolledSourceY < -buffer || scrolledSourceY > containerHeight + buffer || 
+                                scrolledTargetY < -buffer || scrolledTargetY > containerHeight + buffer) {
+                                return;
+                            }
+                        }
+
+                        const sourceX = sourceRect.right - containerRect.left;
+                        const targetX = targetRect.left - containerRect.left;
+
+                        // Create a group for this connection
+                        const group = svg.append('g')
+                            .attr('class', 'connection-group')
+                            .attr('data-source', conn.source)
+                            .attr('data-target', conn.target)
+                            .attr('data-type', conn.type);
+
+                        // Calculate control points for smoother curves
+                        const dx = targetX - sourceX;
+                        const dy = targetY - sourceY;
+                        const controlX = dx * 0.5;
+
+                        // Create curved path with transition
+                        const path = group.append('path')
+                            .attr('class', `connection-line ${state.selectedPlatform && 
+                                (conn.source === state.selectedPlatform || conn.target === state.selectedPlatform) ? 
+                                'highlight' : ''}`)
+                            .attr('stroke', types[conn.type].color)
+                            .attr('stroke-width', 2)
+                            .attr('fill', 'none')
+                            .attr('marker-end', `url(#arrow-${conn.type})`)
+                            .attr('d', `
+                                M ${sourceX},${sourceY}
+                                C ${sourceX + controlX},${sourceY}
+                                  ${targetX - controlX},${targetY}
+                                  ${targetX},${targetY}
+                            `);
+
+                        // Add interaction
+                        path.on('mouseover', function() {
+                            sourceEl.classList.add('highlight-source');
+                            targetEl.classList.add('highlight-target');
+                            d3.select(this).style('opacity', 1).style('stroke-width', 3);
+                        }).on('mouseout', function() {
+                            if (!state.selectedPlatform) {
+                                sourceEl.classList.remove('highlight-source');
+                                targetEl.classList.remove('highlight-target');
+                            }
+                            d3.select(this).style('opacity', null).style('stroke-width', null);
+                        });
+
+                        // Add label with background
+                        const pathNode = path.node();
+                        const pathLength = pathNode.getTotalLength();
+                        const midPoint = pathNode.getPointAtLength(pathLength / 2);
+
+                        group.append('rect')
+                            .attr('class', 'label-background')
+                            .attr('x', midPoint.x - 30)
+                            .attr('y', midPoint.y - 20)
+                            .attr('width', 60)
+                            .attr('height', 20)
+                            .attr('fill', 'var(--background-color)')
+                            .attr('rx', 4);
+
+                        group.append('text')
+                            .attr('class', 'connection-label')
+                            .attr('x', midPoint.x)
+                            .attr('y', midPoint.y - 8)
+                            .attr('text-anchor', 'middle')
+                            .attr('fill', types[conn.type].color)
+                            .text(conn.type);
+                    });
+                });
+            }
+
+            // Render platforms
+            function renderPlatforms(platforms, containerId) {
+                const container = d3.select(`#${containerId}`);
+                
+                const cards = container.selectAll('.platform-card')
+                    .data(platforms)
+                    .join('div')
+                    .attr('class', d => `platform-card ${containerId === 'boden-platforms' ? 'boden' : 'papert'}`)
+                    .attr('id', d => `${containerId}-${d.platformID}`)
+                    .on('click', function(event, d) {
+                        event.preventDefault();
+                        handlePlatformClick(`${containerId}-${d.platformID}`);
+                    });
+
+                cards.html(d => `
+                    <div class="platform-header">
+                        <div class="platform-id">
+                            <span class="emoji">${containerId === 'boden-platforms' ? '🤖' : '🏗️'}</span>
+                            <span class="author">${containerId === 'boden-platforms' ? 'Boden' : 'Papert'}</span>
+                            <span class="number">${String(d.platformID).padStart(2, '0')}</span>
+                        </div>
+                        <h2 class="platform-title">${d.title}</h2>
+                    </div>
+                    
+                    ${d.keyFeatures ? `
+                        <div class="platform-features">
+                            ${d.keyFeatures.split(',')
+                                .map(feature => `<span class="feature-chip">${feature.trim()}</span>`)
+                                .join('')}
+                        </div>
+                    ` : ''}
+
+                    ${d.quote ? `
+                        <div class="platform-quote">${d.quote}</div>
+                    ` : ''}
+                    
+                    <div class="platform-argument">${d.argument}</div>
+                    
+                    ${d.critique ? `
+                        <div class="platform-critique">${d.critique}</div>
+                    ` : ''}
+                    
+                    <div class="platform-concept">${d.keyConcept}</div>
+                    
+                    <div class="context-row">
+                        ${d.example ? `
+                            <div class="platform-example">${d.example}</div>
+                        ` : ''}
+                        
+                        ${d.historicPrecedent ? `
+                            <div class="platform-historic">${d.historicPrecedent}</div>
+                        ` : ''}
+                    </div>
+                `);
+            }
+
+            // Handle platform card clicks
+            function handlePlatformClick(platformId) {
+                const card = document.getElementById(platformId);
+                if (!card) return;
+
+                if (!state.selectedPlatform) {
+                    // First click - select source card
+                    state.selectedPlatform = platformId;
+                    card.classList.add('selected');
+                    
+                    // Enable morphism buttons
+                    document.querySelectorAll('.connection-type').forEach(button => {
+                        button.disabled = false;
+                    });
+                } else if (state.selectedPlatform === platformId) {
+                    // Clicked same card - deselect
+                    state.selectedPlatform = null;
+                    card.classList.remove('selected');
+                    state.connectionType = null;
+                    
+                    // Disable and deactivate morphism buttons
+                    document.querySelectorAll('.connection-type').forEach(button => {
+                        button.disabled = true;
+                        button.classList.remove('active');
+                    });
+                } else if (!state.connectionType) {
+                    // No morphism selected - show error
+                    alert('Please select a connection type first');
+                } else {
+                    // Create connection
+                    const newConnection = {
+                        source: state.selectedPlatform,
+                        target: platformId,
+                        type: state.connectionType
+                    };
+
+                    // Check if connection already exists
+                    const exists = state.connections.some(conn => 
+                        (conn.source === newConnection.source && conn.target === newConnection.target) ||
+                        (conn.source === newConnection.target && conn.target === newConnection.source)
+                    );
+
+                    if (!exists) {
+                        state.connections.push(newConnection);
+                        localStorage.setItem('lnv-connections', JSON.stringify(state.connections));
+                    }
+
+                    // Reset selection
+                    document.getElementById(state.selectedPlatform).classList.remove('selected');
+                    state.selectedPlatform = null;
+                    state.connectionType = null;
+                    
+                    // Disable and deactivate morphism buttons
+                    document.querySelectorAll('.connection-type').forEach(button => {
+                        button.disabled = true;
+                        button.classList.remove('active');
+                    });
+                    
+                    renderConnections();
+                }
+            }
+
+            // Handle connection type selection
+            document.querySelectorAll('.connection-type').forEach(button => {
+                button.addEventListener('click', () => {
+                    const newType = button.dataset.type;
+                    
+                    // Toggle off if already selected
+                    if (state.connectionType === newType) {
+                        state.connectionType = null;
+                        button.classList.remove('active');
+                        // Clear selection if any
+                        if (state.selectedPlatform) {
+                            document.getElementById(state.selectedPlatform).classList.remove('selected');
+                            state.selectedPlatform = null;
+                        }
+                    } else {
+                        state.connectionType = newType;
+                        document.querySelectorAll('.connection-type').forEach(b => b.classList.remove('active'));
+                        button.classList.add('active');
+                    }
+                });
+            });
+
+            // Handle always visible toggle
+            document.getElementById('always-visible').addEventListener('change', function(e) {
+                state.alwaysVisible = e.target.checked;
+                localStorage.setItem('lnv-always-visible', state.alwaysVisible);
+                renderConnections();
+            });
+
+            // Load always visible preference
+            try {
+                state.alwaysVisible = localStorage.getItem('lnv-always-visible') === 'true';
+                document.getElementById('always-visible').checked = state.alwaysVisible;
+            } catch (e) {
+                console.error('Error loading always visible preference:', e);
+            }
+
+            // Handle clear button
+            document.querySelector('.clear').addEventListener('click', () => {
+                if (confirm('Are you sure you want to clear all connections?')) {
+                    state.connections = [];
+                    state.selectedPlatform = null;
+                    state.connectionType = null;
+                    document.querySelectorAll('.platform-card').forEach(card => card.classList.remove('selected'));
+                    document.querySelectorAll('.connection-type').forEach(button => button.classList.remove('active'));
+                    localStorage.removeItem('lnv-connections');
+                    renderConnections();
+                }
+            });
+
+            // Load saved connections
+            try {
+                const savedConnections = localStorage.getItem('lnv-connections');
+                if (savedConnections) {
+                    state.connections = JSON.parse(savedConnections);
+                }
+            } catch (e) {
+                console.error('Error loading saved connections:', e);
+            }
+
+            // Update connections on scroll
+            const throttledRender = throttle(renderConnections, 16); // ~60fps
+            document.getElementById('boden-platforms').addEventListener('scroll', throttledRender);
+            document.getElementById('papert-platforms').addEventListener('scroll', throttledRender);
+
+            // Update connections on window resize
+            window.addEventListener('resize', renderConnections);
+
+            // Initialize platforms
+            renderPlatforms(data.boden, 'boden-platforms');
+            renderPlatforms(data.papert, 'papert-platforms');
+
+            // Initial render of connections
+            renderConnections();
+        }
+
+        // Start the application
+        init();
+
+        // Add scroll throttling for smoother updates
+        function throttle(func, limit) {
+            let inThrottle;
+            return function() {
+                const args = arguments;
+                const context = this;
+                if (!inThrottle) {
+                    func.apply(context, args);
+                    inThrottle = true;
+                    setTimeout(() => inThrottle = false, limit);
+                }
+            }
+        }
+    </script>
+</body>
+</html>

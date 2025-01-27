@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Creative DNA</title>
+  <style>
+    :root {
+      /* Colors */
+      --background-color: #1a1a1a;
+      --text-color: #ffffff;
+      --accent-color: #4a9eff;
+      --boden-color: #ff6b6b;
+      --papert-color: #4ecdc4;
+      --platform-bg: rgba(40, 40, 40, 0.95);
+      
+      /* Dimensions */
+      --header-height: 60px;
+      --column-width: 50vw;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, sans-serif;
+      background-color: var(--background-color);
+      color: var(--text-color);
+      min-height: 100vh;
+      overflow: hidden;
+    }
+
+    .container {
+      display: flex;
+      height: 100vh;
+      width: 100vw;
+    }
+
+    .column {
+      width: var(--column-width);
+      height: 100vh;
+      overflow-y: auto;
+      padding: 20px;
+      box-sizing: border-box;
+      position: relative;
+    }
+
+    .column-header {
+      position: sticky;
+      top: 0;
+      background: var(--background-color);
+      padding: 10px 0;
+      margin-bottom: 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      z-index: 10;
+    }
+
+    .column.boden {
+      border-right: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    /* Platform card styles */
+    .platform {
+      background: var(--platform-bg);
+      border-radius: 12px;
+      padding: 30px;
+      margin-bottom: 30px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: all 0.3s ease;
+    }
+
+    .platform.boden {
+      border-left: 4px solid var(--boden-color);
+    }
+
+    .platform.papert {
+      border-left: 4px solid var(--papert-color);
+    }
+
+    .platform:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+    }
+
+    .platform-header {
+      margin-bottom: 25px;
+    }
+
+    .platform-id {
+      font-family: 'SF Mono', monospace;
+      font-size: 0.8em;
+      opacity: 0.6;
+      margin-bottom: 5px;
+    }
+
+    .platform-title {
+      font-size: 1.4em;
+      font-weight: 600;
+      margin: 0;
+      line-height: 1.3;
+    }
+
+    /* Quote section - Primary focus */
+    .platform-quote {
+      font-size: 1.2em;
+      line-height: 1.6;
+      font-style: italic;
+      padding: 20px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      margin-bottom: 20px;
+      color: var(--accent-color);
+    }
+
+    /* Argument section - Secondary focus */
+    .platform-argument {
+      font-size: 1.1em;
+      line-height: 1.5;
+      margin: 20px 0;
+      padding: 15px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
+    }
+
+    /* Concept section - Tertiary focus */
+    .platform-concept {
+      font-size: 1em;
+      line-height: 1.5;
+      margin: 20px 0;
+      padding-bottom: 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    /* Critique section */
+    .platform-critique {
+      background: rgba(255, 0, 0, 0.1);
+      padding: 15px;
+      margin: 20px 0;
+      border-radius: 8px;
+      font-size: 0.95em;
+      border-left: 3px solid rgba(255, 0, 0, 0.3);
+    }
+
+    /* Example and Precedent container */
+    .platform-context {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin: 20px 0;
+      padding: 20px 0;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .context-item {
+      font-size: 0.9em;
+      line-height: 1.5;
+    }
+
+    .context-item-title {
+      text-transform: uppercase;
+      font-size: 0.7em;
+      letter-spacing: 0.05em;
+      opacity: 0.6;
+      margin-bottom: 8px;
+    }
+
+    /* Features as chips */
+    .platform-features {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .feature-chip {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.8em;
+      white-space: nowrap;
+    }
+
+    .feature-chip:hover {
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    /* Toggle button */
+    .expand-button {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      color: var(--accent-color);
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 0.8em;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .expand-button:hover {
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    /* Scrollbar styling */
+    .column::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .column::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .column::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
+    }
+
+    .column::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    /* Connection system styles */
+    .connection-tools {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--platform-bg);
+      padding: 10px;
+      border-radius: 30px;
+      display: flex;
+      gap: 10px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      z-index: 1000;
+    }
+
+    .tool-button {
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      color: var(--text-color);
+      padding: 8px 16px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 0.9em;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .tool-button:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .tool-button.active {
+      background: var(--accent-color);
+      color: #000;
+    }
+
+    .tool-button svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    /* Connection visualization */
+    .connection-layer {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 900;
+    }
+
+    .platform.connectable {
+      cursor: crosshair;
+    }
+
+    .platform.selected-source {
+      box-shadow: 0 0 0 2px var(--accent-color);
+    }
+
+    .connection-line {
+      stroke-width: 2;
+      fill: none;
+      opacity: 0.7;
+      transition: all 0.3s ease;
+    }
+
+    .connection-line:hover {
+      opacity: 1;
+      stroke-width: 3;
+      filter: drop-shadow(0 0 3px currentColor);
+    }
+
+    .connection-label {
+      font-size: 0.75em;
+      font-weight: 500;
+      text-anchor: middle;
+      pointer-events: none;
+      text-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Connection type styles */
+    .connection-line[data-type="influences"] {
+      stroke: var(--accent-color);
+      stroke-dasharray: none;
+    }
+
+    .connection-line[data-type="contradicts"] {
+      stroke: var(--boden-color);
+      stroke-dasharray: 5,5;
+    }
+
+    .connection-line[data-type="supports"] {
+      stroke: var(--papert-color);
+      stroke-dasharray: none;
+    }
+
+    .connection-line[data-type="extends"] {
+      stroke: #9b59b6;
+      stroke-dasharray: 10,3;
+    }
+
+    .connection-label[data-type="influences"] {
+      fill: var(--accent-color);
+    }
+
+    .connection-label[data-type="contradicts"] {
+      fill: var(--boden-color);
+    }
+
+    .connection-label[data-type="supports"] {
+      fill: var(--papert-color);
+    }
+
+    .connection-label[data-type="extends"] {
+      fill: #9b59b6;
+    }
+
+    /* Connection type menu enhancements */
+    .connection-type-menu {
+      background: var(--platform-bg);
+      padding: 8px;
+      border-radius: 8px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .connection-type-option {
+      padding: 8px 16px;
+      margin: 4px 0;
+      cursor: pointer;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+    }
+
+    .connection-type-option::before {
+      content: '';
+      width: 12px;
+      height: 2px;
+      border-radius: 1px;
+    }
+
+    .connection-type-option[data-type="influences"]::before {
+      background: var(--accent-color);
+    }
+
+    .connection-type-option[data-type="contradicts"]::before {
+      background: var(--boden-color);
+    }
+
+    .connection-type-option[data-type="supports"]::before {
+      background: var(--papert-color);
+    }
+
+    .connection-type-option[data-type="extends"]::before {
+      background: #9b59b6;
+    }
+
+    .connection-type-option:hover {
+      background: rgba(255, 255, 255, 0.1);
+      transform: translateX(4px);
+    }
+  </style>
+</head>
+<body>
+  <div id="loading" class="loading">Loading...</div>
+  <div id="error" class="error hidden"></div>
+  
+  <div class="container">
+    <div id="boden-column" class="column boden">
+      <div class="column-header">
+        <h2>Boden: Creativity and AI</h2>
+      </div>
+      <!-- Boden platforms will be added here -->
+    </div>
+    <div id="papert-column" class="column papert">
+      <div class="column-header">
+        <h2>Papert: Situating Constructionism</h2>
+      </div>
+      <!-- Papert platforms will be added here -->
+    </div>
+  </div>
+
+  <svg class="connection-layer" id="connectionLayer">
+    <defs>
+      <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+        <polygon points="0 0, 10 3.5, 0 7" fill="currentColor"/>
+      </marker>
+    </defs>
+    <g id="connections"></g>
+  </svg>
+
+  <div class="connection-tools" id="connectionTools">
+    <button class="tool-button" id="connectButton">
+      <svg viewBox="0 0 24 24">
+        <path fill="currentColor" d="M8,3L4,7H7V13H9V7H12L8,3M16,21L20,17H17V11H15V17H12L16,21Z"/>
+      </svg>
+      Connect
+    </button>
+    <button class="tool-button" id="eraseButton">
+      <svg viewBox="0 0 24 24">
+        <path fill="currentColor" d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z"/>
+      </svg>
+      Delete
+    </button>
+    <button class="tool-button" id="clearButton">
+      <svg viewBox="0 0 24 24">
+        <path fill="currentColor" d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z"/>
+      </svg>
+      Clear All
+    </button>
+  </div>
+
+  <div class="connection-type-menu" id="connectionTypeMenu">
+    <div class="connection-type-option" data-type="influences">Influences</div>
+    <div class="connection-type-option" data-type="contradicts">Contradicts</div>
+    <div class="connection-type-option" data-type="supports">Supports</div>
+    <div class="connection-type-option" data-type="extends">Extends</div>
+  </div>
+
+  <script>
+    // Debug logging utility
+    const DEBUG = true;
+    const log = {
+      info: (msg, ...args) => DEBUG && console.log(`[INFO] ${msg}`, ...args),
+      error: (msg, ...args) => DEBUG && console.error(`[ERROR] ${msg}`, ...args),
+      warn: (msg, ...args) => DEBUG && console.warn(`[WARN] ${msg}`, ...args),
+      debug: (msg, ...args) => DEBUG && console.debug(`[DEBUG] ${msg}`, ...args)
+    };
+
+    class CreativeDNA {
+      constructor() {
+        log.info('Initializing CreativeDNA');
+        this.data = null;
+        this.loadingElement = document.getElementById('loading');
+        this.errorElement = document.getElementById('error');
+        this.connections = new Map();
+        this.connectionMode = false;
+        this.selectedSource = null;
+        this.init();
+      }
+
+      showError(message) {
+        log.error(message);
+        this.loadingElement.classList.add('hidden');
+        this.errorElement.textContent = message;
+        this.errorElement.classList.remove('hidden');
+      }
+
+      async init() {
+        try {
+          log.info('Starting initialization');
+          await this.loadData();
+          this.setupPlatforms();
+          this.setupEventListeners();
+          this.loadingElement.classList.add('hidden');
+          log.info('Initialization complete');
+        } catch (error) {
+          log.error('Failed to initialize:', error);
+          this.showError(`Error: ${error.message}. Check console for details.`);
+        }
+      }
+
+      async loadData() {
+        log.info('Loading data from creative-data.json');
+        try {
+          const response = await fetch('creative-data.json');
+          if (!response.ok) {
+            throw new Error(`Failed to load data: ${response.status} ${response.statusText}`);
+          }
+          
+          const text = await response.text();
+          try {
+            this.data = JSON.parse(text);
+            log.info('Data loaded successfully', {
+              documents: this.data.documents.length,
+              platforms: this.data.documents.reduce((sum, doc) => sum + doc.geneticPlatforms.length, 0)
+            });
+          } catch (e) {
+            log.error('JSON Parse Error. Response text:', text.substring(0, 200) + '...');
+            throw new Error('Invalid JSON in response');
+          }
+        } catch (error) {
+          log.error('Error loading data:', error);
+          throw new Error(`Failed to load data: ${error.message}`);
+        }
+      }
+
+      setupPlatforms() {
+        log.info('Setting up platforms');
+        const bodenColumn = document.getElementById('boden-column');
+        const papertColumn = document.getElementById('papert-column');
+        
+        if (!bodenColumn || !papertColumn) {
+          throw new Error('Column containers not found');
+        }
+
+        this.data.documents.forEach(doc => {
+          const container = doc.id === 'boden1998' ? bodenColumn : papertColumn;
+          
+          doc.geneticPlatforms.forEach(platform => {
+            try {
+              const el = this.createPlatformElement(platform, doc);
+              container.appendChild(el);
+            } catch (error) {
+              log.error(`Error creating platform ${platform.platformID}:`, error);
+            }
+          });
+        });
+      }
+
+      createPlatformElement(platform, doc) {
+        log.debug(`Creating platform element: ${doc.id}-${platform.platformID}`);
+        const el = document.createElement('div');
+        el.className = `platform ${doc.id === 'boden1998' ? 'boden' : 'papert'}`;
+        el.dataset.id = `${doc.id}-${platform.platformID}`;
+        
+        try {
+          el.innerHTML = `
+            <div class="platform-header">
+              <div class="platform-id">${platform.platformID}</div>
+              <h2 class="platform-title">${platform.title}</h2>
+            </div>
+            
+            <div class="platform-quote">
+              "${platform.quote || 'No quote available'}"
+            </div>
+            
+            <div class="platform-argument">
+              ${platform.argument || 'No argument available'}
+            </div>
+            
+            <div class="platform-concept">
+              ${platform.keyConcept}
+            </div>
+            
+            <div class="platform-critique">
+              ${platform.critique || 'No critique available'}
+            </div>
+            
+            <div class="platform-context">
+              <div class="context-item">
+                <div class="context-item-title">Example</div>
+                ${platform.example}
+              </div>
+              <div class="context-item">
+                <div class="context-item-title">Historic Precedent</div>
+                ${platform.historicPrecedent || 'No precedent available'}
+              </div>
+            </div>
+            
+            <div class="platform-features">
+              ${(platform.keyFeatures || '').split(',')
+                .filter(feature => feature.trim())
+                .map(feature => `<span class="feature-chip">${feature.trim()}</span>`)
+                .join('')}
+            </div>
+          `;
+
+        } catch (error) {
+          log.error(`Error creating platform HTML for ${platform.platformID}:`, error);
+          el.innerHTML = `<div class="error">Error loading platform ${platform.platformID}</div>`;
+        }
+        
+        return el;
+      }
+
+      setupEventListeners() {
+        log.debug('Setting up event listeners');
+        
+        // Connection tools
+        const connectButton = document.getElementById('connectButton');
+        const eraseButton = document.getElementById('eraseButton');
+        const clearButton = document.getElementById('clearButton');
+        
+        connectButton.addEventListener('click', () => this.toggleConnectionMode());
+        eraseButton.addEventListener('click', () => this.toggleEraseMode());
+        clearButton.addEventListener('click', () => this.clearConnections());
+
+        // Platform click handling
+        document.addEventListener('click', (e) => {
+          const platform = e.target.closest('.platform');
+          if (!platform) return;
+
+          if (this.connectionMode) {
+            this.handlePlatformConnectionClick(platform);
+          }
+        });
+
+        // Connection type menu
+        const typeMenu = document.getElementById('connectionTypeMenu');
+        typeMenu.addEventListener('click', (e) => {
+          const option = e.target.closest('.connection-type-option');
+          if (option) {
+            const type = option.dataset.type;
+            this.createConnection(type);
+            typeMenu.classList.remove('visible');
+          }
+        });
+      }
+
+      toggleConnectionMode() {
+        this.connectionMode = !this.connectionMode;
+        const connectButton = document.getElementById('connectButton');
+        connectButton.classList.toggle('active');
+        
+        document.querySelectorAll('.platform').forEach(platform => {
+          platform.classList.toggle('connectable', this.connectionMode);
+        });
+        
+        if (!this.connectionMode) {
+          this.selectedSource = null;
+          document.querySelectorAll('.platform').forEach(p => 
+            p.classList.remove('selected-source')
+          );
+        }
+      }
+
+      handlePlatformConnectionClick(platform) {
+        if (!this.selectedSource) {
+          this.selectedSource = platform;
+          platform.classList.add('selected-source');
+        } else if (platform !== this.selectedSource) {
+          const menu = document.getElementById('connectionTypeMenu');
+          const rect = platform.getBoundingClientRect();
+          
+          menu.style.left = `${rect.left}px`;
+          menu.style.top = `${rect.bottom + 10}px`;
+          menu.classList.add('visible');
+          
+          menu.dataset.sourceId = this.selectedSource.dataset.id;
+          menu.dataset.targetId = platform.dataset.id;
+        }
+      }
+
+      createConnection(type) {
+        const menu = document.getElementById('connectionTypeMenu');
+        const sourceId = menu.dataset.sourceId;
+        const targetId = menu.dataset.targetId;
+        
+        const connectionId = `${sourceId}-${targetId}-${type}`;
+        if (this.connections.has(connectionId)) return;
+
+        const source = document.querySelector(`[data-id="${sourceId}"]`);
+        const target = document.querySelector(`[data-id="${targetId}"]`);
+        
+        const connection = {
+          id: connectionId,
+          sourceId,
+          targetId,
+          type,
+          element: this.drawConnection(source, target, type)
+        };
+
+        this.connections.set(connectionId, connection);
+        this.selectedSource.classList.remove('selected-source');
+        this.selectedSource = null;
+      }
+
+      drawConnection(source, target, type) {
+        const svg = document.getElementById('connectionLayer');
+        const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        
+        const sourceRect = source.getBoundingClientRect();
+        const targetRect = target.getBoundingClientRect();
+        
+        // Calculate connection points
+        const x1 = sourceRect.right;
+        const y1 = sourceRect.top + sourceRect.height / 2;
+        const x2 = targetRect.left;
+        const y2 = targetRect.top + targetRect.height / 2;
+        
+        // Create path
+        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        path.classList.add('connection-line');
+        path.setAttribute('data-type', type);
+        
+        // Calculate curve control points
+        const dx = x2 - x1;
+        const dy = y2 - y1;
+        const midX = x1 + dx * 0.5;
+        
+        // Adjust control points based on vertical distance
+        const curvature = Math.min(Math.abs(dy) * 0.3, Math.abs(dx) * 0.5);
+        const controlPoint1X = x1 + curvature;
+        const controlPoint2X = x2 - curvature;
+        
+        // Set path
+        path.setAttribute('d', `
+          M ${x1} ${y1} 
+          C ${controlPoint1X} ${y1},
+            ${controlPoint2X} ${y2},
+            ${x2} ${y2}
+        `);
+        
+        // Add arrow marker based on type
+        path.setAttribute('marker-end', 'url(#arrowhead)');
+        
+        // Add connection label with background
+        const labelGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        labelGroup.setAttribute('transform', `translate(${midX}, ${(y1 + y2) / 2 - 15})`);
+        
+        // Label background
+        const labelBg = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+        labelBg.setAttribute('x', -30);
+        labelBg.setAttribute('y', -10);
+        labelBg.setAttribute('width', 60);
+        labelBg.setAttribute('height', 20);
+        labelBg.setAttribute('rx', 10);
+        labelBg.setAttribute('fill', 'var(--platform-bg)');
+        labelBg.setAttribute('opacity', '0.9');
+        
+        // Label text
+        const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        text.classList.add('connection-label');
+        text.setAttribute('data-type', type);
+        text.setAttribute('x', 0);
+        text.setAttribute('y', 5);
+        text.textContent = type;
+        
+        labelGroup.appendChild(labelBg);
+        labelGroup.appendChild(text);
+        
+        g.appendChild(path);
+        g.appendChild(labelGroup);
+        svg.querySelector('#connections').appendChild(g);
+        
+        return g;
+      }
+
+      updateConnections() {
+        requestAnimationFrame(() => {
+          this.connections.forEach(connection => {
+            const source = document.querySelector(`[data-id="${connection.sourceId}"]`);
+            const target = document.querySelector(`[data-id="${connection.targetId}"]`);
+            if (source && target) {
+              connection.element.remove();
+              connection.element = this.drawConnection(source, target, connection.type);
+            }
+          });
+        });
+      }
+
+      toggleEraseMode() {
+        const eraseButton = document.getElementById('eraseButton');
+        eraseButton.classList.toggle('active');
+        
+        if (eraseButton.classList.contains('active')) {
+          document.getElementById('connections').style.pointerEvents = 'all';
+          document.querySelectorAll('.connection-line').forEach(line => {
+            line.style.cursor = 'pointer';
+            line.addEventListener('click', this.handleConnectionClick.bind(this));
+          });
+        } else {
+          document.getElementById('connections').style.pointerEvents = 'none';
+          document.querySelectorAll('.connection-line').forEach(line => {
+            line.style.cursor = 'default';
+            line.removeEventListener('click', this.handleConnectionClick.bind(this));
+          });
+        }
+      }
+
+      handleConnectionClick(e) {
+        const connection = e.target.closest('g');
+        if (connection) {
+          connection.remove();
+          // Remove from connections map
+          for (const [id, conn] of this.connections.entries()) {
+            if (conn.element === connection) {
+              this.connections.delete(id);
+              break;
+            }
+          }
+        }
+      }
+
+      clearConnections() {
+        document.getElementById('connections').innerHTML = '';
+        this.connections.clear();
+      }
+    }
+
+    // Initialize when DOM is ready
+    document.addEventListener('DOMContentLoaded', () => {
+      log.info('DOM Content Loaded, creating CreativeDNA instance');
+      window.creativeDNA = new CreativeDNA();
+      
+      // Add scroll listeners to update connections
+      document.querySelectorAll('.column').forEach(column => {
+        column.addEventListener('scroll', () => {
+          window.creativeDNA.updateConnections();
+        });
+      });
+    });
+  </script>
+</body>
+</html>

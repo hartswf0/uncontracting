@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creative Forces</title>
+    <style>
+        :root {
+            --opposing-color: #c0392b;
+            --supporting-color: #27ae60;
+            --bg-color: #f5f5f5;
+            --card-bg: white;
+            --text-primary: #2c3e50;
+            --text-secondary: #666;
+            --tag-bg: #f0f2f5;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .card-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .notecard {
+            background: var(--card-bg);
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow: hidden;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .notecard:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+
+        .notecard.opposing {
+            border-top: 3px solid var(--opposing-color);
+        }
+
+        .notecard.supporting {
+            border-top: 3px solid var(--supporting-color);
+        }
+
+        .notecard-header {
+            padding: 15px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #eee;
+        }
+
+        .parent-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 5px;
+        }
+
+        .emoji {
+            font-size: 1.2em;
+        }
+
+        .title {
+            font-size: 0.9em;
+            color: var(--text-secondary);
+        }
+
+        .force-type {
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .notecard.opposing .force-type {
+            color: var(--opposing-color);
+        }
+
+        .notecard.supporting .force-type {
+            color: var(--supporting-color);
+        }
+
+        .notecard-content {
+            padding: 20px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .force-title {
+            margin: 0 0 15px 0;
+            color: var(--text-primary);
+            font-size: 1.3em;
+        }
+
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-bottom: 15px;
+        }
+
+        .tag {
+            background: var(--tag-bg);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.85em;
+            color: var(--text-primary);
+        }
+
+        .description, .features {
+            margin-bottom: 15px;
+        }
+
+        .description ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+
+        .description li {
+            margin-bottom: 5px;
+        }
+
+        .features {
+            margin-top: auto;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-color: #1a1a1a;
+                --card-bg: #2d2d2d;
+                --text-primary: #e0e0e0;
+                --text-secondary: #b0b0b0;
+                --tag-bg: #3d3d3d;
+            }
+
+            .notecard {
+                box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            }
+
+            .notecard:hover {
+                box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            }
+
+            .notecard-header {
+                background: #252525;
+                border-bottom-color: #3d3d3d;
+            }
+
+            .features {
+                border-top-color: #3d3d3d;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="card-container" id="cardContainer"></div>
+
+    <script>
+        async function loadCards() {
+            try {
+                const response = await fetch('data.json');
+                const data = await response.json();
+                const container = document.getElementById('cardContainer');
+
+                data.forEach(card => {
+                    // Create opposing force card
+                    const opposingCard = createCard(card, 'opposing');
+                    container.appendChild(opposingCard);
+
+                    // Create supporting force card
+                    const supportingCard = createCard(card, 'supporting');
+                    container.appendChild(supportingCard);
+                });
+            } catch (error) {
+                console.error('Error loading cards:', error);
+                document.getElementById('cardContainer').innerHTML = 
+                    '<p style="color: var(--text-primary); text-align: center;">Error loading cards. Please make sure data.json exists and is accessible.</p>';
+            }
+        }
+
+        function createCard(cardData, forceType) {
+            const force = cardData[forceType];
+            const div = document.createElement('div');
+            div.className = `notecard ${forceType}`;
+            
+            div.innerHTML = `
+                <div class="notecard-header">
+                    <div class="parent-title">
+                        <span class="emoji">${cardData.emoji}</span>
+                        <span class="title">${cardData.title}</span>
+                    </div>
+                    <div class="force-type">${forceType === 'opposing' ? 'Opposing Force' : 'Supporting Force'}</div>
+                </div>
+                <div class="notecard-content">
+                    <h3 class="force-title">${force.title}</h3>
+                    <div class="tags">
+                        ${force.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+                    </div>
+                    <div class="description">
+                        <strong>Description:</strong>
+                        <ul>
+                            ${force.description.map(item => `<li>${item}</li>`).join('')}
+                        </ul>
+                    </div>
+                    ${force.features ? `
+                    <div class="features">
+                        <strong>Features:</strong> ${force.features}
+                    </div>
+                    ` : ''}
+                </div>
+            `;
+            
+            return div;
+        }
+
+        // Load cards when the page loads
+        document.addEventListener('DOMContentLoaded', loadCards);
+    </script>
+</body>
+</html>

@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creative DNA - Platform Connections</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        :root {
+            --background-color: #1a1a1a;
+            --text-color: #ffffff;
+            --accent-color: #4a9eff;
+            --boden-color: #ff6b6b;
+            --papert-color: #4ecdc4;
+            --platform-bg: rgba(40, 40, 40, 0.95);
+            --column-width: 35vw;
+            --visualization-width: 30vw;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: system-ui, -apple-system, sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        .platform-container {
+            display: flex;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        .platform-column {
+            width: var(--column-width);
+            height: 100vh;
+            overflow-y: auto;
+            padding: 20px;
+            box-sizing: border-box;
+            position: relative;
+        }
+
+        .visualization-container {
+            width: var(--visualization-width);
+            height: 100vh;
+            position: relative;
+            background: var(--background-color);
+            border-left: 1px solid rgba(255, 255, 255, 0.1);
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .connection-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .platform-card {
+            background: var(--platform-bg);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .platform-card.boden {
+            border-left: 4px solid var(--boden-color);
+        }
+
+        .platform-card.papert {
+            border-left: 4px solid var(--papert-color);
+        }
+
+        .platform-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .platform-header {
+            margin-bottom: 15px;
+        }
+
+        .platform-id {
+            font-size: 0.8em;
+            opacity: 0.6;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .platform-title {
+            font-size: 1.4em;
+            font-weight: 600;
+            margin: 0;
+            line-height: 1.3;
+        }
+
+        .platform-features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .feature-chip {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            white-space: nowrap;
+            transition: background-color 0.3s ease;
+        }
+
+        .feature-chip:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .platform-quote {
+            font-size: 1.2em;
+            line-height: 1.6;
+            font-style: italic;
+            padding: 20px 0;
+            color: var(--accent-color);
+        }
+
+        .platform-argument {
+            font-size: 1.1em;
+            line-height: 1.5;
+            margin: 20px 0;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+        }
+
+        .platform-critique {
+            font-size: 0.95em;
+            line-height: 1.5;
+            margin: 15px 0;
+            padding: 15px 15px 25px;
+            background: rgba(255, 0, 0, 0.05);
+            border-radius: 8px;
+            border-left: 2px solid #ff6b6b;
+            color: #ff8080;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .platform-concept {
+            font-size: 1em;
+            line-height: 1.5;
+            margin: 20px 0;
+        }
+
+        .context-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+            font-size: 0.9em;
+            line-height: 1.5;
+        }
+
+        .platform-example,
+        .platform-historic {
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 8px;
+        }
+
+        .connection-line {
+            fill: none;
+            stroke-width: 2;
+            stroke-opacity: 0.6;
+            pointer-events: all;
+            cursor: pointer;
+        }
+
+        .connection-label {
+            font-family: 'SF Mono', monospace;
+            font-size: 0.8em;
+            fill: var(--text-color);
+            opacity: 0.8;
+        }
+
+        .toolbar {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--platform-bg);
+            padding: 15px 25px;
+            border-radius: 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            display: flex;
+            gap: 15px;
+            z-index: 1000;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .export-btn {
+            background: var(--accent-color);
+            opacity: 0.8;
+        }
+
+        .export-btn:hover {
+            opacity: 1;
+        }
+
+        .connection-note {
+            position: absolute;
+            background: var(--platform-bg);
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 0.9em;
+            max-width: 200px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: text;
+        }
+
+        .connection-note textarea {
+            width: 100%;
+            min-height: 60px;
+            background: transparent;
+            border: none;
+            color: var(--text-color);
+            font-family: inherit;
+            font-size: inherit;
+            resize: vertical;
+            outline: none;
+        }
+
+        .connection-note-indicator {
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            background: var(--accent-color);
+            border-radius: 50%;
+            cursor: pointer;
+            transform: translate(-50%, -50%);
+            z-index: 100;
+        }
+
+        .connection-note-indicator:hover {
+            transform: translate(-50%, -50%) scale(1.2);
+        }
+
+        button {
+            background: var(--accent-color);
+            color: var(--text-color);
+            border: none;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        button.clear {
+            background: var(--boden-color);
+        }
+
+        .connection-types {
+            display: flex;
+            gap: 10px;
+        }
+
+        .connection-type {
+            padding: 6px 15px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+            color: var(--text-color);
+            border: none;
+        }
+
+        .connection-type[data-type="influences"] {
+            background: #4a9eff;
+        }
+
+        .connection-type[data-type="contradicts"] {
+            background: #ff6b6b;
+        }
+
+        .connection-type[data-type="supports"] {
+            background: #4ecdc4;
+        }
+
+        .connection-type[data-type="extends"] {
+            background: #9b59b6;
+        }
+
+        .connection-type:hover {
+            transform: translateY(-1px);
+            filter: brightness(1.1);
+        }
+
+        .connection-type.active {
+            background: rgba(255, 255, 255, 0.2);
+            color: var(--text-color);
+        }
+
+        .platform-card.selected {
+            box-shadow: 0 0 0 2px var(--accent-color);
+        }
+    </style>
+</head>
+<body>
+    <div class="platform-container">
+        <div class="platform-column" id="boden-platforms"></div>
+        <div class="visualization-container">
+            <svg class="connection-layer"></svg>
+        </div>
+        <div class="platform-column" id="papert-platforms"></div>
+    </div>
+
+    <div class="toolbar">
+        <div class="connection-types">
+            <button class="connection-type" data-type="influences">Influences</button>
+            <button class="connection-type" data-type="contradicts">Contradicts</button>
+            <button class="connection-type" data-type="supports">Supports</button>
+            <button class="connection-type" data-type="extends">Extends</button>
+        </div>
+        <button class="clear">Clear</button>
+        <button class="export-btn">Export</button>
+    </div>
+
+    <script>
+        // Load and process data
+        async function loadData() {
+            try {
+                const response = await fetch('creative-data.json');
+                const data = await response.json();
+                return {
+                    boden: data.documents[0].geneticPlatforms,
+                    papert: data.documents[1].geneticPlatforms
+                };
+            } catch (error) {
+                console.error('Error loading data:', error);
+                return { boden: [], papert: [] };
+            }
+        }
+
+        // Initialize the visualization
+        async function init() {
+            const data = await loadData();
+            let state = {
+                connections: [],
+                selectedPlatform: null,
+                connectionType: null,
+                notes: {} // Store connection notes
+            };
+
+            // Initialize D3
+            const svg = d3.select('.connection-layer')
+                .attr('width', '100%')
+                .attr('height', '100%');
+
+            // Create arrow markers
+            const defs = svg.append('defs');
+            const types = {
+                influences: { color: '#4a9eff' },
+                contradicts: { color: '#ff6b6b' },
+                supports: { color: '#4ecdc4' },
+                extends: { color: '#9b59b6' }
+            };
+
+            Object.entries(types).forEach(([type, props]) => {
+                defs.append('marker')
+                    .attr('id', `arrow-${type}`)
+                    .attr('viewBox', '0 -5 10 10')
+                    .attr('refX', 8)
+                    .attr('refY', 0)
+                    .attr('markerWidth', 6)
+                    .attr('markerHeight', 6)
+                    .attr('orient', 'auto')
+                    .append('path')
+                    .attr('fill', props.color)
+                    .attr('d', 'M0,-5L10,0L0,5');
+            });
+
+            function renderConnections() {
+                // Clear existing connections
+                svg.selectAll('.connection-group').remove();
+
+                // Get the scroll positions
+                const leftScroll = document.getElementById('boden-platforms').scrollTop;
+                const rightScroll = document.getElementById('papert-platforms').scrollTop;
+
+                state.connections.forEach(conn => {
+                    const sourceEl = document.getElementById(conn.source);
+                    const targetEl = document.getElementById(conn.target);
+
+                    if (!sourceEl || !targetEl) return;
+
+                    const sourceRect = sourceEl.getBoundingClientRect();
+                    const targetRect = targetEl.getBoundingClientRect();
+                    const containerRect = document.querySelector('.visualization-container').getBoundingClientRect();
+
+                    // Calculate positions accounting for scroll
+                    const sourceY = sourceRect.top + (sourceRect.height / 2) - containerRect.top;
+                    const targetY = targetRect.top + (targetRect.height / 2) - containerRect.top;
+                    
+                    // Only render if both elements are visible
+                    if (sourceY < 0 || sourceY > containerRect.height || 
+                        targetY < 0 || targetY > containerRect.height) {
+                        return;
+                    }
+
+                    const sourceX = sourceRect.right - containerRect.left;
+                    const targetX = targetRect.left - containerRect.left;
+
+                    // Create a group for this connection
+                    const group = svg.append('g')
+                        .attr('class', 'connection-group')
+                        .attr('data-source', conn.source)
+                        .attr('data-target', conn.target)
+                        .attr('data-type', conn.type);
+
+                    // Calculate control points for smoother curves
+                    const dx = targetX - sourceX;
+                    const dy = targetY - sourceY;
+                    const controlX = dx * 0.5;
+
+                    // Create curved path
+                    const path = group.append('path')
+                        .attr('class', 'connection-line')
+                        .attr('stroke', types[conn.type].color)
+                        .attr('stroke-width', 2)
+                        .attr('fill', 'none')
+                        .attr('marker-end', `url(#arrow-${conn.type})`)
+                        .attr('d', `
+                            M ${sourceX},${sourceY}
+                            C ${sourceX + controlX},${sourceY}
+                              ${targetX - controlX},${targetY}
+                              ${targetX},${targetY}
+                        `);
+
+                    // Add label
+                    const pathNode = path.node();
+                    const pathLength = pathNode.getTotalLength();
+                    const midPoint = pathNode.getPointAtLength(pathLength / 2);
+
+                    group.append('text')
+                        .attr('class', 'connection-label')
+                        .attr('x', midPoint.x)
+                        .attr('y', midPoint.y - 10)
+                        .attr('text-anchor', 'middle')
+                        .attr('fill', types[conn.type].color)
+                        .text(conn.type);
+                });
+
+                // Render saved notes
+                Object.entries(state.notes).forEach(([id, note]) => {
+                    if (!document.querySelector(`#${id}`)) {
+                        const noteIndicator = d3.select('.visualization-container')
+                            .append('div')
+                            .attr('class', 'connection-note-indicator')
+                            .attr('id', id)
+                            .style('left', `${note.x}px`)
+                            .style('top', `${note.y}px`)
+                            .on('click', function() {
+                                const noteContainer = d3.select('.visualization-container')
+                                    .append('div')
+                                    .attr('class', 'connection-note')
+                                    .style('left', `${note.x}px`)
+                                    .style('top', `${note.y}px`);
+
+                                noteContainer.append('textarea')
+                                    .attr('placeholder', 'Add a note...')
+                                    .property('value', note.text)
+                                    .on('change', function() {
+                                        state.notes[id].text = this.value;
+                                    });
+                            });
+                    }
+                });
+            }
+
+            // Add click handler for adding notes
+            svg.on('dblclick', function(event) {
+                if (!event.target.closest('.connection-note') && !event.target.closest('.connection-note-indicator')) {
+                    const [x, y] = d3.pointer(event);
+                    addConnectionNote(x, y);
+                }
+            });
+
+            function addConnectionNote(x, y) {
+                const noteId = `note-${Date.now()}`;
+                const noteContainer = d3.select('.visualization-container')
+                    .append('div')
+                    .attr('class', 'connection-note')
+                    .style('left', `${x}px`)
+                    .style('top', `${y}px`);
+
+                const textarea = noteContainer.append('textarea')
+                    .attr('placeholder', 'Add a note...')
+                    .on('change', function() {
+                        state.notes[noteId] = {
+                            x: x,
+                            y: y,
+                            text: this.value
+                        };
+                    });
+
+                // Focus the textarea
+                textarea.node().focus();
+            }
+
+            // Export functionality
+            d3.select('.export-btn').on('click', function() {
+                const exportData = {
+                    connections: state.connections.map(conn => ({
+                        source: conn.source,
+                        target: conn.target,
+                        type: conn.type,
+                        sourceTitle: d3.select(`#${conn.source}`).select('.platform-title').text(),
+                        targetTitle: d3.select(`#${conn.target}`).select('.platform-title').text()
+                    })),
+                    notes: state.notes
+                };
+
+                // Create and trigger download
+                const dataStr = JSON.stringify(exportData, null, 2);
+                const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+                
+                const exportName = 'platform-connections.json';
+                const linkElement = document.createElement('a');
+                linkElement.setAttribute('href', dataUri);
+                linkElement.setAttribute('download', exportName);
+                linkElement.click();
+            });
+
+            // Render platforms
+            function renderPlatforms(platforms, containerId) {
+                const container = d3.select(`#${containerId}`);
+                
+                const cards = container.selectAll('.platform-card')
+                    .data(platforms)
+                    .join('div')
+                    .attr('class', d => `platform-card ${containerId === 'boden-platforms' ? 'boden' : 'papert'}`)
+                    .attr('id', d => `${containerId}-${d.platformID}`)
+                    .on('click', function(event, d) {
+                        event.preventDefault();
+                        handlePlatformClick(`${containerId}-${d.platformID}`);
+                    });
+
+                cards.html(d => `
+                    <div class="platform-header">
+                        <div class="platform-id">
+                            <span class="emoji">${containerId === 'boden-platforms' ? '🤖' : '🏗️'}</span>
+                            <span class="author">${containerId === 'boden-platforms' ? 'Boden' : 'Papert'}</span>
+                            <span class="number">${String(d.platformID).padStart(2, '0')}</span>
+                        </div>
+                        <h2 class="platform-title">${d.title}</h2>
+                    </div>
+                    
+                    ${d.keyFeatures ? `
+                        <div class="platform-features">
+                            ${d.keyFeatures.split(',')
+                                .map(feature => `<span class="feature-chip">${feature.trim()}</span>`)
+                                .join('')}
+                        </div>
+                    ` : ''}
+
+                    ${d.quote ? `
+                        <div class="platform-quote">${d.quote}</div>
+                    ` : ''}
+                    
+                    <div class="platform-argument">${d.argument}</div>
+                    
+                    ${d.critique ? `
+                        <div class="platform-critique">${d.critique}</div>
+                    ` : ''}
+                    
+                    <div class="platform-concept">${d.keyConcept}</div>
+                    
+                    <div class="context-row">
+                        ${d.example ? `
+                            <div class="platform-example">${d.example}</div>
+                        ` : ''}
+                        
+                        ${d.historicPrecedent ? `
+                            <div class="platform-historic">${d.historicPrecedent}</div>
+                        ` : ''}
+                    </div>
+                `);
+            }
+
+            // Handle platform card clicks
+            function handlePlatformClick(platformId) {
+                const card = document.getElementById(platformId);
+                if (!card) return;
+
+                if (!state.selectedPlatform) {
+                    state.selectedPlatform = platformId;
+                    card.classList.add('selected');
+                } else if (state.selectedPlatform === platformId) {
+                    state.selectedPlatform = null;
+                    card.classList.remove('selected');
+                } else if (state.connectionType) {
+                    // Create connection
+                    state.connections.push({
+                        source: state.selectedPlatform,
+                        target: platformId,
+                        type: state.connectionType
+                    });
+
+                    // Reset selection
+                    document.getElementById(state.selectedPlatform).classList.remove('selected');
+                    state.selectedPlatform = null;
+                    renderConnections();
+                }
+            }
+
+            // Handle connection type selection
+            document.querySelectorAll('.connection-type').forEach(button => {
+                button.addEventListener('click', () => {
+                    state.connectionType = button.dataset.type;
+                    document.querySelectorAll('.connection-type').forEach(b => b.classList.remove('active'));
+                    button.classList.add('active');
+                });
+            });
+
+            // Handle clear button
+            document.querySelector('.clear').addEventListener('click', () => {
+                state.connections = [];
+                state.selectedPlatform = null;
+                document.querySelectorAll('.platform-card').forEach(card => card.classList.remove('selected'));
+                renderConnections();
+            });
+
+            // Update connections on scroll
+            document.querySelectorAll('.platform-column').forEach(column => {
+                column.addEventListener('scroll', renderConnections);
+            });
+
+            // Update connections on window resize
+            window.addEventListener('resize', renderConnections);
+
+            // Initialize platforms
+            renderPlatforms(data.boden, 'boden-platforms');
+            renderPlatforms(data.papert, 'papert-platforms');
+
+            // Initial render of connections
+            renderConnections();
+        }
+
+        // Start the application
+        init();
+    </script>
+</body>
+</html>

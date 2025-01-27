@@ -1,0 +1,392 @@
+{
+  "documents": [
+    {
+      "id": "boden1998",
+      "documentTitle": "Creativity and Artificial Intelligence (Boden, 1998)",
+      "color": "var(--boden-color)",
+      "geneticPlatforms": [
+        {
+          "platformID": "B01",
+          "title": "The Ontological Architecture of Creativity",
+          "keyConcept": "Creativity as a fundamental feature of human intelligence",
+          "example": "The distinction between P-creativity and H-creativity",
+          "argument": "Creativity is not a special faculty but rather a feature of general intelligence",
+          "quote": "Creativity is not a special 'faculty' nor a psychological property confined to a tiny elite. Rather, it is a feature of human intelligence in general.",
+          "historicPrecedent": "Evolution of creative thought in human cognition",
+          "critique": "Binary distinction oversimplifies novel ideation",
+          "keyFeatures": "Universal capacity, hierarchical novelty, contextual valuation"
+        },
+        {
+          "platformID": "B02",
+          "title": "Tripartite Taxonomy of Creative Generation",
+          "keyConcept": "Three distinct modes of creative generation",
+          "example": "Poetic imagery (combinational), scientific exploration (exploratory)",
+          "argument": "Creativity can be categorized into combinational, exploratory, and transformational types",
+          "quote": "The first type involves novel (improbable) combinations of familiar ideas. Let us call this 'combinational' creativity.",
+          "historicPrecedent": "Different creative processes across disciplines",
+          "critique": "Boundaries between categories can be fluid",
+          "keyFeatures": "Combinational, exploratory, transformational creativity"
+        },
+        {
+          "platformID": "B03",
+          "title": "Computational Models of Creative Process",
+          "keyConcept": "AI systems that model creative processes",
+          "example": "AARON’s art, EMI’s music",
+          "argument": "AI can simulate creativity by exploring conceptual spaces",
+          "quote": "Computer models of creativity include examples of all three types. As yet, those focussed on the second (exploratory) type are the most successful.",
+          "historicPrecedent": "Evolution of AI-based creative systems",
+          "critique": "Mostly limited to exploratory creativity, not true transformation",
+          "keyFeatures": "Algorithmic exploration, domain expertise, constraints"
+        },
+        {
+          "platformID": "B04",
+          "title": "The Evaluation Paradigm",
+          "keyConcept": "Challenges of automated evaluation of creative outputs",
+          "example": "AM produced more useless than valuable items",
+          "argument": "Evaluative criteria are critical yet difficult to formalize",
+          "quote": "If the space is transformed, then the resulting structures may not have any interest or value.",
+          "historicPrecedent": "Historical shifts in how creativity is evaluated",
+          "critique": "Social and cultural dimensions resist simple computational modeling",
+          "keyFeatures": "Value assessment, cultural context, temporal dynamics"
+        },
+        {
+          "platformID": "B05",
+          "title": "The Transformational Frontier",
+          "keyConcept": "AI systems that alter conceptual spaces themselves",
+          "example": "Genetic algorithms generating novel 3D forms",
+          "argument": "True creative AI must transform its conceptual spaces while retaining value",
+          "quote": "The ultimate vindication of AI-creativity would be a program that generated novel ideas which initially perplexed or even repelled us, but which was able to persuade us that they were indeed valuable.",
+          "historicPrecedent": "Radical transformations in human creative history",
+          "critique": "Current systems lack meaningful conceptual transformation",
+          "keyFeatures": "Conceptual transformation, persuasion, value generation"
+        },
+        {
+          "platformID": "B06",
+          "title": "Distributed Creative Cognition",
+          "keyConcept": "Creative potential is broadly distributed in everyday intelligence",
+          "example": "AARON’s novelty from basic perceptual/cognitive principles",
+          "argument": "Creativity emerges from fundamental operations, not special faculties",
+          "quote": "Creativity is grounded in everyday capacities like association of ideas, reminding, perception, analogical thinking, searching a structured problem-space, and reflective self-criticism.",
+          "historicPrecedent": "Shift from specialized to distributed creativity in cognitive science",
+          "critique": "Overlooks emergent properties of complex creative thought",
+          "keyFeatures": "Distributed processing, emergent complexity"
+        },
+        {
+          "platformID": "B07",
+          "title": "Psychological-Historical Innovation Interface",
+          "keyConcept": "Dialectical relationship between personal and historical novelty",
+          "example": "EMI’s music novel to itself (P-creative) and to the domain (H-creative)",
+          "argument": "Innovation operates at individual and historical levels simultaneously",
+          "quote": "P-creativity is the more fundamental notion, of which H-creativity is a special case.",
+          "historicPrecedent": "From individual innovations to paradigm shifts",
+          "critique": "Binary distinction ignores continuum of novelty",
+          "keyFeatures": "Multi-level innovation, contextual evaluation"
+        },
+        {
+          "platformID": "B08",
+          "title": "Axiological Emergence",
+          "keyConcept": "Value systems emerging in creative evaluation",
+          "example": "AARON’s paintings, combined computational/human aesthetic judgment",
+          "argument": "Creative value is socially and historically emergent",
+          "quote": "Current AI models of creativity focus primarily on the cognitive dimension.",
+          "historicPrecedent": "Changing aesthetic criteria historically",
+          "critique": "Formalizing value systems is challenging",
+          "keyFeatures": "Value emergence, social construction, temporal evolution"
+        },
+        {
+          "platformID": "B09",
+          "title": "Symbolic Integration Architecture",
+          "keyConcept": "Dynamic integration of multiple symbolic systems",
+          "example": "Copycat’s fluid manipulation of representations",
+          "argument": "Creative thought requires integration of multiple symbolic frameworks",
+          "quote": "Seeing a new analogy is much the same as perceiving something in a new way.",
+          "historicPrecedent": "Symbolic processing theories in cognitive science",
+          "critique": "May overemphasize symbolic processing vs. other mechanisms",
+          "keyFeatures": "Symbol manipulation, cognitive integration, representational fluidity"
+        },
+        {
+          "platformID": "B10",
+          "title": "Meta-Cognitive Reflection",
+          "keyConcept": "Self-reflection in creative thought",
+          "example": "AM’s ability to evaluate its own math discoveries",
+          "argument": "Creative systems need self-critique and evaluation",
+          "quote": "Only a few AI-models can critically judge their own original ideas.",
+          "historicPrecedent": "Development of meta-cognition in AI and psychology",
+          "critique": "Current AI lacks deep meta-cognitive capabilities",
+          "keyFeatures": "Self-evaluation, recursive processing, meta-level control"
+        },
+        {
+          "platformID": "B11",
+          "title": "Combinatorial Dynamics",
+          "keyConcept": "Novelty from recombining existing structures",
+          "example": "JAPE’s puns through phonological and semantic combinations",
+          "argument": "Deep structural mapping, not just superficial mixing",
+          "quote": "Analogies are sometimes explored at length for rhetorical or problem-solving purposes.",
+          "historicPrecedent": "Associative theories in cognitive psychology",
+          "critique": "Emergent properties may exceed pure combinatorial logic",
+          "keyFeatures": "Structural mapping, semantic integration, emergent meaning"
+        },
+        {
+          "platformID": "B12",
+          "title": "Exploratory Methodological Framework",
+          "keyConcept": "Systematic exploration of bounded conceptual spaces",
+          "example": "EMI’s exploration of musical style grammars",
+          "argument": "Creative exploration requires multidimensional conceptual navigation",
+          "quote": "Many human beings—including most professional scientists, artists, and jazz-musicians—make a justly respected living out of exploratory creativity.",
+          "historicPrecedent": "Systematic creative methods historically",
+          "critique": "Boundaries may constrain radical innovation",
+          "keyFeatures": "Heuristic guidance, boundary recognition, systematic navigation"
+        },
+        {
+          "platformID": "B13",
+          "title": "Transformational Mechanics",
+          "keyConcept": "Altering the fundamental dimensions of a conceptual space",
+          "example": "Genetic algorithms generating unprecedented 3D forms",
+          "argument": "True creativity transforms the space’s structure itself",
+          "quote": "Such transformation enables ideas to be generated which (relative to that conceptual space) were previously impossible.",
+          "historicPrecedent": "Paradigm shifts in science and art",
+          "critique": "Lack of robust transformation in current AI",
+          "keyFeatures": "Dimensional modification, structural mutation, paradigm shift"
+        },
+        {
+          "platformID": "B14",
+          "title": "Domain Implementation Architecture",
+          "keyConcept": "Embedding domain expertise into computational frameworks",
+          "example": "AARON’s encoded artistic knowledge",
+          "argument": "Creative systems need deep domain knowledge",
+          "quote": "Providing a program with a representation of an interesting conceptual space requires domain-expertise.",
+          "historicPrecedent": "Expert systems and knowledge representation in AI",
+          "critique": "Formalization may miss tacit knowledge",
+          "keyFeatures": "Knowledge representation, domain specificity"
+        },
+        {
+          "platformID": "B15",
+          "title": "Cultural Context Dynamics",
+          "keyConcept": "Embeddedness of creative evaluation in culture",
+          "example": "AI-generated art in different cultural contexts",
+          "argument": "Value emerges from cultural-temporal interplay",
+          "quote": "Human values change from culture to culture, time to time.",
+          "historicPrecedent": "Historical variations in artistic and scientific values",
+          "critique": "Hard to capture cultural complexity in code",
+          "keyFeatures": "Cultural embedding, temporal dynamics, value evolution"
+        },
+        {
+          "platformID": "B16",
+          "title": "Persuasive Architectonics",
+          "keyConcept": "Mechanisms of communicating creative value",
+          "example": "AM justifying its math discoveries heuristically",
+          "argument": "Systems must persuade us of novelty and value",
+          "quote": "A program that repelled us but could persuade we misjudged it would be ultimate AI-creativity.",
+          "historicPrecedent": "Rhetorical frameworks in creativity domains",
+          "critique": "Current AI lacks deep persuasive capability",
+          "keyFeatures": "Value articulation, rhetorical sophistication"
+        },
+        {
+          "platformID": "B17",
+          "title": "Value Generation Dynamics",
+          "keyConcept": "Novel value systems from creative transformation",
+          "example": "Evolutionary algorithms discovering unexpected solutions",
+          "argument": "Transformative creativity changes evaluation criteria too",
+          "quote": "Human values—and thus what is 'creative'—change across cultures and time.",
+          "historicPrecedent": "Emergence of new artistic and scientific value systems",
+          "critique": "Generating 'meaningful' new value systems remains elusive",
+          "keyFeatures": "Value emergence, criteria evolution, axiological innovation"
+        },
+        {
+          "platformID": "B18",
+          "title": "The Shadowlands of Computational Imagination",
+          "keyConcept": "Unintended emergent spaces between rules and manifestation",
+          "example": "AARON’s artistic elements that Cohen never explicitly programmed",
+          "argument": "Profound creativity often emerges from algorithmic accidents",
+          "quote": "Some features are due to physical properties of dyes, not the code guiding them.",
+          "historicPrecedent": "Penicillin discovery from accidental bacterial growth",
+          "critique": "Intentional design overshadowing emergent phenomena",
+          "keyFeatures": "Emergent complexity, unintended consequences, systemic overflow"
+        },
+        {
+          "platformID": "B19",
+          "title": "The Recursive Mirror",
+          "keyConcept": "Systems that interpret their own creative processes",
+          "example": "Copycat’s evolving self-understanding of pattern recognition",
+          "argument": "True creative intelligence can rewrite its own observational frameworks",
+          "quote": "Seeing a new analogy is much the same as perceiving something in a new way.",
+          "historicPrecedent": "Gödel’s self-referential systems",
+          "critique": "Confusion of self-reference with true recursion",
+          "keyFeatures": "Self-modification, interpretive layers, metacognitive loops"
+        },
+        {
+          "platformID": "B20",
+          "title": "The Aesthetics of Failure",
+          "keyConcept": "Creative potential in computational breakdowns",
+          "example": "EMI's 'mistakes' that intrigued human composers",
+          "argument": "System limitations/errors can reveal new possibilities",
+          "quote": "AM produced many more useless items than powerful ideas.",
+          "historicPrecedent": "Glitch art movement in digital culture",
+          "critique": "Romanticizing error vs. genuine system inadequacy",
+          "keyFeatures": "Productive failure, generative limits, boundary conditions"
+        },
+        {
+          "platformID": "B21",
+          "title": "Temporal Entanglement",
+          "keyConcept": "Non-linear relationship between computational time and creativity",
+          "example": "Genetic algorithms apparently skipping evolutionary steps",
+          "argument": "Creative AI operates in multiple temporal frameworks",
+          "quote": "Bach, Mozart, and Donne were ignored in certain periods.",
+          "historicPrecedent": "Delayed recognition of revolutionary theories",
+          "critique": "Linear models of creative development misunderstand complexity",
+          "keyFeatures": "Multiple temporalities, predictive collapse, recursion"
+        },
+        {
+          "platformID": "B22",
+          "title": "The Negative Space of Knowledge",
+          "keyConcept": "Potential in what AI systems cannot represent",
+          "example": "AARON’s inability to explain artistic choices reveals new categories",
+          "argument": "Limits of AI create unique epistemological frontiers",
+          "quote": "Identifying our evaluative criteria is hard enough.",
+          "historicPrecedent": "Unknown driving scientific discovery",
+          "critique": "Focus on positive capabilities obscures negative space",
+          "keyFeatures": "Knowledge boundaries, productive ignorance, epistemic limits"
+        },
+        {
+          "platformID": "B23",
+          "title": "Interstitial Intelligence",
+          "keyConcept": "Creativity emerges between defined domains",
+          "example": "EURISKO connecting unrelated knowledge domains",
+          "argument": "Profound insights occur in interdomain spaces",
+          "quote": "A creative idea is one which is novel, surprising, and valuable.",
+          "historicPrecedent": "Biochemistry between biology and chemistry",
+          "critique": "Domain-specific AI cannot capture interdisciplinary potential",
+          "keyFeatures": "Domain intersection, emergent fields"
+        },
+        {
+          "platformID": "B24",
+          "title": "Formal System Σ(C) for Creative Agents",
+          "keyConcept": "Dialectical interplay of generative and evaluative processes in AI creativity",
+          "example": "C={c₁,...}, Ω={ω₁,...}, V={v₁,...}, S={s₁,...}; φ, ψ, θ as core morphisms",
+          "argument": "A rigorous foundation balancing generative freedom and evaluative constraint",
+          "quote": "The system’s recursive properties ensure modeling of increasingly complex phenomena.",
+          "historicPrecedent": "Formal systems in logic to structure complex phenomena",
+          "critique": "Mapping axioms to real-world is nontrivial; generative and evaluative interplay may be underspecified",
+          "keyFeatures": "Axioms: Closure, Preservation, Emergence; Theorems: Emergence, Value Conservation, Creative Completeness"
+        }
+      ]
+    },
+    {
+      "id": "papertHarel1991",
+      "documentTitle": "Situating Constructionism (Papert & Harel, 1991)",
+      "color": "var(--papert-color)",
+      "geneticPlatforms": [
+        {
+          "platformID": "P01",
+          "title": "The Epistemology of Construction",
+          "keyConcept": "Knowledge as actively constructed, not passively received",
+          "example": "Soap sculpture class for extended creative processes",
+          "argument": "Learning is most effective via building public entities",
+          "quote": "Constructionism--the N word as opposed to the V word--shares constructivism’s connotation of learning as 'building knowledge structures' irrespective of the circumstances of the learning.",
+          "historicPrecedent": "Constructivist psychological theories",
+          "critique": "Hard to convey constructionism via traditional definitions",
+          "keyFeatures": "Experiential learning, public artifacts, extended engagement"
+        },
+        {
+          "platformID": "P02",
+          "title": "Pluralistic Epistemological Styles",
+          "keyConcept": "Multiple valid approaches to knowledge construction",
+          "example": "Painter vs. planner programming styles",
+          "argument": "Learning environments must accommodate diverse styles",
+          "quote": "The painter-programmer would put a red blob on the screen...",
+          "historicPrecedent": "Binary: formal vs. informal learning approaches",
+          "critique": "Categorical vs. continuous understanding of styles",
+          "keyFeatures": "Bricolage, closeness to objects, multiple entry points"
+        },
+        {
+          "platformID": "P03",
+          "title": "Technological Mediation of Learning",
+          "keyConcept": "Technology as an enabler of new learning paradigms",
+          "example": "LEGO/Logo cybernetic construction kits",
+          "argument": "New technologies transform learning contexts beyond instructionism",
+          "quote": "Diffusion of cybernetic construction kits into the lives of children could in principle change the context of the learning of mathematics.",
+          "historicPrecedent": "From early Logo to sophisticated computational environments",
+          "critique": "Risk of focusing on tech, ignoring underlying principles",
+          "keyFeatures": "Active construction, programmable objects, experiential interfaces"
+        },
+        {
+          "platformID": "P04",
+          "title": "Feminist and Cultural Epistemologies",
+          "keyConcept": "Alternative ways of knowing challenge epistemological hierarchies",
+          "example": "Women’s preference for personal, concrete knowledge forms",
+          "argument": "Traditional epistemology wrongly privileges abstract, impersonal knowledge",
+          "quote": "Traditional epistemology gives a privileged position to knowledge that is abstract, impersonal, and detached from the knower.",
+          "historicPrecedent": "Feminist critiques of mainstream epistemology",
+          "critique": "Difficult to integrate multiple epistemological frames",
+          "keyFeatures": "Personal knowledge, concrete thinking, epistemological pluralism"
+        },
+        {
+          "platformID": "P05",
+          "title": "Educational Reform Through Epistemological Change",
+          "keyConcept": "Epistemological innovation transforms learning fundamentally",
+          "example": "Software Design Studio where children learn by teaching",
+          "argument": "Creative educational change requires shifting the nature of knowledge itself",
+          "quote": "The theoretical thrust of 'Epistemological Pluralism' is to see this challenge as meshing...",
+          "historicPrecedent": "Traditional instructionist educational approaches",
+          "critique": "Local innovations vs. systemic transformation tension",
+          "keyFeatures": "Cultural transformation, epistemological politics, innovation"
+        },
+        {
+          "platformID": "P06",
+          "title": "The Materiality of Abstract Thought",
+          "keyConcept": "Paradoxical interplay of concrete manipulation and abstract understanding",
+          "example": "Children programming physical LEGO snakes with math abstractions",
+          "argument": "Embodied engagement catalyzes abstract thought",
+          "quote": "They were using high-tech computational material as an expressive medium; the content came from their imaginations as freely as what the others expressed in soap.",
+          "historicPrecedent": "Western epistemology’s abstract/concrete dichotomy",
+          "critique": "Challenges binary opposition of material vs. abstract",
+          "keyFeatures": "Embodied cognition, material semiotics, computational physicality"
+        },
+        {
+          "platformID": "P07",
+          "title": "Temporal Architectures of Learning",
+          "keyConcept": "Deep learning requires temporal expansion and reflection",
+          "example": "Soap sculptures vs. discrete math problem-solving",
+          "argument": "Intellectual meandering and recursion need time",
+          "quote": "It allowed time to think, to dream, to gaze, to get a new idea and try it and drop it or persist.",
+          "historicPrecedent": "Industrial time management in education",
+          "critique": "Efficiency demands vs. temporal needs of learning",
+          "keyFeatures": "Recursive temporality, intellectual gestation, chronological resistance"
+        },
+        {
+          "platformID": "P08",
+          "title": "The Aesthetics of Epistemological Resistance",
+          "keyConcept": "Beauty as a disruptive force in knowledge construction",
+          "example": "A 5th grader pursuing 'grace' in math programming",
+          "argument": "Aesthetic experience opens alternative epistemological pathways",
+          "quote": "He had to figure angles and curvatures for the greatest 'grace.'",
+          "historicPrecedent": "Separation of aesthetic and mathematical knowledge",
+          "critique": "Challenges purely utilitarian views of mathematics",
+          "keyFeatures": "Mathematical beauty, aesthetic cognition, transformative beauty"
+        },
+        {
+          "platformID": "P09",
+          "title": "Epistemological Ecology",
+          "keyConcept": "Learning environments as active agents in knowledge formation",
+          "example": "Cybernetic kits creating new ecosystems for math learning",
+          "argument": "Environments do more than ‘contextualize’—they shape knowledge",
+          "quote": "Changes in opportunities for construction could lead to deeper changes in the learning of mathematics than changes in knowledge about instruction.",
+          "historicPrecedent": "Classroom as controlled environment",
+          "critique": "Questions anthropocentric models of learning",
+          "keyFeatures": "Environmental agency, ecological epistemology, systemic interaction"
+        },
+        {
+          "platformID": "P10",
+          "title": "The Dialectics of Technological Incarnation",
+          "keyConcept": "Tech as embodied philosophical argument in learning",
+          "example": "Logo’s progression from text-based to turtle graphics",
+          "argument": "Tools materialize philosophical stances about knowledge",
+          "quote": "The origination of the Logo Turtle was inspired by the soap-sculpture image.",
+          "historicPrecedent": "Interplay between technology and epistemological paradigms",
+          "critique": "Instrumental views of EdTech overshadow deeper incarnations",
+          "keyFeatures": "Philosophical materiality, embodiment, incarnated theory"
+        }
+      ]
+    }
+  ]
+}

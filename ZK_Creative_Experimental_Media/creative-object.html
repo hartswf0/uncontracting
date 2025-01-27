@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Zettelkasten Creative Artifacts</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f9f9f9;
+            padding: 20px;
+            margin: 0;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 40px;
+        }
+
+        /* Card Container */
+        .card-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            max-width: 1200px;
+            margin: 0 auto 60px auto;
+        }
+
+        /* Individual Card */
+        .card {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            width: 600px; /* Fixed width */
+            height: 400px; /* Fixed height for perfect aspect ratio */
+            display: flex;
+            flex-direction: column;
+            padding: 15px; /* Reduced padding */
+            box-sizing: border-box;
+            transition: transform 0.2s;
+            overflow: hidden; /* Ensure no overflow */
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+
+        /* Card Header */
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px; /* Reduced margin */
+            border-bottom: 1px solid #ecf0f1; /* Thinner border */
+            padding-bottom: 5px; /* Reduced padding */
+        }
+
+        .artifact-name {
+            font-size: 24px; /* Reduced font size */
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .artifact-icon {
+            font-size: 24px; /* Reduced font size */
+        }
+
+        /* Card Content Grid */
+        .card-content {
+            display: grid;
+            grid-template-columns: 120px 1fr; /* Narrowed label column */
+            row-gap: 8px; /* Reduced row gap */
+            column-gap: 10px; /* Reduced column gap */
+            overflow: hidden; /* Prevent scrollbars */
+            flex: 1;
+            font-size: 14px; /* Reduced font size */
+            line-height: 1.4; /* Adjusted line height */
+        }
+
+        .card-content div {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .label {
+            font-weight: bold;
+            color: #555;
+            align-self: flex-end;
+            word-wrap: break-word; /* Allow labels to wrap */
+        }
+
+        .value {
+            color: #333;
+            word-wrap: break-word; /* Allow values to wrap */
+        }
+
+        .value ul {
+            margin: 4px 0 0 10px; /* Reduced margins */
+            padding: 0;
+            list-style-type: disc;
+        }
+
+        /* REFLECTIONS Section */
+        #reflections {
+            max-width: 1200px;
+            margin: 0 auto 40px auto;
+            padding: 20px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        #reflections h2 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #ecf0f1;
+            padding-bottom: 10px;
+            font-size: 24px; /* Adjusted font size */
+        }
+
+        #reflections ol {
+            counter-reset: item;
+            padding-left: 0;
+            font-size: 16px; /* Adjusted font size */
+            line-height: 1.6; /* Adjusted line height */
+        }
+
+        #reflections ol li {
+            counter-increment: item;
+            margin-bottom: 15px;
+            padding-left: 25px; /* Reduced padding */
+            position: relative;
+        }
+
+        #reflections ol li::before {
+            content: counter(item) ".";
+            position: absolute;
+            left: 0;
+            top: 0;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        #reflections ul {
+            margin: 5px 0 0 15px;
+            padding: 0;
+            list-style-type: disc;
+        }
+
+        /* TAGS Section */
+        #tags {
+            max-width: 1200px;
+            margin: 0 auto 40px auto;
+            padding: 20px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        #tags h2 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #ecf0f1;
+            padding-bottom: 10px;
+            font-size: 24px; /* Adjusted font size */
+        }
+
+        .tags-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px; /* Reduced gap */
+            justify-content: center;
+        }
+
+        .tag {
+            background-color: #ecf0f1;
+            border-radius: 4px;
+            padding: 8px 12px; /* Reduced padding */
+            font-size: 13px; /* Reduced font size */
+            color: #2c3e50;
+            max-width: 280px; /* Reduced max width */
+            box-sizing: border-box;
+            word-wrap: break-word; /* Allow tags to wrap */
+        }
+
+        .tag strong {
+            display: block;
+            margin-bottom: 3px; /* Reduced margin */
+            color: #2980b9;
+            font-size: 14px; /* Slightly increased for emphasis */
+        }
+
+        /* Responsive Design */
+        @media (max-width: 650px) {
+            .card {
+                width: 100%;
+                height: auto;
+            }
+
+            .card-content {
+                grid-template-columns: 100px 1fr; /* Further reduced label column */
+                font-size: 13px; /* Slightly reduced font size */
+            }
+
+            .label {
+                align-self: flex-start;
+            }
+
+            #reflections ol {
+                font-size: 14px; /* Reduced font size */
+            }
+
+            #tags h2 {
+                font-size: 20px; /* Reduced font size */
+            }
+
+            .tag {
+                font-size: 12px; /* Further reduced font size */
+                padding: 6px 10px; /* Further reduced padding */
+                max-width: 250px; /* Further reduced max width */
+            }
+        }
+
+        @media (max-width: 480px) {
+            .artifact-name {
+                font-size: 20px; /* Further reduced font size */
+            }
+
+            .artifact-icon {
+                font-size: 20px; /* Further reduced font size */
+            }
+
+            .card-content {
+                grid-template-columns: 90px 1fr; /* Further reduced label column */
+                font-size: 12px; /* Further reduced font size */
+            }
+
+            .label {
+                font-size: 13px; /* Reduced font size */
+            }
+
+            .value {
+                font-size: 13px; /* Reduced font size */
+            }
+
+            #reflections h2 {
+                font-size: 20px; /* Further reduced font size */
+            }
+
+            #reflections ol {
+                font-size: 14px; /* Reduced font size */
+            }
+
+            .tag {
+                font-size: 11px; /* Further reduced font size */
+                padding: 5px 8px; /* Further reduced padding */
+                max-width: 220px; /* Further reduced max width */
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Zettelkasten Creative Artifacts</h1>
+    <div class="card-container">
+        <!-- BOOK Card -->
+        <div class="card">
+            <div class="card-header">
+                <div class="artifact-name">BOOK</div>
+                <div class="artifact-icon">📚</div>
+            </div>
+            <div class="card-content">
+                <div class="label">Brought by:</div>
+                <div class="value">Michael</div>
+
+                <div class="label">Description:</div>
+                <div class="value">Explores active reading and creativity in margins.</div>
+
+                <div class="label">Why It's Creative:</div>
+                <div class="value">Engaging with a text fosters creativity in margins.</div>
+
+                <div class="label">Key Points:</div>
+                <div class="value">
+                    <ul>
+                        <li>Text → Reader: Interpretation fosters engagement.</li>
+                        <li>Reader → Margins: Creativity emerges in interaction.</li>
+                    </ul>
+                </div>
+
+                <div class="label">Features:</div>
+                <div class="value">
+                    <ul>
+                        <li>Active interpretation</li>
+                        <li>Creativity in marginal notes and thinking</li>
+                    </ul>
+                </div>
+
+                <div class="label">Counterpoints:</div>
+                <div class="value">
+                    <ul>
+                        <li>Non-fiction is not inherently creative.</li>
+                        <li>Passive reading lacks active creation.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- GAME Card -->
+        <div class="card">
+            <div class="card-header">
+                <div class="artifact-name">GAME</div>
+                <div class="artifact-icon">🎮</div>
+            </div>
+            <div class="card-content">
+                <div class="label">Brought by:</div>
+                <div class="value">Michael</div>
+
+                <div class="label">Description:</div>
+                <div class="value">Emphasizes modularity with infinite assembly options.</div>
+
+                <div class="label">Why It's Creative:</div>
+                <div class="value">Modularity fosters flexible assembly and creative engagement.</div>
+
+                <div class="label">Key Points:</div>
+                <div class="value">
+                    <ul>
+                        <li>Rules → Play: Creativity in adapting rules.</li>
+                        <li>Modularity → Replay: Infinite variations foster engagement.</li>
+                    </ul>
+                </div>
+
+                <div class="label">Features:</div>
+                <div class="value">
+                    <ul>
+                        <li>Modular and flexible</li>
+                        <li>Encourages creative adaptation</li>
+                    </ul>
+                </div>
+
+                <div class="label">Counterpoints:</div>
+                <div class="value">
+                    <ul>
+                        <li>Too structured to allow sloppiness.</li>
+                        <li>Execution-driven, not innovation-driven.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- LEGO Card -->
+        <div class="card">
+            <div class="card-header">
+                <div class="artifact-name">LEGO</div>
+                <div class="artifact-icon">🧱</div>
+            </div>
+            <div class="card-content">
+                <div class="label">Brought by:</div>
+                <div class="value">Liza</div>
+
+                <div class="label">Description:</div>
+                <div class="value">Showcases infinite assembly and healthy restrictions.</div>
+
+                <div class="label">Why It's Creative:</div>
+                <div class="value">Modularity enables infinite assembly and reassembly.</div>
+
+                <div class="label">Key Points:</div>
+                <div class="value">
+                    <ul>
+                        <li>Brick → Structure: Creativity in building.</li>
+                        <li>Modularity → Flexibility: Infinite reassembly fosters exploration.</li>
+                    </ul>
+                </div>
+
+                <div class="label">Features:</div>
+                <div class="value">
+                    <ul>
+                        <li>Modular and infinitely adaptable</li>
+                        <li>Supports creative assembly</li>
+                    </ul>
+                </div>
+
+                <div class="label">Counterpoints:</div>
+                <div class="value">
+                    <ul>
+                        <li>Modularity may restrict sloppiness.</li>
+                        <li>Too structured to foster messy creativity.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- SCOOP Card -->
+        <div class="card">
+            <div class="card-header">
+                <div class="artifact-name">SCOOP</div>
+                <div class="artifact-icon">🍨</div>
+            </div>
+            <div class="card-content">
+                <div class="label">Brought by:</div>
+                <div class="value">Liza</div>
+
+                <div class="label">Description:</div>
+                <div class="value">Reflects the creativity embedded in its design.</div>
+
+                <div class="label">Why It's Creative:</div>
+                <div class="value">Embedded making reflects the creativity of its designer.</div>
+
+                <div class="label">Key Points:</div>
+                <div class="value">
+                    <ul>
+                        <li>Maker → Artifact: Creativity embedded in design.</li>
+                        <li>Artifact → User: Reflects designed creativity.</li>
+                    </ul>
+                </div>
+
+                <div class="label">Features:</div>
+                <div class="value">
+                    <ul>
+                        <li>Designed for function</li>
+                        <li>Reflects embedded intent</li>
+                    </ul>
+                </div>
+
+                <div class="label">Counterpoints:</div>
+                <div class="value">
+                    <ul>
+                        <li>Restricted by specific needs and functionality.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- WATER DRAW Card -->
+        <div class="card">
+            <div class="card-header">
+                <div class="artifact-name">WATER DRAW</div>
+                <div class="artifact-icon">💧</div>
+            </div>
+            <div class="card-content">
+                <div class="label">Brought by:</div>
+                <div class="value">Savannah</div>
+
+                <div class="label">Description:</div>
+                <div class="value">Teaches letting go and embracing impermanence over time.</div>
+
+                <div class="label">Why It's Creative:</div>
+                <div class="value">Teaches letting go and embracing impermanence over time.</div>
+
+                <div class="label">Key Points:</div>
+                <div class="value">
+                    <ul>
+                        <li>Water → Mark: Creativity emerges in transience.</li>
+                        <li>Mark → Fade: Letting go shapes creative process.</li>
+                    </ul>
+                </div>
+
+                <div class="label">Features:</div>
+                <div class="value">
+                    <ul>
+                        <li>Ephemeral and time-bound</li>
+                        <li>Relinquishes control to impermanence</li>
+                    </ul>
+                </div>
+
+                <div class="label">Counterpoints:</div>
+                <div class="value">
+                    <ul>
+                        <li>Is it creative without a record of its existence?</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- DICE Card -->
+        <div class="card">
+            <div class="card-header">
+                <div class="artifact-name">DICE</div>
+                <div class="artifact-icon">🎲</div>
+            </div>
+            <div class="card-content">
+                <div class="label">Brought by:</div>
+                <div class="value">Savannah</div>
+
+                <div class="label">Description:</div>
+                <div class="value">Explores randomness and unfaithful interpretation.</div>
+
+                <div class="label">Why It's Creative:</div>
+                <div class="value">Creativity lies in unfaithful interpretation and the act of rerolling.</div>
+
+                <div class="label">Key Points:</div>
+                <div class="value">
+                    <ul>
+                        <li>Roll → Outcome: Randomness fosters new possibilities.</li>
+                        <li>Outcome → Reroll: Creativity in unfaithfulness to results.</li>
+                    </ul>
+                </div>
+
+                <div class="label">Features:</div>
+                <div class="value">
+                    <ul>
+                        <li>Embraces randomness</li>
+                        <li>Fosters reinterpretation and rerolling</li>
+                    </ul>
+                </div>
+
+                <div class="label">Counterpoints:</div>
+                <div class="value">
+                    <ul>
+                        <li>Breaks trust with initial outcomes.</li>
+                        <li>Dependent on external randomness.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- LIGHT Card -->
+        <div class="card">
+            <div class="card-header">
+                <div class="artifact-name">LIGHT</div>
+                <div class="artifact-icon">💡</div>
+            </div>
+            <div class="card-content">
+                <div class="label">Brought by:</div>
+                <div class="value">Binta</div>
+
+                <div class="label">Description:</div>
+                <div class="value">Delves into the interplay between light and darkness.</div>
+
+                <div class="label">Why It's Creative:</div>
+                <div class="value">Explores creativity through the interplay of light and darkness.</div>
+
+                <div class="label">Key Points:</div>
+                <div class="value">
+                    <ul>
+                        <li>Light → Shadow: Creativity emerges in contrast.</li>
+                        <li>Light → Perception: Defines how creativity is seen.</li>
+                    </ul>
+                </div>
+
+                <div class="label">Features:</div>
+                <div class="value">
+                    <ul>
+                        <li>Focus on contrast</li>
+                        <li>Explores creativity through absence</li>
+                    </ul>
+                </div>
+
+                <div class="label">Counterpoints:</div>
+                <div class="value">
+                    <ul>
+                        <li>Machine-made object limits creative potential.</li>
+                        <li>Metaphorical rather than direct creativity.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- PAPER TOWEL Card -->
+        <div class="card">
+            <div class="card-header">
+                <div class="artifact-name">PAPER TOWEL</div>
+                <div class="artifact-icon">🧻</div>
+            </div>
+            <div class="card-content">
+                <div class="label">Brought by:</div>
+                <div class="value">Binta</div>
+
+                <div class="label">Description:</div>
+                <div class="value">Examines projecting creative uses onto functional objects.</div>
+
+                <div class="label">Why It's Creative:</div>
+                <div class="value">Projects creative uses onto a functional object made with creative intent.</div>
+
+                <div class="label">Key Points:</div>
+                <div class="value">
+                    <ul>
+                        <li>Intent → Artifact: Designed for creative functionality.</li>
+                        <li>Viewer → Artifact: Creativity projected onto ready-made.</li>
+                    </ul>
+                </div>
+
+                <div class="label">Features:</div>
+                <div class="value">
+                    <ul>
+                        <li>Functional with creative potential</li>
+                        <li>Ready-made with designed purpose</li>
+                    </ul>
+                </div>
+
+                <div class="label">Counterpoints:</div>
+                <div class="value">
+                    <ul>
+                        <li>Creativity resides in projection, not artifact.</li>
+                        <li>Stasis on an object limits creativity.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- QUILT SQUARE Card -->
+        <div class="card">
+            <div class="card-header">
+                <div class="artifact-name">QUILT SQUARE</div>
+                <div class="artifact-icon">🧵</div>
+            </div>
+            <div class="card-content">
+                <div class="label">Brought by:</div>
+                <div class="value">Parnian</div>
+
+                <div class="label">Description:</div>
+                <div class="value">Repurposed as a cup holder, showcasing handmade creativity.</div>
+
+                <div class="label">Why It's Creative:</div>
+                <div class="value">Repurposing and handmade creation showcase resourceful creativity.</div>
+
+                <div class="label">Key Points:</div>
+                <div class="value">
+                    <ul>
+                        <li>Handmade → Utility: Creative crafting and reuse.</li>
+                        <li>Repurpose → Function: New meaning emerges from reuse.</li>
+                    </ul>
+                </div>
+
+                <div class="label">Features:</div>
+                <div class="value">
+                    <ul>
+                        <li>Handmade craftsmanship</li>
+                        <li>Repurposed as a functional object</li>
+                    </ul>
+                </div>
+
+                <div class="label">Counterpoints:</div>
+                <div class="value">
+                    <ul>
+                        <li>Creativity lies in intent, not reuse.</li>
+                        <li>Stasis on an object limits creativity.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- GLASS PUMPKIN Card -->
+        <div class="card">
+            <div class="card-header">
+                <div class="artifact-name">GLASS PUMPKIN</div>
+                <div class="artifact-icon">🎃</div>
+            </div>
+            <div class="card-content">
+                <div class="label">Brought by:</div>
+                <div class="value">Parnian</div>
+
+                <div class="label">Description:</div>
+                <div class="value">Highlights imperfection as a source of creativity.</div>
+
+                <div class="label">Why It's Creative:</div>
+                <div class="value">Imperfection creates tension between creative intent and material limitations.</div>
+
+                <div class="label">Key Points:</div>
+                <div class="value">
+                    <ul>
+                        <li>Maker → Material: Intent interacts with imperfection.</li>
+                        <li>Artifact → Viewer: Creativity resides in flaws and tension.</li>
+                    </ul>
+                </div>
+
+                <div class="label">Features:</div>
+                <div class="value">
+                    <ul>
+                        <li>Highlights imperfections</li>
+                        <li>Tension between intent and outcome</li>
+                    </ul>
+                </div>
+
+                <div class="label">Counterpoints:</div>
+                <div class="value">
+                    <ul>
+                        <li>Is it creative without a record of its existence?</li>
+                        <li>Does creativity need a perfect outcome?</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- LENS Card -->
+        <div class="card">
+            <div class="card-header">
+                <div class="artifact-name">LENS</div>
+                <div class="artifact-icon">🔍</div>
+            </div>
+            <div class="card-content">
+                <div class="label">Brought by:</div>
+                <div class="value">Watson</div>
+
+                <div class="label">Description:</div>
+                <div class="value">Presents creativity as a perspective.</div>
+
+                <div class="label">Why It's Creative:</div>
+                <div class="value">Creativity is a perspective; the lens reframes how we see creativity in anything.</div>
+
+                <div class="label">Key Points:</div>
+                <div class="value">
+                    <ul>
+                        <li>Lens → Vision: Shapes how objects are interpreted creatively.</li>
+                        <li>Perspective → Creativity: Anything can be framed as creative.</li>
+                    </ul>
+                </div>
+
+                <div class="label">Features:</div>
+                <div class="value">
+                    <ul>
+                        <li>Reframes perspectives</li>
+                        <li>Explores subjective creativity</li>
+                    </ul>
+                </div>
+
+                <div class="label">Counterpoints:</div>
+                <div class="value">
+                    <ul>
+                        <li>Creativity depends on interpretation, not inherent qualities.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- SOLE Card -->
+        <div class="card">
+            <div class="card-header">
+                <div class="artifact-name">SOLE</div>
+                <div class="artifact-icon">👟</div>
+            </div>
+            <div class="card-content">
+                <div class="label">Brought by:</div>
+                <div class="value">Watson</div>
+
+                <div class="label">Description:</div>
+                <div class="value">Explores creativity as a foundational substrate.</div>
+
+                <div class="label">Why It's Creative:</div>
+                <div class="value">The sole serves as a substrate for exploring the foundation of creativity.</div>
+
+                <div class="label">Key Points:</div>
+                <div class="value">
+                    <ul>
+                        <li>Sole → Substrate: A metaphorical foundation for creativity.</li>
+                        <li>Substrate → Inquiry: Explores what grounds creativity itself.</li>
+                    </ul>
+                </div>
+
+                <div class="label">Features:</div>
+                <div class="value">
+                    <ul>
+                        <li>Creativity as a foundation</li>
+                        <li>Metaphor for supporting structure</li>
+                    </ul>
+                </div>
+
+                <div class="label">Counterpoints:</div>
+                <div class="value">
+                    <ul>
+                        <li>More reflective than active in creativity.</li>
+                        <li>Tells what to do (problem-solving), limiting interpretation.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- PUPPET Card -->
+        <div class="card">
+            <div class="card-header">
+                <div class="artifact-name">PUPPET</div>
+                <div class="artifact-icon">🎭</div>
+            </div>
+            <div class="card-content">
+                <div class="label">Brought by:</div>
+                <div class="value">Ethan</div>
+
+                <div class="label">Description:</div>
+                <div class="value">Handmade and used in performances to create outputs.</div>
+
+                <div class="label">Why It's Creative:</div>
+                <div class="value">Creativity emerges from handmade creation and interpretive performance.</div>
+
+                <div class="label">Key Points:</div>
+                <div class="value">
+                    <ul>
+                        <li>Puppeteer → Puppet: Limited control fosters improvisation.</li>
+                        <li>Puppet → Performance: Interaction shapes creative output.</li>
+                    </ul>
+                </div>
+
+                <div class="label">Features:</div>
+                <div class="value">
+                    <ul>
+                        <li>Handmade, crafted object</li>
+                        <li>Relies on interplay of control and limitation</li>
+                        <li>Creativity emerges through performance</li>
+                    </ul>
+                </div>
+
+                <div class="label">Counterpoints:</div>
+                <div class="value">
+                    <ul>
+                        <li>Creativity lies in the puppet's design, not use.</li>
+                        <li>Physical limitations restrict innovation.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- REFLECTIONS Section -->
+    <section id="reflections">
+        <h2>REFLECTIONS</h2>
+        <ol>
+            <li>
+                <strong>Born of Creativity but Not Inherently Creative:</strong>
+                <ul>
+                    <li>Items like the Puppet and Scoop are products of creative design but serve as tools or mediums, requiring additional creative input to realize their potential (e.g., "born_of_a_creative_hand", "born_of_a_creative_mind").</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Handmade vs. Machine-Made:</strong>
+                <ul>
+                    <li><strong>Handmade:</strong> Emphasizes personal craftsmanship and accepts imperfection (e.g., Puppet, Quilt Square, Glass Pumpkin).</li>
+                    <li><strong>Machine-Made:</strong> Standardized production, often precise, potentially limiting creativity (e.g., Sole, Lego, Game, Paper Towel).</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Modularity:</strong>
+                <ul>
+                    <li><strong>Modular:</strong> Offers flexibility and endless reconfiguration, fostering creativity but also raising questions about the necessity of structured creativity (e.g., Lego, Game).</li>
+                    <li><strong>Non-Modular:</strong> Fixed form, limiting or channeling creativity differently (e.g., Puppet, Sole).</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Intentional vs. Projected Creativity:</strong>
+                <ul>
+                    <li><strong>Intentional Creativity:</strong> Items created with specific creative intent (e.g., Puppet, Scoop).</li>
+                    <li><strong>Projected Creativity:</strong> Items inviting users to project their own creativity (e.g., Paper Towel, Glass Pumpkin).</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Imperfection vs. Precision:</strong>
+                <ul>
+                    <li><strong>Imperfection:</strong> Source of creativity, adding unique character (e.g., Glass Pumpkin).</li>
+                    <li><strong>Precision:</strong> Ensures consistency but may restrict creative expression (e.g., Lego, Game).</li>
+                </ul>
+            </li>
+            <li>
+                <strong>Repurposing and Projection:</strong>
+                <ul>
+                    <li><strong>Repurposed:</strong> Demonstrates creativity through functional transformation (e.g., Quilt Square).</li>
+                    <li><strong>Projection:</strong> Enhances perceived creative value through user interpretation (e.g., Paper Towel).</li>
+                </ul>
+            </li>
+        </ol>
+    </section>
+
+    <!-- TAGS Section -->
+    <section id="tags">
+        <h2>Tags</h2>
+        <div class="tags-list">
+            <div class="tag">
+                <strong>handmade:</strong>
+                Crafted manually, emphasizing personal touch and uniqueness.
+            </div>
+            <div class="tag">
+                <strong>machine_made:</strong>
+                Produced through standardized, automated processes.
+            </div>
+            <div class="tag">
+                <strong>modular:</strong>
+                Designed to be easily assembled and reassembled in various configurations.
+            </div>
+            <div class="tag">
+                <strong>non_modular:</strong>
+                Fixed structure without the flexibility for reconfiguration.
+            </div>
+            <div class="tag">
+                <strong>imperfection:</strong>
+                Embracing flaws or irregularities as a creative feature.
+            </div>
+            <div class="tag">
+                <strong>imperfection_allowed:</strong>
+                Permitting imperfections as part of the creative expression.
+            </div>
+            <div class="tag">
+                <strong>projection_of_creativity:</strong>
+                Users or observers attribute creative qualities beyond the object's inherent characteristics.
+            </div>
+            <div class="tag">
+                <strong>repurposed:</strong>
+                Given a new function different from the original intent.
+            </div>
+            <div class="tag">
+                <strong>ready_made:</strong>
+                Existing objects used as-is, without modification.
+            </div>
+            <div class="tag">
+                <strong>conceptual:</strong>
+                Ideas or objects that represent abstract concepts.
+            </div>
+            <div class="tag">
+                <strong>born_of_a_creative_hand:</strong>
+                Created through a manual creative process.
+            </div>
+            <div class="tag">
+                <strong>born_of_a_creative_mind:</strong>
+                Conceived through intellectual or conceptual creativity.
+            </div>
+            <div class="tag">
+                <strong>non_creative:</strong>
+                Lacking inherent creativity, often serving as tools or mediums.
+            </div>
+            <div class="tag">
+                <strong>precision:</strong>
+                Valuing accuracy and flawlessness, potentially limiting creative expression.
+            </div>
+            <div class="tag">
+                <strong>stasis_non_creative:</strong>
+                Objects that remain static or unchanging are perceived as non-creative.
+            </div>
+            <div class="tag">
+                <strong>problem_solving:</strong>
+                Objects designed to address specific problems or functions.
+            </div>
+            <div class="tag">
+                <strong>restrictive_needs:</strong>
+                The design imposes specific limitations or requirements that may hinder creativity.
+            </div>
+            <div class="tag">
+                <strong>sloppiness_non_creative:</strong>
+                Perceived lack of precision or neatness as a barrier to creativity.
+            </div>
+            <div class="tag">
+                <strong>requires_perfect_outcome:</strong>
+                The necessity for flawless results potentially restricts creative processes.
+            </div>
+            <div class="tag">
+                <strong>modularity_death_creativity:</strong>
+                The idea that modularity can stifle or limit creative expression.
+            </div>
+            <div class="tag">
+                <strong>can_creativity_without_accord:</strong>
+                Questioning whether creativity can exist without harmony or agreement.
+            </div>
+            <div class="tag">
+                <strong>break_trust_non_creative:</strong>
+                The ability to deviate or break expectations is seen as non-creative.
+            </div>
+            <div class="tag">
+                <strong>unintentional_creativity:</strong>
+                Creativity that arises without deliberate intent.
+            </div>
+            <div class="tag">
+                <strong>creative_repurposing:</strong>
+                Transforming an object for a new creative use beyond its original purpose.
+            </div>
+            <div class="tag">
+                <strong>tells_what_to_do_non_creative:</strong>
+                Objects that dictate specific uses are considered non-creative.
+            </div>
+            <div class="tag">
+                <strong>does_creativity_need_perfect_outcome:</strong>
+                Questions whether creativity requires flawless results.
+            </div>
+            <div class="tag">
+                <strong>acceptable_unacceptable_uses:</strong>
+                Differentiating between socially or culturally accepted and rejected uses.
+            </div>
+            <div class="tag">
+                <strong>pop_culture_reference:</strong>
+                References to popular culture that influence perception (e.g., Will Ferrell in "The Lego Movie").
+            </div>
+            <div class="tag">
+                <strong>non_creative_due_to_stasis:</strong>
+                Objects perceived as non-creative because they remain unchanged.
+            </div>
+            <div class="tag">
+                <strong>creative_if_unintentional:</strong>
+                Creativity can emerge even without deliberate intent.
+            </div>
+        </div>
+    </section>
+
+</body>
+</html>

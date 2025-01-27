@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creative DNA Connections</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        :root {
+            --background-color: #1a1a1a;
+            --text-color: #ffffff;
+            --accent-color: #4a9eff;
+            --boden-color: #ff6b6b;
+            --papert-color: #4ecdc4;
+            --platform-bg: rgba(40, 40, 40, 0.95);
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: system-ui, -apple-system, sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            overflow: hidden;
+        }
+
+        #graph {
+            width: 100vw;
+            height: 100vh;
+            cursor: grab;
+        }
+
+        #graph:active {
+            cursor: grabbing;
+        }
+
+        .node {
+            cursor: pointer;
+        }
+
+        .node rect {
+            fill: var(--platform-bg);
+            stroke: rgba(255, 255, 255, 0.1);
+            stroke-width: 1px;
+            rx: 8px;
+            ry: 8px;
+        }
+
+        .node-content {
+            pointer-events: none;
+        }
+
+        .node-title {
+            font-size: 14px;
+            font-weight: 600;
+            fill: var(--text-color);
+        }
+
+        .node-quote {
+            font-size: 12px;
+            font-style: italic;
+            fill: var(--text-color);
+            opacity: 0.9;
+        }
+
+        .node-concept {
+            font-size: 12px;
+            fill: var(--text-color);
+        }
+
+        .node-argument {
+            font-size: 11px;
+            fill: var(--text-color);
+            opacity: 0.8;
+        }
+
+        .node-critique {
+            font-size: 11px;
+            fill: var(--boden-color);
+            opacity: 0.8;
+        }
+
+        .node-example {
+            font-size: 11px;
+            fill: var(--papert-color);
+            opacity: 0.8;
+        }
+
+        .node-id {
+            font-family: 'SF Mono', monospace;
+            font-size: 10px;
+            fill: var(--accent-color);
+            opacity: 0.7;
+        }
+
+        .node.boden {
+            transform: translateX(-300px);
+        }
+
+        .node.papert {
+            transform: translateX(300px);
+        }
+
+        .link {
+            stroke-width: 2;
+            stroke-opacity: 0.6;
+            transition: stroke-opacity 0.3s;
+        }
+
+        .link:hover {
+            stroke-opacity: 1;
+            stroke-width: 3;
+        }
+
+        .link.influences {
+            stroke: var(--accent-color);
+        }
+
+        .link.contradicts {
+            stroke: var(--boden-color);
+            stroke-dasharray: 5,5;
+        }
+
+        .link.supports {
+            stroke: var(--papert-color);
+        }
+
+        .link.extends {
+            stroke: #9b59b6;
+            stroke-dasharray: 10,3;
+        }
+
+        .link-label {
+            font-size: 10px;
+            fill: var(--text-color);
+            pointer-events: none;
+        }
+
+        /* Controls */
+        .controls {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--platform-bg);
+            padding: 15px;
+            border-radius: 8px;
+            display: flex;
+            gap: 10px;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .control-button {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: var(--text-color);
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 14px;
+            min-width: 120px;
+        }
+
+        .control-button:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .control-button.active {
+            background: var(--accent-color);
+            border-color: var(--accent-color);
+        }
+
+        /* Node details panel */
+        .node-details {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 300px;
+            background: var(--platform-bg);
+            padding: 20px;
+            border-radius: 8px;
+            display: none;
+            z-index: 1000;
+        }
+
+        .node-details.visible {
+            display: block;
+        }
+
+        .detail-section {
+            margin: 10px 0;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .detail-title {
+            font-size: 0.8em;
+            text-transform: uppercase;
+            color: var(--accent-color);
+            margin-bottom: 5px;
+        }
+
+        /* Connection type menu */
+        .connection-menu {
+            position: fixed;
+            background: var(--platform-bg);
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 1000;
+        }
+
+        .connection-menu.visible {
+            display: block;
+        }
+
+        .connection-type {
+            padding: 10px 20px;
+            margin: 5px 0;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .connection-type::before {
+            content: '';
+            width: 20px;
+            height: 2px;
+            display: block;
+        }
+
+        .connection-type[data-type="influences"]::before {
+            background: var(--accent-color);
+        }
+
+        .connection-type[data-type="contradicts"]::before {
+            background: var(--boden-color);
+        }
+
+        .connection-type[data-type="supports"]::before {
+            background: var(--papert-color);
+        }
+
+        .connection-type[data-type="extends"]::before {
+            background: #9b59b6;
+        }
+
+        .connection-type:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Node selection styles */
+        .node.selectable {
+            cursor: pointer;
+        }
+
+        .node.selected rect {
+            stroke: var(--accent-color);
+            stroke-width: 3px;
+        }
+    </style>
+</head>
+<body>
+    <div class="controls">
+        <button class="control-button" id="connect">Create Connection</button>
+        <button class="control-button" id="center">Center Graph</button>
+        <button class="control-button" id="togglePhysics">Toggle Physics</button>
+        <button class="control-button" id="toggleLabels">Toggle Labels</button>
+    </div>
+
+    <div class="node-details" id="nodeDetails">
+        <h3 class="platform-title"></h3>
+        <div class="detail-section">
+            <div class="detail-title">Key Concept</div>
+            <div class="concept-content"></div>
+        </div>
+        <div class="detail-section">
+            <div class="detail-title">Example</div>
+            <div class="example-content"></div>
+        </div>
+        <div class="detail-section">
+            <div class="detail-title">Quote</div>
+            <div class="quote-content"></div>
+        </div>
+    </div>
+
+    <div class="connection-menu" id="connectionMenu">
+        <div class="connection-type" data-type="influences">Influences</div>
+        <div class="connection-type" data-type="contradicts">Contradicts</div>
+        <div class="connection-type" data-type="supports">Supports</div>
+        <div class="connection-type" data-type="extends">Extends</div>
+    </div>
+
+    <svg id="graph"></svg>
+
+    <script>
+        class CreativeDNAGraph {
+            constructor() {
+                this.svg = d3.select('#graph');
+                this.width = window.innerWidth;
+                this.height = window.innerHeight;
+                this.nodes = [];
+                this.links = [];
+                this.simulation = null;
+                this.connectionMode = false;
+                this.selectedNode = null;
+                this.zoom = d3.zoom()
+                    .scaleExtent([0.1, 2])
+                    .on('zoom', (event) => {
+                        this.container.attr('transform', event.transform);
+                    });
+
+                this.init();
+                
+                // Handle window resize
+                window.addEventListener('resize', () => {
+                    this.width = window.innerWidth;
+                    this.height = window.innerHeight;
+                    this.svg
+                        .attr('width', this.width)
+                        .attr('height', this.height);
+                    this.centerGraph();
+                });
+            }
+
+            async init() {
+                try {
+                    await this.loadData();
+                    this.setupGraph();
+                    this.setupControls();
+                    this.setupSimulation();
+                    
+                    // Initial centering and zoom
+                    this.centerGraph();
+                    
+                    // Setup event listeners
+                    this.setupEventListeners();
+                } catch (error) {
+                    console.error('Failed to initialize graph:', error);
+                }
+            }
+
+            async loadData() {
+                const response = await fetch('creative-data.json');
+                const data = await response.json();
+
+                // Transform data into graph format
+                data.documents.forEach(doc => {
+                    doc.geneticPlatforms.forEach(platform => {
+                        this.nodes.push({
+                            id: `${doc.id}-${platform.platformID}`,
+                            type: doc.id === 'boden1998' ? 'boden' : 'papert',
+                            platformId: platform.platformID,
+                            title: platform.title,
+                            concept: platform.keyConcept,
+                            example: platform.example,
+                            quote: platform.quote,
+                            argument: platform.argument,
+                            critique: platform.critique,
+                            width: 280,
+                            height: 320
+                        });
+                    });
+                });
+            }
+
+            setupGraph() {
+                this.svg
+                    .attr('width', this.width)
+                    .attr('height', this.height);
+
+                // Define arrow markers for different connection types
+                const defs = this.svg.append('defs');
+                ['influences', 'contradicts', 'supports', 'extends'].forEach(type => {
+                    defs.append('marker')
+                        .attr('id', `arrow-${type}`)
+                        .attr('viewBox', '0 -5 10 10')
+                        .attr('refX', 8)
+                        .attr('refY', 0)
+                        .attr('markerWidth', 6)
+                        .attr('markerHeight', 6)
+                        .attr('orient', 'auto')
+                        .append('path')
+                        .attr('d', 'M0,-5L10,0L0,5')
+                        .attr('class', type);
+                });
+
+                this.container = this.svg.append('g');
+                
+                // Add zoom behavior
+                this.svg.call(this.zoom);
+            }
+
+            setupSimulation() {
+                // Create two columns for the double helix
+                const columnSpacing = 600;
+                const verticalSpacing = 250;
+                
+                // Position nodes in two columns
+                this.nodes.forEach((node, i) => {
+                    const column = node.type === 'boden' ? -1 : 1;
+                    const row = Math.floor(i / 2);
+                    
+                    // Add slight sine wave variation for helix effect
+                    const phase = node.type === 'boden' ? 0 : Math.PI;
+                    const amplitude = 50;
+                    const frequency = 0.2;
+                    
+                    node.fx = (this.width / 2) + (column * columnSpacing / 2);
+                    node.fy = (row * verticalSpacing) + amplitude * Math.sin(frequency * row + phase);
+                });
+
+                this.simulation = d3.forceSimulation(this.nodes)
+                    .force('link', d3.forceLink(this.links)
+                        .id(d => d.id)
+                        .distance(d => {
+                            // Adjust link distance based on whether it's a rung connection
+                            return d.source.type !== d.target.type ? columnSpacing : 150;
+                        })
+                    )
+                    .force('charge', d3.forceManyBody().strength(-100))
+                    .force('collision', d3.forceCollide().radius(d => Math.sqrt(d.width * d.width + d.height * d.height) / 2))
+                    .on('tick', () => this.updateGraph());
+
+                this.updateGraph();
+            }
+
+            updateGraph() {
+                // Update links (rungs)
+                const link = this.container.selectAll('.link')
+                    .data(this.links)
+                    .join('path')
+                    .attr('class', d => `link ${d.type}`)
+                    .attr('marker-end', d => `url(#arrow-${d.type})`);
+
+                link.attr('d', d => {
+                    const sourceX = d.source.x;
+                    const sourceY = d.source.y;
+                    const targetX = d.target.x;
+                    const targetY = d.target.y;
+                    
+                    // Create a straight line for rungs between different types
+                    if (d.source.type !== d.target.type) {
+                        return `M${sourceX},${sourceY}L${targetX},${targetY}`;
+                    }
+                    
+                    // Create curved lines for connections within the same side
+                    const dx = targetX - sourceX;
+                    const dy = targetY - sourceY;
+                    const dr = Math.sqrt(dx * dx + dy * dy);
+                    return `M${sourceX},${sourceY}A${dr},${dr} 0 0,1 ${targetX},${targetY}`;
+                });
+
+                // Update nodes
+                const node = this.container.selectAll('.node')
+                    .data(this.nodes)
+                    .join('g')
+                    .attr('class', d => `node ${d.type}`)
+                    .attr('transform', d => `translate(${d.x},${d.y})`);
+
+                // Create or update node contents
+                node.each(function(d) {
+                    const g = d3.select(this);
+                    
+                    // Background rectangle
+                    g.selectAll('rect')
+                        .data([d])
+                        .join('rect')
+                        .attr('width', d.width)
+                        .attr('height', d.height)
+                        .attr('x', -d.width / 2)
+                        .attr('y', -d.height / 2);
+
+                    // Content group
+                    const content = g.selectAll('.node-content')
+                        .data([d])
+                        .join('g')
+                        .attr('class', 'node-content')
+                        .attr('transform', `translate(${-d.width/2 + 15}, ${-d.height/2 + 20})`);
+
+                    // Platform ID
+                    content.selectAll('.node-id')
+                        .data([d])
+                        .join('text')
+                        .attr('class', 'node-id')
+                        .attr('y', 0)
+                        .text(d => d.platformId);
+
+                    // Title
+                    content.selectAll('.node-title')
+                        .data([d])
+                        .join('text')
+                        .attr('class', 'node-title')
+                        .attr('y', 25)
+                        .text(d => d.title);
+
+                    // Quote
+                    const quote = content.selectAll('.node-quote')
+                        .data([d])
+                        .join('text')
+                        .attr('class', 'node-quote')
+                        .attr('y', 55);
+
+                    this.wrapText(quote, d.quote, d.width - 30);
+
+                    // Key Concept
+                    const concept = content.selectAll('.node-concept')
+                        .data([d])
+                        .join('text')
+                        .attr('class', 'node-concept')
+                        .attr('y', 130);
+
+                    this.wrapText(concept, d.concept, d.width - 30);
+
+                    // Argument
+                    const argument = content.selectAll('.node-argument')
+                        .data([d])
+                        .join('text')
+                        .attr('class', 'node-argument')
+                        .attr('y', 180);
+
+                    this.wrapText(argument, d.argument, d.width - 30);
+
+                    // Example and Critique
+                    const example = content.selectAll('.node-example')
+                        .data([d])
+                        .join('text')
+                        .attr('class', 'node-example')
+                        .attr('y', 230);
+
+                    this.wrapText(example, d.example, d.width - 30);
+
+                    const critique = content.selectAll('.node-critique')
+                        .data([d])
+                        .join('text')
+                        .attr('class', 'node-critique')
+                        .attr('y', 280);
+
+                    this.wrapText(critique, d.critique, d.width - 30);
+                });
+
+                // Add drag behavior
+                node.call(d3.drag()
+                    .on('start', this.dragstarted.bind(this))
+                    .on('drag', this.dragged.bind(this))
+                    .on('end', this.dragended.bind(this)));
+            }
+
+            wrapText(text, str, width) {
+                if (!str) return;
+
+                const words = str.split(/\s+/).reverse();
+                const lineHeight = 1.1;
+                const y = text.attr('y');
+                let word;
+                let line = [];
+                let lineNumber = 0;
+                let tspan = text.text('').append('tspan').attr('x', 0).attr('y', y);
+
+                while (word = words.pop()) {
+                    line.push(word);
+                    tspan.text(line.join(' '));
+                    if (tspan.node().getComputedTextLength() > width) {
+                        line.pop();
+                        tspan.text(line.join(' '));
+                        line = [word];
+                        tspan = text.append('tspan')
+                            .attr('x', 0)
+                            .attr('y', y)
+                            .attr('dy', ++lineNumber * lineHeight + 'em')
+                            .text(word);
+                    }
+                }
+            }
+
+            setupEventListeners() {
+                // Handle clicks outside of nodes to deselect
+                this.svg.on('click', (event) => {
+                    if (event.target.tagName === 'svg') {
+                        this.deselectAll();
+                    }
+                });
+
+                // Handle escape key to exit connection mode
+                document.addEventListener('keydown', (event) => {
+                    if (event.key === 'Escape') {
+                        this.exitConnectionMode();
+                    }
+                });
+
+                // Close connection menu when clicking outside
+                document.addEventListener('click', (event) => {
+                    const menu = document.getElementById('connectionMenu');
+                    if (!menu.contains(event.target) && !event.target.closest('.node')) {
+                        menu.classList.remove('visible');
+                    }
+                });
+            }
+
+            exitConnectionMode() {
+                this.connectionMode = false;
+                this.selectedNode = null;
+                d3.select('#connect').classed('active', false);
+                this.deselectAll();
+                d3.select('#connectionMenu').classed('visible', false);
+            }
+
+            deselectAll() {
+                d3.selectAll('.node').classed('selected', false);
+                this.selectedNode = null;
+            }
+
+            centerGraph() {
+                const bounds = this.container.node().getBBox();
+                const fullWidth = this.width;
+                const fullHeight = this.height;
+                const width = bounds.width;
+                const height = bounds.height;
+                const midX = bounds.x + width / 2;
+                const midY = bounds.y + height / 2;
+
+                const scale = 0.8 / Math.max(width / fullWidth, height / fullHeight);
+                const translate = [fullWidth / 2 - scale * midX, fullHeight / 2 - scale * midY];
+
+                this.svg.transition()
+                    .duration(750)
+                    .call(this.zoom.transform, d3.zoomIdentity
+                        .translate(translate[0], translate[1])
+                        .scale(scale));
+            }
+
+            handleConnectionClick(node) {
+                if (!this.selectedNode) {
+                    this.selectedNode = node;
+                    d3.select(event.currentTarget).classed('selected', true);
+                } else if (node !== this.selectedNode) {
+                    const menu = d3.select('#connectionMenu');
+                    const rect = event.currentTarget.getBoundingClientRect();
+                    
+                    menu
+                        .style('left', `${rect.right + 10}px`)
+                        .style('top', `${rect.top}px`)
+                        .classed('visible', true);
+
+                    // Store target node for connection creation
+                    menu.property('targetNode', node);
+                }
+            }
+
+            createConnection(type) {
+                const menu = d3.select('#connectionMenu');
+                const targetNode = menu.property('targetNode');
+                
+                const link = {
+                    source: this.selectedNode.id,
+                    target: targetNode.id,
+                    type: type
+                };
+
+                this.links.push(link);
+                this.simulation.force('link').links(this.links);
+                this.simulation.alpha(0.3).restart();
+
+                // Reset selection state
+                this.exitConnectionMode();
+            }
+
+            setupControls() {
+                // Connect button
+                d3.select('#connect').on('click', () => {
+                    this.connectionMode = !this.connectionMode;
+                    d3.select('#connect').classed('active', this.connectionMode);
+                    if (!this.connectionMode) {
+                        this.exitConnectionMode();
+                    }
+                });
+
+                // Center button
+                d3.select('#center').on('click', () => {
+                    this.centerGraph();
+                });
+
+                // Connection type menu
+                d3.selectAll('.connection-type').on('click', (event) => {
+                    const type = event.target.dataset.type;
+                    this.createConnection(type);
+                });
+            }
+
+            dragstarted(event) {
+                if (!event.active) this.simulation.alphaTarget(0.3).restart();
+                event.subject.fx = event.subject.x;
+                event.subject.fy = event.subject.y;
+            }
+
+            dragged(event) {
+                event.subject.fx = event.x;
+                event.subject.fy = event.y;
+            }
+
+            dragended(event) {
+                if (!event.active) this.simulation.alphaTarget(0);
+                event.subject.fx = null;
+                event.subject.fy = null;
+            }
+        }
+
+        // Initialize when DOM is ready
+        document.addEventListener('DOMContentLoaded', () => {
+            window.graph = new CreativeDNAGraph();
+        });
+    </script>
+</body>
+</html>

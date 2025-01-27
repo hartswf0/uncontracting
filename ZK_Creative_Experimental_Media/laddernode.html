@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creative DNA Ladder</title>
+    <style>
+        :root {
+            --background-color: #1a1a1a;
+            --text-color: #ffffff;
+            --accent-color: #4a9eff;
+            --boden-color: #ff6b6b;
+            --papert-color: #4ecdc4;
+            --card-bg: rgba(40, 40, 40, 0.95);
+            --spacing: 40px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            font-family: system-ui, -apple-system, sans-serif;
+            min-height: 100vh;
+            padding: 40px;
+        }
+
+        .ladder-container {
+            display: flex;
+            justify-content: center;
+            gap: 100px;
+            margin: 0 auto;
+            max-width: 1400px;
+        }
+
+        .column {
+            flex: 1;
+            max-width: 600px;
+        }
+
+        .column-title {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--text-color);
+            opacity: 0.9;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .boden-title {
+            color: var(--boden-color);
+        }
+
+        .papert-title {
+            color: var(--papert-color);
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: var(--spacing);
+            position: relative;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .boden .card {
+            border-left: 4px solid var(--boden-color);
+        }
+
+        .papert .card {
+            border-left: 4px solid var(--papert-color);
+        }
+
+        .card-id {
+            font-family: 'SF Mono', monospace;
+            font-size: 12px;
+            color: var(--accent-color);
+            margin-bottom: 10px;
+            opacity: 0.8;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            line-height: 1.3;
+        }
+
+        .card-quote {
+            font-style: italic;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .card-section {
+            margin-bottom: 15px;
+        }
+
+        .section-title {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+            opacity: 0.7;
+        }
+
+        .section-content {
+            font-size: 14px;
+            line-height: 1.5;
+            opacity: 0.9;
+        }
+
+        .connection-line {
+            position: absolute;
+            top: 50%;
+            width: 100px;
+            height: 2px;
+            background: var(--accent-color);
+            opacity: 0.6;
+            transition: opacity 0.3s;
+        }
+
+        .connection-line:hover {
+            opacity: 1;
+        }
+
+        .connection-line.influences {
+            background: var(--accent-color);
+        }
+
+        .connection-line.contradicts {
+            background: var(--boden-color);
+            height: 2px;
+            background-image: linear-gradient(90deg, var(--boden-color) 50%, transparent 50%);
+            background-size: 10px 1px;
+            background-repeat: repeat-x;
+        }
+
+        .connection-line.supports {
+            background: var(--papert-color);
+        }
+
+        .connection-line.extends {
+            background: #9b59b6;
+            height: 2px;
+            background-image: linear-gradient(90deg, #9b59b6 50%, transparent 50%);
+            background-size: 20px 1px;
+            background-repeat: repeat-x;
+        }
+
+        /* Connection controls */
+        .controls {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--card-bg);
+            padding: 15px;
+            border-radius: 8px;
+            display: flex;
+            gap: 10px;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .control-button {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: var(--text-color);
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .control-button:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="ladder-container">
+        <div class="column boden">
+            <h2 class="column-title boden-title">Boden's Platforms</h2>
+            <!-- Boden cards will be inserted here -->
+        </div>
+        <div class="column papert">
+            <h2 class="column-title papert-title">Papert's Platforms</h2>
+            <!-- Papert cards will be inserted here -->
+        </div>
+    </div>
+
+    <div class="controls">
+        <button class="control-button" id="connectBtn">Connect Platforms</button>
+        <button class="control-button" id="clearBtn">Clear Connections</button>
+    </div>
+
+    <script>
+        class LadderNode {
+            constructor() {
+                this.data = null;
+                this.selectedCard = null;
+                this.connectionMode = false;
+                this.connections = [];
+                
+                this.init();
+            }
+
+            async init() {
+                try {
+                    await this.loadData();
+                    this.renderCards();
+                    this.setupEventListeners();
+                } catch (error) {
+                    console.error('Failed to initialize:', error);
+                }
+            }
+
+            async loadData() {
+                const response = await fetch('creative-data.json');
+                this.data = await response.json();
+            }
+
+            renderCards() {
+                const bodenColumn = document.querySelector('.column.boden');
+                const papertColumn = document.querySelector('.column.papert');
+
+                this.data.documents.forEach(doc => {
+                    doc.geneticPlatforms.forEach(platform => {
+                        const card = this.createCard(platform, doc.id);
+                        if (doc.id === 'boden1998') {
+                            bodenColumn.appendChild(card);
+                        } else {
+                            papertColumn.appendChild(card);
+                        }
+                    });
+                });
+            }
+
+            createCard(platform, docId) {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.dataset.id = `${docId}-${platform.platformID}`;
+                
+                card.innerHTML = `
+                    <div class="card-id">${platform.platformID}</div>
+                    <div class="card-title">${platform.title}</div>
+                    <div class="card-quote">${platform.quote || ''}</div>
+                    <div class="card-section">
+                        <div class="section-title">Key Concept</div>
+                        <div class="section-content">${platform.keyConcept}</div>
+                    </div>
+                    <div class="card-section">
+                        <div class="section-title">Argument</div>
+                        <div class="section-content">${platform.argument}</div>
+                    </div>
+                    <div class="card-section">
+                        <div class="section-title">Example</div>
+                        <div class="section-content">${platform.example}</div>
+                    </div>
+                    <div class="card-section">
+                        <div class="section-title">Critique</div>
+                        <div class="section-content">${platform.critique || 'No critique available'}</div>
+                    </div>
+                `;
+
+                return card;
+            }
+
+            setupEventListeners() {
+                const connectBtn = document.getElementById('connectBtn');
+                const clearBtn = document.getElementById('clearBtn');
+
+                connectBtn.addEventListener('click', () => {
+                    this.connectionMode = !this.connectionMode;
+                    connectBtn.classList.toggle('active');
+                    document.body.classList.toggle('connecting');
+                });
+
+                clearBtn.addEventListener('click', () => {
+                    this.clearConnections();
+                });
+
+                document.querySelectorAll('.card').forEach(card => {
+                    card.addEventListener('click', (e) => {
+                        if (!this.connectionMode) return;
+                        
+                        if (!this.selectedCard) {
+                            this.selectedCard = card;
+                            card.classList.add('selected');
+                        } else if (card !== this.selectedCard) {
+                            this.createConnection(this.selectedCard, card);
+                            this.selectedCard.classList.remove('selected');
+                            this.selectedCard = null;
+                        }
+                    });
+                });
+            }
+
+            createConnection(source, target) {
+                const sourceRect = source.getBoundingClientRect();
+                const targetRect = target.getBoundingClientRect();
+
+                const connection = document.createElement('div');
+                connection.className = 'connection-line';
+                
+                // Determine connection type based on relative positions
+                if (sourceRect.top < targetRect.top) {
+                    connection.classList.add('influences');
+                } else if (sourceRect.top > targetRect.top) {
+                    connection.classList.add('contradicts');
+                } else {
+                    connection.classList.add('supports');
+                }
+
+                // Position the connection line
+                const left = sourceRect.right;
+                const top = sourceRect.top + sourceRect.height / 2;
+                
+                connection.style.left = `${left}px`;
+                connection.style.top = `${top}px`;
+
+                document.body.appendChild(connection);
+                this.connections.push(connection);
+            }
+
+            clearConnections() {
+                this.connections.forEach(connection => connection.remove());
+                this.connections = [];
+                this.selectedCard = null;
+                document.querySelectorAll('.card.selected').forEach(card => {
+                    card.classList.remove('selected');
+                });
+            }
+        }
+
+        // Initialize when DOM is ready
+        document.addEventListener('DOMContentLoaded', () => {
+            window.ladder = new LadderNode();
+        });
+    </script>
+</body>
+</html>
